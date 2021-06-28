@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<title>qcjs help</title>
+<script src="../link.js"></script>
+<style>
+</style>
+</head>
+<body>
+<div class="left">
+<div class="menu"></div>
+</div>
+<div class="right">
+<p> </p>
+<h2><h2>Extensions</h2></h2>
+<p><p>
+        Description: The following property methods of Array and String are expanded.
+    </p></p>
+<p> </p>
+<dl><dl>
+<dt>Array.prototype.contains(arg)</dt>
+<dd>
+            Find arg in the array element, if it exists, return true, otherwise, return false.
+        </dd>
+</dl></dl>
+<h4 class="imp">Code</h4>
+<pre class="code">
+        // javascript
+        var ary = ["a", "b", "c", "d"];
+
+        console.log(ary.contains("b"));     // true
+
+        console.log(ary.contains("z"));     // false
+
+    </pre>
+<dl><dl>
+<dt>Array.prototype.each(callback)</dt>
+<dd>
+            Traverse the array elements.
+        </dd>
+<dt>callback</dt>
+<dd>
+            Callback.
+            <p>arr: The current element. </p>
+<p>indx: current location. </p>
+<p>arrs: Array object. </p>
+</dd>
+</dl></dl>
+<h4 class="imp">Code</h4>
+<pre class="code">
+        // javascript
+        var ary = ["a", "b", "c", "d"];
+
+        ary.each(function(arr, index, arrs) {
+            console.log("value: ", arr, ",", "index: ", index, ",", "array: ", arrs);
+        });
+
+        // value:  a , index:  0 , array:  ["a", "b", "c", "d"]
+        // value:  b , index:  1 , array:  ["a", "b", "c", "d"]
+        // value:  c , index:  2 , array:  ["a", "b", "c", "d"]
+        // value:  d , index:  3 , array:  ["a", "b", "c", "d"]
+
+    </pre>
+<dl><dl>
+<dt>Array.prototype.equals(arg)</dt>
+<dd>
+            Array comparison. The same returns true, otherwise it returns false.
+        </dd>
+</dl></dl>
+<h4 class="imp">Code</h4>
+<pre class="code">
+        // javascript
+        var ary1 = ["a", "b", "c", "d"];
+        var ary2 = "a,b,c,d".split(",");
+
+        var re = ary1.equals(ary2);
+        console.log(re);                // true;
+
+    </pre>
+</div>
+<script>
+</script>
+</body>
+</html>

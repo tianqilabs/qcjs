@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p> </p>
+    <h2>操作</h2>
+
+    <p> </p>
+    <h4>insert(cont[, type])</h4>
+    <p>描述：将 cont 按 type 类型插入到集合中的每个元素。</p>
+    <dl>
+        <dt>cont：</dt>
+        <dd>Type：selector or Element or QC or Node or NodeList or elementArray or htmlString</dd>
+        <dd>
+            选择器、DOM 元素、节点、节点集、QC、html 字符串。
+        </dd>
+        <dt>type：</dt>
+        <dd>Type：String</dd>
+        <dd>append (默认)、prepend、before、after。</dd>
+        <dt>return：</dt>
+        <dd>QC 对象</dd>
+    </dl>
+
+    <p> </p>
+    <h4>append(cont)</h4>
+    <p>描述：将 cont 插入到集合中的每个元素的末尾。</p>
+    <dl>
+        <dt>cont：</dt>
+        <dd>与 insert 的 cont 相同。</dd>
+    </dl>
+
+    <p> </p>
+    <h4>prepend(cont)</h4>
+    <p>描述：将 cont 插入到集合中的每个元素的开头。</p>
+    <dl>
+        <dt>cont：</dt>
+        <dd>与 insert 的 cont 相同。</dd>
+    </dl>
+
+    <p> </p>
+    <h4>before(cont)</h4>
+    <p>描述：将 cont 插入到集合中的每个元素的前面。</p>
+    <dl>
+        <dt>cont：</dt>
+        <dd>与 insert 的 cont 相同。</dd>
+    </dl>
+
+    <p> </p>
+    <h4>after(cont)</h4>
+    <p>描述：将 cont 插入到集合中的每个元素的后面。</p>
+    <dl>
+        <dt>cont：</dt>
+        <dd>与 insert 的 cont 相同。</dd>
+    </dl>
+
+    <p> </p>
+    <h4>remove()</h4>
+    <p>描述：从DOM中删除匹配的元素集。</p>
+
+    <p> </p>
+    <h4>clone()</h4>
+    <p>描述：创建匹配元素集的副本。</p>
+
+    <p> </p>
+    <h4>empty()</h4>
+    <p>描述：从列表中删除所有。</p>
+
+    <p> </p>
+    <h4>attr(name[, value])</h4>
+    <p>描述：设置或返回属性。</p>
+    <dl>
+        <dt>name：</dt>
+        <dd>属性名称。</dd>
+        <dt>value：</dt>
+        <dd>属性值。</dd>
+    </dl>
+
+    <p> </p>
+    <h4>removeAttr(name)</h4>
+    <p>描述：删除指定名称的属性。</p>
+    <dl>
+        <dt>name：</dt>
+        <dd>属性名称。</dd>
+    </dl>
+
+    <p> </p>
+    <h4>html(str)</h4>
+    <p>描述：设置或返回第一个元素的 innerHTML。</p>
+    <dl>
+        <dt>str:</dt>
+        <dd>Html 字符串。</dd>
+    </dl>
+
+    <p> </p>
+    <h4>text(str)</h4>
+    <p>描述：设置或返回第一个元素的 Text。</p>
+    <dl>
+        <dt>str:</dt>
+        <dd>字符串。</dd>
+    </dl>
+
+    <p> </p>
+    <h4>css(name[, value])</h4>
+    <p>描述：设置或返回元素的 style。</p>
+    <dl>
+        <dt>name:</dt>
+        <dd>CSS 名称。</dd>
+        <dt>value:</dt>
+        <dd>CSS 值。</dd>
+    </dl>
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html
+        &lt;ul class="ul"&gt;
+            &lt;li class="a1"&gt;a1&lt;/li&gt;
+            &lt;li&gt;a2&lt;/li&gt;
+            &lt;li class="a3"&gt;a3&lt;/li&gt;
+            &lt;li&gt;a4&lt;/li&gt;
+        &lt;/ul&gt;
+
+        // javascript
+        function print(obj) {
+            var ary = [];
+            obj.each(function () {
+                ary.push(this.outerHTML);
+            });
+            console.log(ary.join("\n"));
+        }
+
+        var ul = qc(".ul");
+        ul.prepend("&lt;li&gt;a0&lt;/li&gt;");
+        ul.append("&lt;li&gt;a5&lt;/li&gt;");
+        ul.find(".a3").before("&lt;li&gt;a3-before&lt;/li&gt;");
+        ul.find(".a3").after("&lt;li&gt;a3-after&lt;/li&gt;");
+
+        print(ul);                      // &lt;ul class="ul"&gt;
+                                        //      &lt;li&gt;a0&lt;/li&gt;
+                                        //      &lt;li class="a1"&gt;a1&lt;/li&gt;
+                                        //      &lt;li&gt;a2&lt;/li&gt;
+                                        //      &lt;li&gt;a3-before&lt;/li&gt;
+                                        //      &lt;li class="a3"&gt;a3&lt;/li&gt;
+                                        //      &lt;li&gt;a3-after&lt;/li&gt;
+                                        //      &lt;li&gt;a4&lt;/li&gt;
+                                        //      &lt;li&gt;a5&lt;/li&gt;
+                                        // &lt;/ul&gt;
+
+        // javascript
+        ul.find(".a3").remove();
+        var clone = ul.find(".a1").clone();
+        ul.append(clone);
+
+        pring(ul);                      // &lt;ul class="ul"&gt;&lt;li&gt;a0&lt;/li&gt;
+                                        //      &lt;li class="a1"&gt;a1&lt;/li&gt;
+                                        //      &lt;li&gt;a2&lt;/li&gt;
+                                        //      &lt;li&gt;a3-before&lt;/li&gt;
+                                        //      &lt;li&gt;a3-after&lt;/li&gt;
+                                        //      &lt;li&gt;a4&lt;/li&gt;
+                                        //      &lt;li&gt;a5&lt;/li&gt;
+                                        //      &lt;li class="a1"&gt;a1&lt;/li&gt;
+                                        //  &lt;/ul&gt;
+
+        // javascript
+        ul.empty();
+
+        pring(ul);                      // &lt;ul class="ul"&gt;&lt;/ul&gt;
+
+        // javascript
+        var a = qc("a");
+        a.attr("href", "http://www.baidu.com");
+        a.removeAttr("target");
+
+        print(a);                       // &lt;a href="http://www.baidu.com"&gt;
+                                        //      &lt;i class="fa fa-times"&gt;&lt;/i&gt; link&lt;/a&gt;
+
+        // javascript
+        console.log(a.html());          // &lt;i class="fa fa-times"&gt;&lt;/i&gt; link
+        console.log(a.text());          // link
+
+        // javascript
+        a.css("padding", "13px");
+        a.css({"border": "10px solid #c53434", "display": "inline-block"});
+
+        print(a);                       // &lt;a href="http://www.baidu.com" style="padding: 13px;
+                                        //    border: 10px solid rgb(197, 52, 52);
+                                        //    display: inline-block;"&gt;
+                                        //      &lt;i class="fa fa-times"&gt;&lt;/i&gt; link
+                                        //  &lt;/a&gt;
+
+        // javascript
+        console.log(a.css("border"));    // 10px solid #c53434
+        console.log(a.width());          // 69
+        console.log(a.outerWidth());     // 89
+        console.log(a.height());         // 47
+        console.log(a.outerHeight());    // 67
+
+        a.hide()                         // a is hidden
+        a.show()                         // a is show
+
+        var _left = a.offset().left;
+        var _top = a.offset().top;
+        console.log("left:", _left, ",", "top: ", _top);    // left: 264 , top:  1954
+
+        // html
+        &lt;input type="text" class="txt1"&gt;
+
+        // javascript
+        var inpt = qc("input");
+        inpt.addClass("txt2");
+        inpt.addClass("haha1 haha2");
+
+        print(inpt);        // &lt;input type="text" class="txt1 txt2 haha1 haha2"&gt;
+
+        // javascript
+        inpt.removeClass("haha1 txt1");     // &lt;input type="text" class="txt2 haha2"&gt;
+
+        // javascript
+        inpt.val("is text");
+        console.log(inpt.val());             // is text
+    </pre>
+
+</div>
+
+<script>
+</script>
+
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p> </p>
+    <h2>QC Object</h2>
+    <p>
+        Description: Accept a string containing CSS selectors, and then use it to match a set of elements.
+    </p>
+    <p> </p>
+    <h4>qc(selector[, context])</h4>
+    <dl>
+        <dt>selector：</dt>
+        <dd>Type：Selector</dd>
+        <dd>
+            Must be a valid
+            <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors"
+               target="_blank">CSS selector</a>  string.
+        </dd>
+        <dt>context：</dt>
+        <dd>Type：Element or QC</dd>
+        <dd>DOM element, document, QC used as the context, the current page document is the default.</dd>
+        <dt>return：</dt>
+        <dd>QC Object</dd>
+    </dl>
+    <p> </p>
+    <h4>qc(object)</h4>
+    <dl>
+        <dt>object：</dt>
+        <dd>Type：Element or Node or NodeList or ElementArray</dd>
+        <dd>Element element, Node node, NodeList set, Element array.</dd>
+        <dt>return：</dt>
+        <dd>QC Object</dd>
+    </dl>
+    <p> </p>
+    <h4>qc(html[, document])</h4>
+    <dl>
+        <dt>html：</dt>
+        <dd>Type：htmlString</dd>
+        <dd>Dynamically created HTML string.</dd>
+        <dt>document：</dt>
+        <dd>Type：Document</dd>
+        <dd>The document in which the new element will be created.</dd>
+        <dt>return：</dt>
+        <dd>QC Object</dd>
+    </dl>
+
+    <h4>Attributes</h4>
+    <dl>
+        <dt>length</dt>
+        <dd>
+            Number of elements in QC.
+        </dd>
+        <dt>Element access</dt>
+        <dd>
+            For similar numerical operations, use [index],
+            the index where the index element is located. Return the Element object.
+        </dd>
+    </dl>
+
+    <h2>Method</h2>
+    <p> </p>
+    <h4>each(callback)</h4>
+    <p>Description: Traverse the elements in QC.</p>
+    <dl>
+        <dt>callback: </dt>
+        <dd>Type: Function(index, thisObject)</dd>
+        <dd>The function that will be executed on each value, the this object is the Element element corresponding to the QC.</dd>
+        <dd>
+            <p>index: Index in QC.</p>
+            <p>thisObject: QC。</p>
+            <strong>Tips</strong>
+            <p>return true: Return and continue the loop. Similar to continue.</p>
+            <p>return false: Go back and stop the loop. Similar to break.</p>
+        </dd>
+    </dl>
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+
+        // javascript
+        // create QC Object
+        var obj = qc("&lt;div&gt;abcd&lt;/div&gt;");
+        var obj1 = qc(obj);
+
+        // Returns the number of elements in obj
+        console.log(obj.length);        // 1
+
+        // Get the Element object in obj
+        var el = obj1[0];
+        console.log(el);                // &lt;div&gt;abcd&lt;/div&gt;
+
+        // html
+        &lt;ul&gt;
+            &lt;li&gt;a1&lt;/li&gt;
+            &lt;li&gt;a2&lt;/li&gt;
+            &lt;li&gt;a3&lt;/li&gt;
+        &lt;/ul&gt;
+
+        // javascript
+        qc("li").each(function(idx) {
+            console.log("text: ", this.textContent, ",", "index: ", idx);
+        });
+        // text:  a1 , index:  0
+        // text:  a2 , index:  1
+        // text:  a3 , index:  2
+
+    </pre>
+
+    <h2>Static method</h2>
+    <p> </p>
+    <dl>
+        <dt>qc._indexOf(obj, search[, index])</dt>
+        <dd>Description: search is at the position of obj, the position where index starts to search.</dd>
+    </dl>
+    <dl>
+        <dt>qc._extend(obj[, ...objN])</dt>
+        <dd>Combine the contents of two or more objects into the first object.</dd>
+    </dl>
+    <dl>
+        <dt>qc._each(obj, callback)</dt>
+        <dd>Traverse the obj object.</dd>
+        <dd>callback: </dd>
+        <dd>
+            <p>Type: Function(value, index, thisObject)</p>
+            <p>value: The current object.</p>
+            <p>index: 当前位置。</p>
+            <p>thisObject: current position.</p>
+        </dd>
+    </dl>
+    <dl>
+        <dt>qc._equals(obj1[, obj2])</dt>
+        <dd>Compare two objects and return boolean.</dd>
+    </dl>
+    <dl>
+        <dt>qc._convert(cont)</dt>
+        <dd>Convert the string cont to Text Node and return the QC object.</dd>
+    </dl>
+    <dl>
+        <dt>qc._matches(el, str)</dt>
+        <dd>Verify that the specified str matches el.</dd>
+        <dd>el: Element.</dd>
+        <dd>
+            str:
+            String to be verified, legal
+            <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors"
+               target="_blank">CSS selector</a>.
+        </dd>
+    </dl>
+    <dl>
+        <dt>qc._ajax(url[, settings])</dt>
+        <dd>
+            Perform asynchronous HTTP (Ajax) requests.
+        </dd>
+        <dd>
+            url: A string containing the URL to which the request was sent.
+        </dd>
+        <dd>
+            settings:
+            <div>
+                type:
+                <p>Sending type, currently only supports get and post.</p>
+                str:
+                <p>
+                    String to be verified, legal
+                    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors"
+                       target="_blank">CSS selector</a>。</p>
+                data:
+                <p>The submitted parameters.</p>
+                <p>例如: {"name": "Tom", "age": 32, "gender": "man"}。</p>
+                <p>// Name: Tom, age: 32 years old, gender: male</p>
+                <p>The type of data value: String, Number, Array, &lt;input type='file'&gt;.</p>
+
+                progress:
+                <p>Only upload files, upload progress event (<strong>IE9</strong> not supported).</p>
+                <div>
+                    callback:
+                    <p>
+                        event.loaded  当前传输的数据量。<br>
+                        event.total  要传输的数据总量。
+                    </p>
+                </div>
+
+                error:
+                <p>只有上传文件才有，上传错误事件 (<strong>IE9</strong> 不支持)。</p>
+
+                success:
+                <p>提交成功事件。</p>
+                <div>
+                    callback:
+                    <p>服务器返回的内容。</p>
+                </div>
+            </div>
+        </dd>
+    </dl>
+    <dl>
+        <dt>qc._post(url, data[, callback])</dt>
+        <p>Send data in post mode. </p>
+        <dd>url: A string containing the URL to which the request was sent. </dd>
+        <dd>data: The submitted parameter object. </dd>
+        <dd>callback: callback method. </dd>
+    </dl>
+    <dl>
+        <dt>qc._get(url, data[, callback])</dt>
+        <p>Use get to send data. </p>
+        <dd>url: A string containing the URL to which the request was sent. </dd>
+        <dd>data: The submitted parameter object. </dd>
+        <dd>callback: callback method. </dd>
+    </dl>
+    <dl>
+        <dt>qc.getScript(url, [doc, callback])</dt>
+        <p>Load JavaScript files dynamically. </p>
+        <dd>url: A string containing the URL to which the request was sent. </dd>
+        <dd>doc: The document object loaded into. </dd>
+        <dd>callback: callback method. </dd>
+    </dl>
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        var obj1 = {"0": "a", "1": "b"},
+        obj2 = {"0": "a1", "2": "c"};
+        qc._extend(obj1, obj2);
+        console.log("obj1: ", obj1);
+        console.log("obj2: ", obj2);
+        // obj1:  {0: "a1", 1: "b", 2: "c"}
+        // obj2:  {0: "a1", 2: "c"}
+
+        var obj_1 = [1,2,3,4];
+        var obj_2 = [1,2,3,4];
+        var re = qc._equals(obj_1, obj_2);
+        console.log(re);
+        // true;
+
+        var obj3 = qc._convert("abcd");
+        console.log("obj3: ", obj3);
+        // obj3:  QC.fn.init {0: text, length: 1}
+
+        // html
+        &lt;ul&gt;
+            &lt;li&gt;a1&lt;/li&gt;
+            &lt;li&gt;a2&lt;/li&gt;
+            &lt;li&gt;a3&lt;/li&gt;
+        &lt;/ul&gt;
+
+        // javascript
+        var re1 = qc._matches(qc("ul")[0], "ul");
+        console.log(re1);       // true;
+
+        var re2 = qc._matches(qc("ul")[0], "li");
+        console.log(re2);       // false;
+    </pre>
+
+</div>
+
+<script>
+</script>
+
+</body>
+</html>

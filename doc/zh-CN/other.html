@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p> </p>
+    <h2>扩展</h2>
+    <p>
+        描述：扩展了Array、String 的以下属性方法。
+    </p>
+    <p> </p>
+
+    <dl>
+        <dt>Array.prototype.contains(arg)</dt>
+        <dd>
+            数组元素中查找 arg，如果存在，返回 true，否直返回 false。
+        </dd>
+    </dl>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // javascript
+        var ary = ["a", "b", "c", "d"];
+
+        console.log(ary.contains("b"));     // true
+
+        console.log(ary.contains("z"));     // false
+
+    </pre>
+
+    <dl>
+        <dt>Array.prototype.each(callback)</dt>
+        <dd>
+            历遍数组元素中。
+        </dd>
+        <dt>callback</dt>
+        <dd>
+            回调函数。
+            <p>arr: 当前的元素。</p>
+            <p>indx: 当前的位置。</p>
+            <p>arrs: 数组对象。</p>
+        </dd>
+    </dl>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // javascript
+        var ary = ["a", "b", "c", "d"];
+
+        ary.each(function(arr, index, arrs) {
+            console.log("value: ", arr, ",", "index: ", index, ",", "array: ", arrs);
+        });
+
+        // value:  a , index:  0 , array:  ["a", "b", "c", "d"]
+        // value:  b , index:  1 , array:  ["a", "b", "c", "d"]
+        // value:  c , index:  2 , array:  ["a", "b", "c", "d"]
+        // value:  d , index:  3 , array:  ["a", "b", "c", "d"]
+
+    </pre>
+
+    <dl>
+        <dt>Array.prototype.equals(arg)</dt>
+        <dd>
+            数组比较。相同返回 true，否则返回 false。
+        </dd>
+    </dl>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // javascript
+        var ary1 = ["a", "b", "c", "d"];
+        var ary2 = "a,b,c,d".split(",");
+
+        var re = ary1.equals(ary2);
+        console.log(re);                // true;
+
+    </pre>
+
+</div>
+
+<script>
+</script>
+
+</body>
+</html>

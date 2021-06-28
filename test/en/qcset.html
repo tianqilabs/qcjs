@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="left">
+    <select class="lang">
+        <option value="en" class="option">English</option>
+        <option value="zh-CN">简体中文</option>
+    </select>
+    <h4 class="title">QCSet</h4>
+    <ul></ul>
+</div>
+
+<div class="right">
+    <a name=""></a>
+    <p></p>
+    <h2 class="title">QCSet</h2>
+    <p></p>
+
+    <h3>Description</h3>
+    <div class="description">
+        QCSet is a Set, and the value in the set is unique.
+    </div>
+
+    <h3 class="">Examples</h3>
+    <pre class="code">
+        <code>
+        var qcs1 = QCSet();
+        console.log(qcs1);       // QCSet.init {length: 0}
+
+        // String construction;
+        var qcs2 = QCSet("a,b,c");
+        console.log(qcs2);       // QCSet.init {0: "a", 1: "b", 2: "c", length: 3}
+
+        // Array creation;
+        var qcs3 = QCSet([1, 2, 3]);
+        console.log(qcs3);       // QCSet.init {0: 1, 1: 2, 2: 3, length: 3}
+
+        // Deduplication effect;
+        var qcs4 = QCSet('a,b,a,c');
+        console.log(qcs4);       // QCSet.init {0: "a", 1: "b", 2: "c", length: 3}
+
+        // Array deduplication
+        var ary = [1,2,3,4,1,4];
+        var qcs5 = QCSet(ary);
+        console.log(qcs5);      // QCSet.init {0: 1, 1: 2, 2: 3, 3: 4, length: 4}
+        </code>
+    </pre>
+    <p></p>
+
+    <h3 class="title">QCSet.prototype.length</h3>
+    <div class="description">
+        The number of elements in the QCSet.
+    </div>
+    <dl>
+        <dt>Element access</dt>
+        <dd>
+            For similar numerical operations, use [index], the index where the index element is located.
+        </dd>
+        <dt>Return:</dt>
+        <dd>Returns the element.</dd>
+    </dl>
+    <p></p>
+
+    <h3 class="title">QCSet.prototype.indexOf(arg[, index])</h3>
+    <dl>
+        <dt>Parameter：</dt>
+        <dd>
+            arg:
+            <p>The element to be positioned in the QCSet.</p>
+        </dd>
+        <dd>
+            index [Optional]:
+            <p>
+                The index to start the search. If the index is greater than or equal to the length of the QCSet, -1 is
+                returned. If the provided index value is negative, it will be treated as an offset from the end of the
+                QCSet. Note: If the provided index is negative, Then search QCSet from front to back. If the provided
+                index is 0, the entire QCSet will be searched. Default value: 0 (search the entire QCSet).
+            </p>
+        </dd>
+        <dt>Return:</dt>
+        <dd>The first index of the element in the QCSet; -1 (if not found).</dd>
+    </dl>
+    <p></p>
+
+    <h3 class="title">QCSet.prototype.contains(arg))</h3>
+    <div class="description">
+        Find arg in the array element, if it exists, return true, otherwise, return false.
+    </div>
+    <p></p>
+
+    <h3 class="title">QCSet.prototype.add([arg1[, argN])</h3>
+    <div class="description">
+        Add one or more elements to the end of the QCSet data and return the new length value of the array.
+    </div>
+    <p></p>
+
+    <h3 class="title">QCSet.prototype.remove([arg1[, argN])</h3>
+    <div class="description">
+        Remove one or more elements from the QCSet.
+    </div>
+    <p></p>
+
+    <h3 class="title">QCSet.prototype.merge(arg)</h3>
+    <div class="description">
+        Combine arg into the current QCSet and return the current QCSet.
+    </div>
+    <p></p>
+
+    <h3 class="title">QCSet.prototype.join(split)</h3>
+    <div class="description">
+        Concatenate all elements of QCSet into a string.
+    </div>
+    <p></p>
+
+    <h3 class="title">QCSet.prototype.equals(obj)</h3>
+    <div class="description">
+        Compare whether two QCSet objects are the same, and return boolean.
+    </div>
+    <p></p>
+
+    <h3 class="title">QCSet.prototype.each(callback)</h3>
+    <div class="description">
+        Traverse the QCSet elements.
+    </div>
+    <dl>
+        <dt>
+            callback:
+        </dt>
+        <div>
+            Parameter:
+            <p>value: The current element being processed in the QCSet.</p>
+            <p>index: The index of value in QCSet.</p>
+            <p>thisQCSet: Used as the value of this when the callback function is executed.</p>
+        </div>
+        <div>
+            Prompt:
+            <p>return true skips the following code and continues the loop. Similar to continue.</p>
+            <p>return false to stop the loop and skip the following code. Similar to break.</p>
+        </div>
+    </dl>
+    <p></p>
+
+    <h3 class="">Examples</h3>
+    <pre class="code">
+        <code>
+        var qcs = QCSet("a, b, c, d");
+
+        qcs.add(1, 2, 3, 4);
+        console.log(qcs);             // a,b,c,d,1,2,3,4
+
+        qcs.remove('b');
+        console.log(qcs);             // a,c,d,1,2,3,4
+
+        qcs.each(function (v, i) {
+            console.log("'index': ", i, ",", "'value': ", v);
+        });
+        // 'index':  0 , 'value':  a
+        // 'index':  1 , 'value':  c
+        // 'index':  2 , 'value':  d
+        // 'index':  3 , 'value':  1
+        // 'index':  4 , 'value':  2
+        // 'index':  5 , 'value':  3
+        // 'index':  6 , 'value':  4
+
+        qcs.indexOf('d');       // 2
+        qcs.indexOf(3, -2);     // 5
+        qcs.indexOf(3, -1);     // -1
+
+        qcs.contains(3);             // true
+        qcs.contains(8);             // false
+
+        var qcs1 = QCSet([1,2,3]);
+        var qcs2 = QCSet("a, b, c");
+
+        qcs1.merge(qcs2);
+        console.log(qcs1);            // 1,2,3,a,b,c
+        console.log(qcs2);            // a,b,c
+
+        qcs1.join(";");               // 1;2;3;a;b;c
+
+        var ary = [1, 2, 3];
+        qcs1 = QCSet(ary);
+        qcs2 = QCSet([1, 2, 3]);
+        qcs1.equals(qcs2);          // true
+
+        var qcs3 = QCSet([1, 2, 4]);
+        qcs1.equals(qcs3);          // false
+        </code>
+    </pre>
+    <p></p>
+
+</div>
+
+<script src="page.js"></script>
+
+</body>
+</html>

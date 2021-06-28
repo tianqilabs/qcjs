@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>qcjs help</title>
+    <script src="../link.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p></p>
+    <h2>Custom icon</h2>
+    <p>
+        The font icon of the qcjs widget uses Font Awesome by default.
+    </p>
+    <p>
+        To use other icons, please modify the qc.icon object, qc.util.setIconStyle method settings.
+    </p>
+
+    <p></p>
+    <h3>Description</h3>
+    <p></p>
+
+    <h4><h4>qc.icon[widgetName] = {Name: Value}</h4></h4>
+    <dl>
+        <dt>widgetName:</dt>
+        <dd>Type: String</dd>
+        <dd>
+            Widget name or object name
+        </dd>
+    </dl>
+
+    <p></p>
+    <h4>Use</h4>
+
+    <p></p>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // javascript
+        qc.icon.popfrm = {
+            "ok": "fa-check",
+            "close": "fa-times"
+            ...
+        };
+
+    </pre>
+
+    <p></p>
+    <h3>Methods</h3>
+    <p></p>
+
+    <h4>qc.util.setIconStyle(cont)</h4>
+    <p>
+        Description: Set the style of the icon.
+    </p>
+    <dl>
+        <dt>cont</dt>
+        <dd>Type: htmlString or String</dd>
+        <dd>
+            htmlString: The icon is set in html.
+            String: The icon is set in the css of the Element before the single.
+        </dd>
+    </dl>
+
+    <p></p>
+    <h4>qc.util.icon(obj, name[, contrlName])</h4>
+    <p>
+        Description: Set the icon style of the current QC.
+    </p>
+    <dl>
+        <dt>object</dt>
+        <dd>Type: QC</dd>
+        <dd>
+            The current QC object.
+        </dd>
+        <dt>name</dt>
+        <dd>Type: String</dd>
+        <dd>
+            The attribute name of the object.
+        </dd>
+        <dt>contrlName</dt>
+        <dd>Type: String</dd>
+        <dd>
+            The name of the widget or object. <br/>
+            Default: the widget to which the object belongs.
+        </dd>
+    </dl>
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // javascript
+        qc.util.iconStyle("");
+        qc.icon.popfrm = {
+            "ok": "fa fa-check", // widget: popfrm, name: ok, class name: fa-check
+            "close": "fa fa-times" // widget: popfrm, name: close, class name: fa-times
+        };
+
+        // html
+        // OK button
+        <button class="fa fa-check"> OK </button>
+        // Close button
+        <a class="fa fa-times" href="#"> </a>
+
+
+        // javascript
+        qc.util.iconStyle("<i class="fa"> </i>");
+        qc.icon.popfrm = {
+            "ok": "fa-check",
+            "close": "fa-times",
+            "minus": "fa-minus"
+        };
+
+        // html
+        // OK button
+        <button>
+            <i class="fa fa-check"> </i> Check </button>
+        // Close button
+        <a href="#">
+            <i class="fa fa-times"> </i> </a>
+
+        // html
+        <button id="icon1"> OK </button>
+        <button id="icon2"> minus </button>
+
+        // javascript
+        qc.util.icon(qc("#icon1"), "popfrm", "ok");
+        qc.util.icon(qc("#icon2"), "popfrm", "minus");
+
+        // result html
+        <button id="icon1"><i class="fa fa-check"> </i> OK </button>
+        <button id="minus"><i class="fa fa-minus"> </i> minus </button>
+    </pre>
+</div>
+
+<script>
+</script>
+</body>
+</html>

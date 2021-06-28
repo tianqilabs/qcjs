@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p></p>
+    <h2>自定义图标</h2>
+    <p>
+        qcjs 小部件的字体图标默认使用 Font Awesome。
+    </p>
+    <p>
+        要使用其它图标，请修改 qc.icon 对象，qc.util.setIconStyle 方法设置。
+    </p>
+
+    <p> </p>
+    <h3>说明</h3>
+
+    <p> </p>
+    <h4>qc.icon[widgetName] = {名称: 值}</h4>
+    <dl>
+        <dt>widgetName:</dt>
+        <dd>Type：String</dd>
+        <dd>
+            小部件名称或对象名
+        </dd>
+    </dl>
+
+    <p> </p>
+    <h4>使用</h4>
+
+    <p> </p>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // javascript
+        qc.icon.popfrm = {
+            "ok": "fa-check",
+            "close": "fa-times"
+            ...
+        };
+
+    </pre>
+
+    <p> </p>
+    <h3>方法</h3>
+
+    <p> </p>
+    <h4>qc.util.setIconStyle(cont)</h4>
+    <p>
+        描述：设置图标使用样式。
+    </p>
+    <dl>
+        <dt>cont</dt>
+        <dd>Type: htmlString or String</dd>
+        <dd>
+            htmlString: 图标设置在 html 内。
+            String: 图标设置在单前 Element 的 css。
+        </dd>
+    </dl>
+
+    <p> </p>
+    <h4>qc.util.icon(obj, name[, contrlName])</h4>
+    <p>
+        描述：设置当前 QC 的图标样式。
+    </p>
+    <dl>
+        <dt>object</dt>
+        <dd>Type: QC</dd>
+        <dd>
+            当前 QC 对象。
+        </dd>
+        <dt>name</dt>
+        <dd>Type: String</dd>
+        <dd>
+            对象的属性名称。
+        </dd>
+        <dt>contrlName</dt>
+        <dd>Type: String</dd>
+        <dd>
+            小部件或对象名称。<br>
+            默认：对象所属的小部件。
+        </dd>
+    </dl>
+
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // javascript
+        qc.util.iconStyle("");
+        qc.icon.popfrm = {
+            "ok": "fa fa-check",     // 小部件: popfrm，名称: ok，class 名称: fa-check
+            "close": "fa fa-times"   // 小部件: popfrm，名称: close，class 名称: fa-times
+        };
+
+        // html
+        // OK 按钮
+        &lt;button class="fa fa-check"&gt; OK &lt;/button&gt;
+        // Close 按钮
+        &lt;a href="#" class="fa fa-times"&gt; &lt;/a&gt;
+
+
+        // javascript
+        qc.util.iconStyle("<i class="fa"> </i>");
+        qc.icon.popfrm = {
+            "ok": "fa-check",
+            "close": "fa-times",
+            "minus": "fa-minus"
+        };
+
+        // html
+        // OK 按钮
+        &lt;button&gt;
+            &lt;i class="fa fa-check"&gt; &lt;/i&gt; Check
+        &lt;/button&gt;
+        // Close 按钮
+        &lt;a href="#"&gt;
+            &lt;i class="fa fa-times"&gt; &lt;/i&gt;
+        &lt;/a&gt;
+
+        // html
+        &lt;button id="icon1"&gt; OK &lt;/button&gt;
+        &lt;button id="icon2"&gt; minus &lt;/button&gt;
+
+        // javascript
+        qc.util.icon(qc("#icon1"), "popfrm", "ok");
+        qc.util.icon(qc("#icon2"), "popfrm", "minus");
+
+        // result html
+        <button id="icon1"><i class="fa fa-check"> </i> OK </button>
+        <button id="minus"><i class="fa fa-minus"> </i> minus </button>
+    </pre>
+
+
+
+</div>
+
+<script>
+</script>
+
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p></p>
+    <h2>popfrm</h2>
+    <p>对话框</p>
+
+    <p></p>
+    <h4>属性</h4>
+    <dl>
+        <dt>qc-for</dt>
+        <dd>
+            值：popfrm。
+        </dd>
+
+        <dt>qc-target</dt>
+        <dd>
+            一个 CSS selector，指定 popfrm 对象。
+        </dd>
+
+        <dt>qc-buttons</dt>
+        <dd>
+            popfrm 对象按钮，多个用空格分隔。<br>
+            规则：[obj1, obj2...] | ["ok", "cancel"] | [obj1, "ok"]。<br>
+            obj1 - objN: {name: 名称, title: 标题, icon: 图标类名, text: 显示的文本内容, fn: 点击触发的事件}。<br>
+            ok|cance: string，cancel 会触发 qc.popfrm.hide 方法，ok 目前只定义了图标，没有执行方法，需要指定 fn。
+        </dd>
+
+        <dt>qc-title</dt>
+        <dd>
+            popfrm 的标题。
+        </dd>
+
+        <dt>qc-content</dt>
+        <dd>
+            popfrm 的内容。
+        </dd>
+
+    </dl>
+
+    <p></p>
+    <h4>静态调用</h4>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+        &lt;p&gt;
+            &lt;button id="pop1" qc-for="popfrm" qc-target="#pop-frm1"&gt;
+                Show popfrm - not toolbar&lt;/button&gt;
+        &lt;/p&gt;
+        &lt;div class="qc-popfrm" qc-control="popfrm" id="pop-frm1"&gt;
+            &lt;div class="qc-container" qc-container&gt;
+                &lt;div class="qc-toolbar" qc-toolbar&gt;
+                    &lt;span  class="qc-title" qc-title&gt;Tips&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div class="qc-content" qc-content&gt;
+                    This is a popfrm.
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;p&gt;
+            &lt;button id="pop2" qc-for="popfrm" qc-target="#pop-frm2"&gt;
+                Show popfrm - toolbar&lt;/button&gt;
+        &lt;/p&gt;
+        &lt;div class="qc-popfrm" qc-control="popfrm" id="pop-frm2"&gt;
+            &lt;div class="qc-container" qc-container&gt;
+                &lt;div class="qc-toolbar" qc-toolbar&gt;
+                    &lt;span  class="qc-title" qc-title&gt;Tips&lt;/span&gt;
+                    &lt;div class='qc-buttons' qc-buttons&gt;
+                        &lt;a  href='javascript:void(0);' qc-fn="pop2_OK" title="OK"&gt;
+                            &lt;i class="fa fa-check"&gt; &lt;/i&gt;
+                        &lt;/a&gt;
+                        &lt;a  href='javascript:void(0);' qc-title="Close" qc-type="hide"&gt;
+                            &lt;i class="fa fa-times"&gt; &lt;/i&gt;
+                        &lt;/a&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div class="qc-content" qc-content&gt;
+                    This is a popfrm.
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;p style="padding-left: 32px;"&gt;
+            &lt;button id="pop3" qc-for="popfrm" qc-target="#pop-frm3"
+                qc-buttons="cancel" qc-content="This is a popfrm."&gt;
+                Show popfrm - attribute&lt;/button&gt;
+        &lt;/p&gt;
+        &lt;div class="qc-popfrm" qc-control="popfrm" id="pop-frm3"
+            qc-buttons="cancel" qc-content="This is a popfrm."&gt;
+        &lt;/div&gt;
+
+        // javascript
+        function pop2_OK(obj) {
+            alert("button title: " + obj.curr.attr("title"));
+            qc.popfrm.hide(obj);
+        }
+
+    </pre>
+
+    <p></p>
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <p style="padding-left: 32px;">
+            <button id="pop1" qc-for="popfrm" qc-target="#pop-frm1">
+                Show popfrm - not toolbar</button>
+        </p>
+        <div class="qc-popfrm" qc-control="popfrm" id="pop-frm1">
+            <div class="qc-container" qc-container>
+                <div class="qc-toolbar" qc-toolbar>
+                    <span  class="qc-title" qc-title>Tips</span>
+                </div>
+                <div class="qc-content" qc-content>
+                    This is a popfrm.
+                </div>
+            </div>
+        </div>
+
+        <p style="padding-left: 32px;">
+            <button id="pop2" qc-for="popfrm" qc-target="#pop-frm2">
+                Show popfrm toolbar</button>
+        </p>
+        <div class="qc-popfrm" qc-control="popfrm" id="pop-frm2">
+            <div class="qc-container" qc-container>
+                <div class="qc-toolbar" qc-toolbar>
+                    <span  class="qc-title" qc-title>Tips</span>
+                    <div class='qc-buttons' qc-buttons>
+                        <a  href='javascript:void(0);' qc-fn="pop2_OK" title="OK">
+                            <i class="fa fa-check"> </i>
+                        </a>
+                        <a  href='javascript:void(0);' qc-title="Close" qc-type="hide">
+                            <i class="fa fa-times"> </i>
+                        </a>
+                    </div>
+                </div>
+                <div class="qc-content" qc-content>
+                    This is a popfrm.
+                </div>
+            </div>
+        </div>
+
+
+        <p style="padding-left: 32px;">
+            <button id="pop3" qc-for="popfrm" qc-target="#pop-frm3">
+                Show popfrm - attribute</button>
+        </p>
+        <div class="qc-popfrm" qc-control="popfrm" id="pop-frm3"
+             qc-buttons="cancel" qc-content="This is a popfrm.">
+        </div>
+
+    </div>
+
+    <p></p>
+    <h4>动态调用 - not javascript</h4>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+        &lt;p&gt;
+            &lt;button id="pop4" qc-for="popfrm"&gt;
+                dyShow popfrm1
+                &lt;!-- 动态调用 popfrm 没有 toobar --&gt;
+            &lt;/button&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+            &lt;button id="pop5" qc-for="popfrm" qc-buttons="cancel" qc-title="Tips"&gt;
+                dyShow popfrm2
+                &lt;!-- 动态调用 popfrm 有 toobar --&gt;
+            &lt;/button&gt;
+        &lt;/p&gt;
+
+    </pre>
+
+    <p></p>
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <p style="padding-left: 32px;">
+            <button id="pop4" qc-for="popfrm">
+                dyShow popfrm1
+                <!-- 动态调用 popfrm 没有 toobar -->
+            </button>
+
+            <button id="pop5" qc-for="popfrm" qc-buttons="cancel" qc-title="Tips">
+                dyShow popfrm2
+                <!-- 动态调用 popfrm 有 toolbar -->
+            </button>
+        </p>
+
+    </div>
+
+    <p></p>
+    <h4>动态调用 - javascript</h4>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+        &lt;p&gt;
+            &lt;button id="pop6"&gt;dyShow popfrm&lt;/button&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+            &lt;button id="pop7"&gt;dyShow popfrm and OK&lt;/button&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+            &lt;button id="pop8"&gt;dyShow popfrm, not toolbar&lt;/button&gt;
+        &lt;/p&gt;
+
+        // javascript
+        function pop2_OK(obj) {
+            alert("button title: " + obj.curr.attr("title"));
+            qc.popfrm.hide(obj);
+        }
+
+        qc(function () {
+            qc("#pop6").click(function () {
+                qc.popfrm.dyShow("Tips", [], "This is a popfrm.", qc(this));
+            });
+
+            qc("#pop7").click(function () {
+            qc.popfrm.dyShow("Tips", [
+                {"name": "ok", "fn": "pop2_OK", "title": "pop4-OK"},
+                {"name": "minus", "fn": "pop2_OK", "title": "pop4-minus", "icon": "fa-minus", "text": "minus"}
+                ],
+            });
+
+            qc("#pop8").click(function () {
+                qc.popfrm.dyShow("Tips", "",
+                    "This is a popfrm.", qc(this));
+            });
+
+        });
+
+    </pre>
+
+    <p></p>
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <p style="padding-left: 32px;">
+            <button id="pop6">dyShow popfrm</button>
+        </p>
+
+        <p style="padding-left: 32px;">
+            <button id="pop7">dyShow popfrm and OK</button>
+        </p>
+
+        <p style="padding-left: 32px;">
+            <button id="pop8">dyShow popfrm, not toolbar</button>
+        </p>
+
+    </div>
+
+    <p></p>
+    <h4>动态调用 - 使用iframe</h4>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+        &lt;p&gt;
+            &lt;button id="pop9"&gt;dyShow popfrm - use iframe&lt;/button&gt;
+        &lt;/p&gt;
+
+        // javascript
+        qc(function () {
+            qc("#pop9").click(function () {
+                qc.popfrm.dyShow("Tips", [], {"src": "../popfrm-test.html"}, qc(this));
+            });
+        });
+
+    </pre>
+
+    <p></p>
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <p style="padding-left: 32px;">
+            <button id="pop9">dyShow popfrm - use iframe</button>
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+    qc(function () {
+        qc.util.lang(qc("#pop9"), "ok");
+    });
+    // javascript
+    function pop2_OK(obj) {
+        alert("button title: " + obj.curr.attr("title"));
+        qc.popfrm.hide(obj);
+    }
+
+    qc(function () {
+        qc("#pop6").click(function () {
+            qc.popfrm.dyShow("Tips", [], "This is a popfrm.", qc(this));
+        });
+
+        qc("#pop7").click(function () {
+            qc.popfrm.dyShow("Tips", [
+                    {"name": "ok", "fn": "pop2_OK", "title": "pop4-OK"},
+                    {"name": "minus", "fn": "pop2_OK", "title": "pop4-minus", "icon": "fa-minus", "text": "minus"}
+                ],
+                "This is a popfrm.", qc(this));
+        });
+
+        qc("#pop8").click(function () {
+            qc.popfrm.dyShow("Tips", "",
+                "This is a popfrm.", qc(this));
+        });
+
+        qc("#pop9").click(function () {
+            qc.popfrm.dyShow("Tips", [], {"src": "../popfrm-test.html"}, qc(this));
+        });
+
+    });
+</script>
+
+</body>
+</html>

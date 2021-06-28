@@ -1,0 +1,251 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+blockquote {
+    background: #eee;
+    border-bottom: 1px solid #ddd;
+    border-left: 5px solid #aaa;
+    font-style: initial;
+    padding: 16px;
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.left {
+    position: relative;
+    float: left;
+    width: 240px;
+    height: 100%;
+    overflow: auto;
+    background: #fff;
+    color: #000;
+    box-shadow: 1px 0px 3px 0 #ccc;
+}
+
+.left .title {
+    padding: 8px 0 2px 16px;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.left ul {
+    padding: 0;
+    list-style-type: none;
+}
+
+.left li {
+    padding: 0;
+    position: relative;
+}
+
+.left a, .left li div {
+    padding: 8px 0 8px 32px;
+    margin: 0 4px;
+    text-decoration: none;
+    color: #000;
+    font-size: 0.9em;
+    display: block;
+}
+
+.left li div {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.left li li a {
+    padding: 8px 0 8px 48px;
+}
+
+.left a:hover {
+    text-decoration: underline;
+    box-shadow: 1px 1px 3px #aaa;
+}
+
+.left a.selected:after {
+    content: ' ';
+    position: absolute;
+    /* border-radius: 50%; */
+    width: 5px;
+    height: 16px;
+    background: #FC6F20;
+    margin: 3px 0 0 11px;
+    top: 6px;
+    right: 6px;
+}
+
+div.lang {
+    border: 0;
+    border-bottom: 1px solid #ccc;
+    width: 100%;
+    margin: 0 0 12px 0;
+    font-size: 1em;
+    text-align: center;
+    text-align-last: center;
+}
+
+.right {
+    position: absolute;
+    margin-left: 240px;
+    padding: 0 24px 24px;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow: auto;
+}
+
+.right p {
+    padding: 8px 0;
+    color: #444;
+}
+
+.right .code, .right .title, .right .description, .right .result  {
+    margin: 8px 0 12px 0;
+}
+
+.right .code, .right .result {
+    background: #f7f7f7;
+    /*border: 1px solid #d7d7d7;*/
+    /*border-left: 5px solid #00458b;*/
+    font-style: initial;
+    color: #666;
+    box-shadow: 1px 1px 3px #aaa;
+    position: relative;
+    font-size: 1.4em;
+}
+
+.right .result {
+    font-size: 1rem;
+}
+
+.right pre {
+    line-height: 32px;
+    padding: 16px 16px 16px 56px;
+    overflow: auto;
+    white-space: pre;
+}
+
+.right .code:before {
+    content: ' ';
+    position: absolute;
+    left: 0;
+    top: -1px;
+    width: 8px;
+    bottom: 0;
+    background: #00458b;
+}
+
+.right code {
+    line-height: 2rem;
+    display: block;
+}
+
+.right .result {
+    padding: 16px;
+}
+
+.right .code ul {
+    position: absolute;
+    top: 0;
+    left: 8px;
+    bottom: 0;
+    border-right: 1px solid #ccc;
+    padding: 16px 8px;
+    list-style-type: none;
+    line-height: 32px;
+    font-size: 14px;
+}
+
+.right .description {
+    color: #444;
+    padding: 16px;
+}
+
+.right .title {
+    font-weight: bold;
+    color: #00458b;
+}
+
+.right dl, .right .description {
+    padding: 16px;
+    background: #f7f7f7;
+    border: 1px solid #d3d3d3;
+    /*border-left: 0px solid #00458b;*/
+    /*box-shadow: 1px 1px 3px #aaa;*/
+    margin-top: 8px;
+}
+
+.right dt {
+    font-weight: bold;
+}
+
+.right dd {
+    color: #444;
+    padding-left: 16px;
+}
+
+.right dl, .right dt, .right dd {
+    margin-bottom: 16px;
+}
+
+.right ol {
+    padding-left: 32px;
+    margin: 8px 0;
+}
+
+.right dl li {
+    line-height: 1.75;
+}
+
+.right dl p, .right dl div {
+    padding-left: 22px;
+    margin: 8px 0;
+}
+
+.right dl div {
+    font-weight: bold;
+}
+
+.right dl p {
+    font-weight: normal;
+}
+
+.right table {
+    border-spacing: 0;
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+
+.right td dl {
+    background: #fff;
+    border: 0;
+}
+
+.right td, .right th {
+    padding: 8px;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+#top {
+    position: fixed;
+    right: 32px;
+    bottom: 64px;
+    background: #444;
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 22px;
+    height: 24px;
+    width: 24px;
+    cursor: pointer;
+    display: none;
+}

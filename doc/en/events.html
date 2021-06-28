@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>qcjs help</title>
+    <script src="../link.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p></p>
+    <h2>Event</h2>
+
+    <p></p>
+    <table>
+        <tr>
+            <th>Method</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>on(event[, listener, capture])</td>
+            <td>
+                Listen to the event event.
+                <dl>
+                    <dt>event</dt>
+                    <dd>
+                        String, multiple event types are separated by spaces.
+                    </dd>
+                    <dt>listener</dt>
+                    <dd>
+                        Event When a specified type of event occurs, the object that receives notification (object
+                        that implements the interface).
+                    </dd>
+                    <dt>capture</dt>
+                    <dd>
+                        If set to true, it will execute during the capture process, otherwise it will execute the
+                        processing function during the bubbling process. If not specified, capture defaults to
+                        false.
+                    </dd>
+                </dl>
+            </td>
+        </tr>
+        <tr>
+            <td>off(event[, listener])</td>
+            <td>
+                The function of the event handler removed from the event target.
+                <dl>
+                    <dt>event</dt>
+                    <dd>
+                        String, multiple event types are separated by spaces.
+                    </dd>
+                    <dt>listener</dt>
+                    <dd>
+                        Same as listener in on.
+                    </dd>
+                </dl>
+            </td>
+        </tr>
+        <tr>
+            <td>bind(event[, callback])</td>
+            <td> Bind an event handler to the matched element, event is the same as above.</td>
+        </tr>
+        <tr>
+            <td>unbind(event)</td>
+            <td> The unbound event of the matched element, and the event is the same as above.</td>
+        </tr>
+        <tr>
+            <td>blur(callback)</td>
+            <td> Trigger or bind the function to the blur event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>focus(callback)</td>
+            <td> Trigger or bind the function to the focus event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>focusin(callback)</td>
+            <td> Trigger or bind the function to the focusin event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>focusout(callback)</td>
+            <td> Trigger or bind the function to the focusout event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>resize(callback)</td>
+            <td> Trigger or bind the function to the resize event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>scroll(callback)</td>
+            <td> Trigger or bind the function to the scroll event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>click(callback)</td>
+            <td> Trigger or bind the function to the click event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>dblclick(callback)</td>
+            <td> Trigger or bind the function to the double click event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>mousedown(callback)</td>
+            <td> Trigger or bind the function to the mouse down event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>mouseup(callback)</td>
+            <td> Trigger or bind the function to the mouse up event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>mousemove(callback)</td>
+            <td> Trigger or bind the function to the mouse move event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>mouseover(callback)</td>
+            <td> Trigger or bind the function to the mouse over event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>mouseout(callback)</td>
+            <td> Trigger or bind the function to the mouse out event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>mouseenter(callback)</td>
+            <td> Trigger or bind the function to the mouse enter event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>mouseleave(callback)</td>
+            <td> Trigger or bind the function to the mouse leave event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>change(callback)</td>
+            <td> Trigger or bind the function to the change event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>selec(callback)t</td>
+            <td> Trigger or bind the function to the select event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>submit(callback)</td>
+            <td> Trigger or bind the function to the submit event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>keydown(callback)</td>
+            <td> Trigger or bind the function to the key down event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>keypress(callback)</td>
+            <td> Trigger or bind the function to the key press event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>keyup(callback)</td>
+            <td> Trigger or bind the function to the key up event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>contextmenu(callback)</td>
+            <td> Trigger or bind the function to the contextmenu event of the specified element.</td>
+        </tr>
+        <tr>
+            <td>load(callback)</td>
+            <td> Trigger or bind the function to the load event of the specified element.</td>
+        </tr>
+    </table>
+
+    <p></p>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html
+        &lt;div&gt;
+            &lt;button id="click"&gt;click&lt;/button&gt;
+            &lt;button id="enter"&gt;mouse enter or leave&lt;/button&gt;
+            keyup: &lt;input type="text" id="keyup"&gt;
+        &lt;/div&gt;
+
+        // javascript
+        function print(v) {
+            qc("#cons").prepend("<div>" + v + "</div>");
+        }
+
+        qc("#click").click(function(ev) {
+            print(ev.type);
+        });
+
+        qc("#enter").on("mouseenter mouseleave", function(ev) {
+            print(ev.type);
+        });
+
+        qc("#keyup").bind("keyup", function(ev) {
+            print(ev.code);
+        });
+    </pre>
+
+    <p></p>
+    <h4 class="imp">Result</h4>
+    <div class="code1" style="background: #f7f7f7; box-shadow: 1px 1px 3px #aaa;">
+        <div style="padding: 8px 16px;">
+            <button id="click">click</button>
+            <button id="enter">mouse enter or leave</button>
+            keyup: <input id="keyup" type="text"/>
+        </div>
+        <div id="cons" style="padding: 0 64px; height: 200px; overflow: auto; margin: 8px 0;">
+        </div>
+    </div>
+</div>
+<script>
+    function print(v) {
+        qc("#cons").prepend("<div>" + v + "</div>");
+    }
+
+    qc("#click").click(function (ev) {
+        print(ev.type);
+    });
+
+    qc("#enter").on("mouseenter mouseleave", function (ev) {
+        print(ev.type);
+    });
+
+    qc("#keyup").bind("keyup", function (ev) {
+        print(ev.code);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<title>qcjs help</title>
+<script src="../link.js"></script>
+<style>
+</style>
+</head>
+<body>
+<div class="left">
+<div class="menu"></div>
+</div>
+<div class="right">
+<p> </p>
+<h2>lister &amp; pagepicker</h2>
+<p><p>
+        Lister and page selector.
+    </p></p>
+<p> </p>
+<h4><h4>lister attributes</h4></h4>
+<dl><dl>
+<dt>qc-for</dt>
+<dd>
+            A CSS selector string, page number element.
+        </dd>
+<dt>qc-get</dt>
+<dd>
+            The link or method to obtain the data. <br/>
+            Method parameters:
+            <div>
+<ul>
+<li>re: object. </li>
+<li>callee: callback function. </li>
+</ul>
+</div>
+</dd>
+<dt>qc-page</dt>
+<dd>
+            current page number.
+        </dd>
+<dt>qc-count</dt>
+<dd>
+            In the lister, it is the number of pages per page.
+        </dd>
+<dt>qc-buttons</dt>
+<dd>
+            Buttons for multiple list templates, separated by spaces. Corresponds to the sequence of qc-content. <br/>
+<p>
+                Rule: qc-buttons='icon|text|attribute icon2|text2|attribute2'.
+            </p>
+<p>
+                icon: String type. Icon css class name;<br/>
+                text: String type, optional. If set, it will be displayed on the right side of the icon;<br/>
+                attribute: String type, optional. If it is html, replace the content of the Html element, and replace the attribute of the Html element.
+            </p>
+</dd>
+<dt>qc-content</dt>
+<dd>
+            The data display template can be multiple, corresponding to the sequence of qc-buttons.
+        </dd>
+</dl></dl>
+<p> </p>
+<h4><h4>pagepicker attributes</h4></h4>
+<dl><dl>
+<dt>qc-count</dt>
+<dd>
+            In pagenav, the number of page numbers is displayed.
+        </dd>
+</dl></dl>
+<p> </p>
+<h4 class="imp"><h4 class="imp">Example</h4></h4>
+<pre class="code">
+        // html body
+        &lt;style&gt;
+            .qc-lister li {
+                list-style-type: none;
+                border-bottom: 1px solid #ccc;
+                padding: 16px 8px;
+            }
+            .qc-lister li span.black {
+                margin-right: 8px;
+                color: #000;
+                font-weight: normal;
+            }
+        &lt;/style&gt;
+        &lt;div qc-control="lister" class="qc-lister" qc-get="get1" qc-for="#pn1" qc-page="1" qc-count="2"&gt;
+            &lt;div qc-content&gt;
+                &lt;span qc-field="name" class="black"&gt;&lt;/span&gt;
+                &lt;span qc-field="gender" class="black"&gt;&lt;/span&gt;
+                &lt;span qc-field="age" class="black"&gt;&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;ul qc-control="pagepicker" id="pn1" qc-count="10"&gt;&lt;/ul&gt;
+
+        // javascript
+        var datas = [
+            {"id": 1, "name": "Tom", "age": 23, "gender": "male"},
+            {"id": 2, "name": "Alice", "age": 24, "gender": "female"},
+            {"id": 3, "name": "Jack", "age": 25, "gender": "male"},
+            {"id": 4, "name": "Mary", "age": 26, "gender": "female"},
+            {"id": 5, "name": "Jerry", "age": 27, "gender": "male"},
+            {"id": 6, "name": "Chrissy", "age": 28, "gender": "female"},
+            {"id": 7, "name": "Tony", "age": 29, "gender": "male"}
+        ];
+
+        function get1(re, callee) {
+            var p = parseInt(re.args.page),
+                count = parseInt(re.args.count),
+                pages = Math.ceil(datas.length / count),
+                start = (p - 1) * count,
+                end = start + count;
+
+            var data = datas.slice(start, end);
+            var d = {rows: data.length, data: data, pages: pages, count: datas.length};
+            callee(d, re);
+        }
+    </pre>
+<p> </p>
+<h4 class="imp">Result</h4>
+<div class="result">
+<style>
+            .qc-lister li {
+                margin: 8px;
+                list-style-type: none;
+                border-bottom: 1px solid #ccc;
+                padding: 16px 8px;
+            }
+            .qc-lister li span.black {
+                margin-right: 8px;
+                color: #000;
+                font-weight: normal;
+            }
+        </style>
+<div class="qc-lister" qc-control="lister" qc-count="3" qc-for="#pn1" qc-get="get1" qc-page="1">
+<div qc-content="">
+<span class="black" qc-field="name"></span>
+<span class="black" qc-field="gender"></span>
+<span class="black" qc-field="age"></span>
+</div>
+</div>
+<ul id="pn1" qc-control="pagepicker" qc-count="10"></ul>
+<script>
+            var datas = [
+                {"id": 1, "name": "Tom", "age": 23, "gender": "male"},
+                {"id": 2, "name": "Alice", "age": 24, "gender": "female"},
+                {"id": 3, "name": "Jack", "age": 25, "gender": "male"},
+                {"id": 4, "name": "Mary", "age": 26, "gender": "female"},
+                {"id": 5, "name": "Jerry", "age": 27, "gender": "male"},
+                {"id": 6, "name": "Chrissy", "age": 28, "gender": "female"},
+                {"id": 7, "name": "Tony", "age": 29, "gender": "male"}
+            ];
+
+            function get1(re, callee) {
+                var p = parseInt(re.args.page),
+                    count = parseInt(re.args.count),
+                    pages = Math.ceil(datas.length / count),
+                    start = (p - 1) * count,
+                    end = start + count;
+
+                var data = datas.slice(start, end);
+                var d = {rows: data.length, data: data, pages: pages, count: datas.length};
+                callee(d, re);
+            }
+        </script>
+</div>
+<p> </p>
+<h4 class="imp"><h4 class="imp">Example</h4></h4>
+<pre class="code">
+        // html body
+        &lt;style&gt;
+            .qc-lister li.view {
+                list-style-type: none;
+                display: inline-block;
+                width: 200px;
+                height: 200px;
+                border: 1px solid #ccc;
+                padding: 16px 8px;
+            }
+            .qc-lister li,view span.black {
+                margin-right: 8px;
+                color: #000;
+                font-weight: normal;
+            }
+            .qc-lister li h3 {
+                color: #4293b1;
+            }
+            .qc-lister li p {
+                line-height: 2;
+            }
+        &lt;/style&gt;
+        &lt;div qc-control="lister" class="qc-lister" qc-get="get1" qc-for="#pn2" qc-page="1" qc-count="4"&gt;
+            &lt;div qc-content class="view"&gt;
+                &lt;h3 qc-field="name" class="black"&gt;&lt;/h3&gt;
+                &lt;p&gt;gender: &lt;span qc-field="gender" class="black"&gt;&lt;/span&gt;&lt;/p&gt;
+                &lt;p&gt;age: &lt;span qc-field="age" class="black"&gt;&lt;/span&gt;&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;ul qc-control="pagepicker" id="pn2" qc-count="10"&gt;&lt;/ul&gt;
+
+    </pre>
+<p> </p>
+<h4 class="imp">Result</h4>
+<div class="result">
+<style>
+            .qc-lister li.view {
+                list-style-type: none;
+                display: inline-block;
+                width: 200px;
+                height: 200px;
+                border: 1px solid #ccc;
+                padding: 16px 8px;
+            }
+            .qc-lister li,view span.black {
+                margin-right: 8px;
+                color: #000;
+                font-weight: normal;
+            }
+            .qc-lister li h3 {
+                color: #4293b1;
+            }
+            .qc-lister li p {
+                line-height: 2;
+            }
+        </style>
+<div class="qc-lister" id="pn22" qc-control="lister" qc-count="3" qc-for="#pn2" qc-get="get1" qc-page="1">
+<div class="view" qc-content="">
+<h3 class="black" qc-field="name"></h3>
+<p>gender: <span class="black" qc-field="gender"></span></p>
+<p>age: <span class="black" qc-field="age"></span></p>
+</div>
+</div>
+<ul id="pn2" qc-control="pagepicker" qc-count="10"></ul>
+</div>
+<p> </p>
+<h4 class="imp"><h4 class="imp">Example</h4></h4>
+<pre class="code">
+        // html body
+        &lt;div qc-control="lister" class="qc-lister" qc-get="get1" qc-for="#pn3"
+             qc-page="1" qc-count="3" qc-buttons="fa-th-large|view fa-th-list|list|html"&gt;
+            &lt;div qc-content class="view"&gt;
+                &lt;h3 qc-field="name" class="black"&gt;&lt;/h3&gt;
+                &lt;p&gt;gender: &lt;span qc-field="gender" class="black"&gt;&lt;/span&gt;&lt;/p&gt;
+                &lt;p&gt;age: &lt;span qc-field="age" class="black"&gt;&lt;/span&gt;&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div qc-content&gt;
+                &lt;span qc-field="name" class="black"&gt;&lt;/span&gt;
+                &lt;span qc-field="gender" class="black"&gt;&lt;/span&gt;
+                &lt;span qc-field="age" class="black"&gt;&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;ul qc-control="pagepicker" id="pn3" qc-count="10"&gt;&lt;/ul&gt;
+
+
+    </pre>
+<p> </p>
+<h4 class="imp">Result</h4>
+<div class="result">
+<div class="qc-lister" qc-buttons="fa-th-large|view fa-th-list|list|html" qc-control="lister" qc-count="3" qc-for="#pn3" qc-get="get1" qc-page="1">
+<div class="view" qc-content="">
+<h3 class="black" qc-field="name"></h3>
+<p>gender: <span class="black" qc-field="gender"></span></p>
+<p>age: <span class="black" qc-field="age"></span></p>
+</div>
+<div qc-content="">
+<span class="black" qc-field="name"></span>
+<span class="black" qc-field="gender"></span>
+<span class="black" qc-field="age"></span>
+</div>
+</div>
+<ul id="pn3" qc-control="pagepicker" qc-count="10"></ul>
+</div>
+</div>
+<script>
+</script>
+</body>
+</html>

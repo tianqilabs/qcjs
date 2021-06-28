@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../src/core/core.js"></script>
+    <script src="../src/core/string.js"></script>
+    <script src="../src/core/array.js"></script>
+    <script src="../src/core/qcset.js"></script>
+    <script src="../src/core/static.js"></script>
+    <script src="../src/core/proto.js"></script>
+    <script src="../src/core/event.js"></script>
+
+</head>
+<body>
+
+<script>
+    // qc.require("../doc/en/page.js");
+    // alert('ff');
+    qc(function () {
+        alert("loaded");
+    });
+    var f = new File("../doc/en/page.js");
+    console.log(f.read());
+</script>
+</body>
+</html>

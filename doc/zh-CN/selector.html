@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p> </p>
+    <h2>selector</h2>
+    <p>选择框</p>
+
+    <p> </p>
+    <h4>属性</h4>
+    <dl>
+        <dt>qc-mode</dt>
+        <dd>
+            值：normal、auto、readonly、search。
+            <ul>
+                <li>多个用空格分隔。</li>
+                <li>normal: 手动加载数据。</li>
+                <li>auto: 默认值，自动加载数据。</li>
+                <li>readonly: 默认值，禁止输入。</li>
+                <li>search: 可以数据及提交搜索关键字。</li>
+            </ul>
+        </dd>
+
+        <dt>qc-get</dt>
+        <dd>
+            加载数据的链接或方法。<br>
+            方法的参数:
+            <ul>
+                <li>re: 对象。</li>
+                <li>callee: 回调函数。</li>
+            </ul>
+        </dd>
+
+        <dt>qc-post</dt>
+        <dd>
+            选择改变时触发的，链接或方法。
+        </dd>
+
+        <dt>qc-for</dt>
+        <dd>
+            qc-post 触发后，下一个 selector，CSS selector 字符串。
+        </dd>
+
+        <dt>qc-field</dt>
+        <dd>
+            数据对象的属性名称，默认: v。
+        </dd>
+
+        <dt>qc-text</dt>
+        <dd>
+            显示的内容，多个用空格分隔。如果对应数据对象的属性名称，则显示对象值，否则显示文本。
+        </dd>
+
+        <dt>小部件属性 qc-get、qc-post、qc-upload 为方法时</dt>
+        <dd>
+            <div style="margin-bottom: 16px;line-height: 2;">
+                参数:
+                <div style="margin: 8px 0 8px 32px;">
+                    re = {"contrl": 小部件对象, "curr": 当前对象, "args": 传送数据时的参数}。
+                </div>
+            </div>
+            <div style="line-height: 2;">
+                callee: 回调函数。
+                <div style="margin: 8px 0 8px 32px;">
+                    参数 d:
+                    <div style="margin: 0 0 8px 32px;">
+                        转换为 JSON 对象，<br>
+                        d = {"rows": 数组长度, "data": 数组, "pages": 总页数, "total": 总数量}，<br>
+                        转换失败，返回原数据。
+                    </div>
+
+                    参数 re:
+                    <div style="margin: 0 0 0 32px;">
+                        contrl: 小部件对象，curr: 当前对象，args: 传送数据时的参数。
+                    </div>
+                </div>
+            </div>
+        </dd>
+
+    </dl>
+
+    <p> </p>
+    <h4>方法</h4>
+    <dl>
+        <dt>qc.selector.getData(contrl)</dt>
+        <dd>
+            <ul>
+                <li>手动加载数据。</li>
+                <li>
+                    参数: contrl
+                    <p class="indent">
+                        一个 selector 小部件对象。
+                    </p>
+                </li>
+            </ul>
+        </dd>
+
+        <dt>qc.selector.val(contrl[, value])</dt>
+        <dd>
+            设置值。value 对应 data 的 qc-field 项。
+            <ul>
+                <li>
+                    参数: contrl
+                    <p class="indent">
+                        一个 selector 小部件对象。
+                    </p>
+                </li>
+                <li>
+                    参数: value
+                    <p class="indent">
+                        值。
+                    </p>
+                </li>
+            </ul>
+        </dd>
+    </dl>
+
+    <p> </p>
+    <h4>例子</h4>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+        get 例子: <br>
+        &lt;select qc-control='selector' qc-get='get' qc-field='id'
+                    qc-text='name ,&amp;nbsp;age: [ age ]'&gt;&lt;/select&gt;
+
+        // javascript
+        function get(re, callee) {
+            var data = [
+                    {"id": 1, "name": "Tom", "age": 23},
+                    {"id": 2, "name": "Alice", "age": 24},
+                    {"id": 3, "name": "Jack", "age": 25}
+                ];
+
+            callee({
+                "rows": data.length,
+                "data": data
+                };, re);
+        }
+
+        // html body
+        post 例子: <br>
+        &lt;select qc-control='selector' qc-get='get' qc-field='id' qc-post='post'
+                    qc-text='name ,&amp;nbsp;age: [ age ]'&gt;&lt;/select&gt;
+
+        &lt;input type="text" id="result1"&gt;
+
+        // javascript
+        function post(re, callee) {
+            var id = re.curr.attr("qc-value");
+            var name = re.curr.find("input").val();
+            qc("#result1").val("id = " + id + ", name = " + name);
+        }
+
+        // html body
+        set val 例子: <br>
+        &lt;select qc-control='selector' qc-get='get' qc-field='id' id='setval'
+                    qc-text='name , age: [ age ]'&gt;&lt;/select&gt;
+        &lt;button id="set1"&gt; set val &lt;/button&gt;
+
+        // javascript
+        qc("#set1").click(function () {
+            qc.selector.val(qc("#setval"), 2);
+        });
+
+    </pre>
+
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <style>
+            #result1 {
+                background: #fff;
+                width: 200px;
+                border: 1px solid #ccc;
+                padding: 6px;
+            }
+        </style>
+
+        <div style="padding: 16px 32px;">
+            get test: <br>
+            <select qc-control='selector' qc-get='get' qc-field='id'
+                    qc-text='name ,&nbsp;age: age'></select>
+
+        </div>
+        <div style="padding: 16px 32px;margin-bottom: 64px;">
+            post test: <br>
+            <select qc-control='selector' qc-get='get' qc-field='id' qc-post='post'
+                    qc-text='name'></select>
+
+            <input type="text" id="result1"></input>
+        </div>
+        <div style="padding: 16px 32px;margin-bottom: 64px;">
+            set val 例子: <br>
+            <select qc-control='selector' qc-get='get' qc-field='id' id='setval'
+                    qc-text='name , age: [ age ]'></select>
+            <button id="set1"> set val </button>
+        </div>
+
+        <script>
+            function get(re, callee) {
+                var data = [
+                    {"id": 1, "name": "Tom", "age": 23},
+                    {"id": 2, "name": "Alice", "age": 24},
+                    {"id": 3, "name": "Jack", "age": 25}
+                ];
+                callee({
+                    "rows": data.length,
+                    "data": data
+                }, re);
+            }
+
+            function post(re, callee) {
+                var id = re.curr.attr("qc-value");
+                var name = re.curr.find("input").val();
+                qc("#result1").val("id = " + id + ", name = " + name);
+            }
+
+            qc("#set1").click(function () {
+                qc.selector.val(qc("#setval"), 2);
+            });
+        </script>
+
+    </div>
+
+    <p> </p>
+    <h3>三级联动例子</h3>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+        gender: &lt;select qc-control='selector' qc-get='get1' qc-field='gender'
+                    id='selector1' qc-for='#selector2'&gt; &lt;/select&gt;
+
+        age: &lt;select qc-control='selector' qc-get='get2' qc-field='age'
+                    id='selector2' qc-for='#selector3'&gt; &lt;/select&gt;
+
+        name: &lt;select qc-control='selector' qc-get='get3' qc-field='name'
+                    id='selector3'&gt; &lt;/select&gt;
+
+        // javascript
+        var datas = [
+            {"name": "Tom", "age": 23, "gender": "male"},
+            {"name": "Alice", "age": 23, "gender": "female"},
+            {"name": "Jack", "age": 25, "gender": "male"},
+            {"name": "Mary", "age": 25, "gender": "female"},
+            {"name": "Jerry", "age": 25, "gender": "male"},
+            {"name": "Chrissy", "age": 25, "gender": "female"}
+        ];
+
+        function get1(re, callee) {
+            var d = QCSet(), data = [];
+            datas.each(function (b) {
+                if (!d.contains(b.gender)) {
+                    d.add(b.gender);
+                    data.push({"gender": b.gender});
+                }
+            });
+
+            callee({
+                "rows": data.length,
+                "data": data
+            }, re);
+        }
+
+        function get2(re, callee) {
+            var args = re.args, d = QCSet(), data = [];
+            datas.each(function (b) {
+                if (b.gender == args.gender) {
+                    if (!d.contains(b.age)) {
+                        d.add(b.age);
+                        data.push({"age": b.age});
+                    }
+                }
+            });
+            callee({
+                "rows": data.length,
+                "data": data
+            }, re);
+        }
+
+        function get3(re, callee) {
+            var gender = qc.util.getVal(qc("#selector1"));
+            var age = qc.util.getVal(qc("#selector2"));
+            var d = QCSet(), data = [];
+            datas.each(function (b) {
+                if (b.gender == gender && b.age == age) {
+                    if (!d.contains(b.name)) {
+                        d.add(b.name);
+                        data.push({"name": b.name});
+                    }
+                }
+            });
+            callee({
+                "rows": data.length,
+                "data": data
+            }, re);
+        }
+
+    </pre>
+
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <div style="padding: 16px 32px; margin-bottom: 64px;">
+            gender: <select qc-control='selector' qc-get='get1' qc-field='gender'
+                            id='selector1' qc-for='#selector2'></select>
+            age: <select qc-control='selector' qc-get='get2' qc-field='age'
+                         id='selector2' qc-for='#selector3'></select>
+            name: <select qc-control='selector' qc-get='get3' qc-field='name'
+                          id='selector3'></select>
+        </div>
+
+
+        <script>
+            var datas = [
+                {"name": "Tom", "age": 23, "gender": "male"},
+                {"name": "Alice", "age": 23, "gender": "female"},
+                {"name": "Jack", "age": 25, "gender": "male"},
+                {"name": "Mary", "age": 25, "gender": "female"},
+                {"name": "Jerry", "age": 25, "gender": "male"},
+                {"name": "Chrissy", "age": 25, "gender": "female"}
+            ];
+
+            function get1(re, callee) {
+                var d = QCSet(), data = [];
+                datas.each(function (b) {
+                    if (!d.contains(b.gender)) {
+                        d.add(b.gender);
+                        data.push({"gender": b.gender});
+                    }
+                });
+
+                callee({
+                    "rows": data.length,
+                    "data": data
+                }, re);
+            }
+
+            function get2(re, callee) {
+                var args = re.args, d = QCSet(), data = [];
+                datas.each(function (b) {
+                    if (b.gender == args.gender) {
+                        if (!d.contains(b.age)) {
+                            d.add(b.age);
+                            data.push({"age": b.age});
+                        }
+                    }
+                });
+                callee({
+                    "rows": data.length,
+                    "data": data
+                }, re);
+            }
+
+            function get3(re, callee) {
+                var gender = qc.util.getVal(qc("#selector1"));
+                var age = qc.util.getVal(qc("#selector2"));
+                var d = QCSet(), data = [];
+                datas.each(function (b) {
+                    if (b.gender == gender && b.age == age) {
+                        if (!d.contains(b.name)) {
+                            d.add(b.name);
+                            data.push({"name": b.name});
+                        }
+                    }
+                });
+                callee({
+                    "rows": data.length,
+                    "data": data
+                }, re);
+            }
+        </script>
+
+    </div>
+
+    <h3>search，手动获取数据例子</h3>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+        &lt;p&gt;
+            &lt;select qc-control='selector' id='selector4' qc-get='get4'
+                        qc-post='post4' qc-field='name' qc-mode='search normal'&gt; &lt;/select&gt;
+        &lt;/p&gt;
+
+        &lt;p&gt;
+            &lt;input type="text" style="width: 200px; padding: 3px;" id="text4"&gt;
+        &lt;/p&gt;
+
+        // javascript
+        function get4 (re, callee) {
+            var data = [
+                {"id": 1, "name": "Tom", "age": 23},
+                {"id": 2, "name": "Alice", "age": 24},
+                {"id": 3, "name": "Jack", "age": 25}
+            ];
+            var key = re.args.search_key, d = [];
+            if (key) {
+                data.each(function (b) {
+                    var name1 = b.name.toLowerCase();
+                    var name2 = key.toLowerCase();
+                    if (name1.contains(name2)) {
+                        d.push(b);
+                    }
+                });
+            } else {
+                d = data;
+            }
+            callee({
+                "rows": d.length,
+                "data": d
+            }, re);
+        }
+
+        qc("#get4").click(function () {
+            var contrl = qc("#selector4");
+            qc.selector.getData(contrl)
+        });
+
+        function post4(re) {
+            qc("#text4").val(re.curr.attr("qc-value"));
+        }
+
+    </pre>
+
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <div style="padding: 16px 32px; height: 200px;">
+            <p>
+                <select qc-control='selector' id='selector4' qc-get='get4'
+                        qc-post='post4' qc-field='name' qc-mode='search normal'> </select>
+            </p>
+            <p>
+                <input type="text" style="width: 200px; padding: 3px;" id="text4">
+            </p>
+        </div>
+
+        <script>
+            function get4 (re, callee) {
+                var data = [
+                    {"id": 1, "name": "Tom", "age": 23},
+                    {"id": 2, "name": "Alice", "age": 24},
+                    {"id": 3, "name": "Jack", "age": 25}
+                ];
+                var key = re.args.search_key, d = [];
+                if (key) {
+                    data.each(function (b) {
+                        var name1 = b.name.toLowerCase();
+                        var name2 = key.toLowerCase();
+                        if (name1.contains(name2)) {
+                            d.push(b);
+                        }
+                    });
+                } else {
+                    d = data;
+                }
+                callee({
+                    "rows": d.length,
+                    "data": d
+                }, re);
+            }
+
+            qc("#get4").click(function () {
+                var contrl = qc("#selector4");
+                qc.selector.getData(contrl)
+            });
+
+            function post4(re) {
+                qc("#text4").val(re.curr.attr("qc-value"));
+            }
+
+        </script>
+
+    </div>
+
+</div>
+
+<script>
+</script>
+
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p> </p>
+    <h2>QC 对象</h2>
+    <p>
+        描述：接受一个包含 CSS 选择器的字符串，然后用于匹配一组元素。
+    </p>
+    <p> </p>
+    <h4>qc(selector[, context])</h4>
+    <dl>
+        <dt>selector：</dt>
+        <dd>Type：Selector</dd>
+        <dd>
+            必须是一个合法的
+            <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors"
+               target="_blank">CSS selector</a>  字符串
+        </dd>
+        <dt>context：</dt>
+        <dd>Type：Element or QC</dd>
+        <dd>用作上下文的 DOM 元素、文档、QC，默认当前页面 document。</dd>
+        <dt>return：</dt>
+        <dd>QC 对象</dd>
+    </dl>
+    <p> </p>
+    <h4>qc(object)</h4>
+    <dl>
+        <dt>object：</dt>
+        <dd>Type：Element or Node or NodeList or ElementArray</dd>
+        <dd>Element 元素、Node 节点、NodeList 集、Element 数组</dd>
+        <dt>return：</dt>
+        <dd>QC 对象</dd>
+    </dl>
+    <p> </p>
+    <h4>qc(html[, document])</h4>
+    <dl>
+        <dt>html：</dt>
+        <dd>Type：htmlString</dd>
+        <dd>动态创建的 HTML 字符串。</dd>
+        <dt>document：</dt>
+        <dd>Type：Document</dd>
+        <dd>将在其中创建新元素的文档。</dd>
+        <dt>return：</dt>
+        <dd>QC 对象</dd>
+    </dl>
+
+    <h4>属性</h4>
+    <dl>
+        <dt>length</dt>
+        <dd>
+            QC 中元素的数量。
+        </dd>
+        <dt>元素访问</dt>
+        <dd>
+            类似数值的操作，用 [index]，index 元素所在的索引。返回 Element 对象。
+        </dd>
+    </dl>
+
+    <h2>方法</h2>
+    <p> </p>
+    <h4>each(callback)</h4>
+    <p>描述：历遍 QC 中的元素。</p>
+    <dl>
+        <dt>callback: </dt>
+        <dd>Type: Function(index, thisObject)</dd>
+        <dd>将对每个值执行的函数，this 对象为 QC 对应的 Element 元素。</dd>
+        <dd>
+            <p>index: QC 中 的索引。</p>
+            <p>thisObject: QC。</p>
+            <strong>提示</strong>
+            <p>return true 返回，继续循环。类似 continue。</p>
+            <p>return false 返回，停止循环。类似 break。</p>
+        </dd>
+    </dl>
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+
+        // javascript
+        // 创建 QC 对象
+        var obj = qc("&lt;div&gt;abcd&lt;/div&gt;");
+        var obj1 = qc(obj);
+
+        // 返回 obj 中元素的数量
+        console.log(obj.length);        // 1
+
+        // 获取 obj 中的 Element 对象
+        var el = obj1[0];
+        console.log(el);                // &lt;div&gt;abcd&lt;/div&gt;
+
+        // html
+        &lt;ul&gt;
+            &lt;li&gt;a1&lt;/li&gt;
+            &lt;li&gt;a2&lt;/li&gt;
+            &lt;li&gt;a3&lt;/li&gt;
+        &lt;/ul&gt;
+
+        // javascript
+        qc("li").each(function(idx) {
+            console.log("text: ", this.textContent, ",", "index: ", idx);
+        });
+        // text:  a1 , index:  0
+        // text:  a2 , index:  1
+        // text:  a3 , index:  2
+
+    </pre>
+
+    <h2>静态方法</h2>
+    <p> </p>
+    <dl>
+        <dt>qc._indexOf(obj, search[, index])</dt>
+        <dd>描述：search 在 obj 的位置，index 开始查找的位置。</dd>
+    </dl>
+    <dl>
+        <dt>qc._extend(obj[, ...objN])</dt>
+        <dd>将两个或更多对象的内容合并到第一个对象中。</dd>
+    </dl>
+    <dl>
+        <dt>qc._each(obj, callback)</dt>
+        <dd>历遍 obj 对象。</dd>
+        <dd>callback: </dd>
+        <dd>
+            <p>Type: Function(value, index, thisObject)</p>
+            <p>value: 当前对象。</p>
+            <p>index: 当前位置。</p>
+            <p>thisObject: obj 对象。</p>
+        </dd>
+    </dl>
+    <dl>
+        <dt>qc._equals(obj1[, obj2])</dt>
+        <dd>两个对象进行比较，返回 boolean。</dd>
+    </dl>
+    <dl>
+        <dt>qc._convert(cont)</dt>
+        <dd>把字符串 cont 转为 Text Node，返回 QC 对象。</dd>
+    </dl>
+    <dl>
+        <dt>qc._matches(el, str)</dt>
+        <dd>验证指定的 str 跟 el 是否匹配。</dd>
+        <dd>el: Element 元素。</dd>
+        <dd>
+            str:
+            要验证的字符串，合法的
+            <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors"
+               target="_blank">CSS selector</a>。
+        </dd>
+    </dl>
+    <dl>
+        <dt>qc._ajax(url[, settings])</dt>
+        <dd>
+            执行异步HTTP（Ajax）请求。
+        </dd>
+        <dd>
+            url: 包含请求发送到的 URL 的字符串。
+        </dd>
+        <dd>
+            settings:
+            <div>
+                type:
+                <p>发送类型，目前只支持 get、post。</p>
+                str:
+                <p>
+                    要验证的字符串，合法的
+                    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors"
+                       target="_blank">CSS selector</a>。</p>
+                data:
+                <p>提交的参数。</p>
+                <p>例如: {"name": "Tom", "age": 32, "gender": "man"}。</p>
+                <p>// 姓名: Tom, 年龄: 32岁, 性别: 男。</p>
+                <p>data 值的类型：String、Number、Array、&lt;input type='file'&gt;。</p>
+
+                progress:
+                <p>只有上传文件才有，上传进度事件 (<strong>IE9</strong> 不支持)。</p>
+                <div>
+                    callback:
+                    <p>
+                        event.loaded  当前传输的数据量。<br>
+                        event.total  要传输的数据总量。
+                    </p>
+                </div>
+
+                error:
+                <p>只有上传文件才有，上传错误事件 (<strong>IE9</strong> 不支持)。</p>
+
+                success:
+                <p>提交成功事件。</p>
+                <div>
+                    callback:
+                    <p>服务器返回的内容。</p>
+                </div>
+            </div>
+        </dd>
+    </dl>
+    <dl>
+        <dt>qc._post(url, data[, callback])</dt>
+        <p>用 post 方式发送数据。</p>
+        <dd>url: 包含请求发送到的 URL 的字符串。</dd>
+        <dd>data: 提交的参数对象。</dd>
+        <dd>callback: 回调方法。</dd>
+    </dl>
+    <dl>
+        <dt>qc._get(url, data[, callback])</dt>
+        <p>用 get 方式发送数据。</p>
+        <dd>url: 包含请求发送到的 URL 的字符串。</dd>
+        <dd>data: 提交的参数对象。</dd>
+        <dd>callback: 回调方法。</dd>
+    </dl>
+    <dl>
+        <dt>qc.getScript(url, [doc, callback])</dt>
+        <p>动态加载 JavaScript 文件。</p>
+        <dd>url: 包含请求发送到的 URL 的字符串。</dd>
+        <dd>doc: 加载到的 document 对象。</dd>
+        <dd>callback: 回调方法。</dd>
+    </dl>
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        var obj1 = {"0": "a", "1": "b"},
+        obj2 = {"0": "a1", "2": "c"};
+        qc._extend(obj1, obj2);
+        console.log("obj1: ", obj1);
+        console.log("obj2: ", obj2);
+        // obj1:  {0: "a1", 1: "b", 2: "c"}
+        // obj2:  {0: "a1", 2: "c"}
+
+        var obj_1 = [1,2,3,4];
+        var obj_2 = [1,2,3,4];
+        var re = qc._equals(obj_1, obj_2);
+        console.log(re);
+        // true;
+
+        var obj3 = qc._convert("abcd");
+        console.log("obj3: ", obj3);
+        // obj3:  QC.fn.init {0: text, length: 1}
+
+        // html
+        &lt;ul&gt;
+            &lt;li&gt;a1&lt;/li&gt;
+            &lt;li&gt;a2&lt;/li&gt;
+            &lt;li&gt;a3&lt;/li&gt;
+        &lt;/ul&gt;
+
+        // javascript
+        var re1 = qc._matches(qc("ul")[0], "ul");
+        console.log(re1);       // true;
+
+        var re2 = qc._matches(qc("ul")[0], "li");
+        console.log(re2);       // false;
+    </pre>
+
+</div>
+
+<script>
+</script>
+
+</body>
+</html>

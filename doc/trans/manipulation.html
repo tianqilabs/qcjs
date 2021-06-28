@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<title>qcjs help</title>
+<script src="../link.js"></script>
+<style>
+</style>
+</head>
+<body>
+<div class="left">
+<div class="menu"></div>
+</div>
+<div class="right">
+<p> </p>
+<h2><h2>Operation</h2></h2>
+<p> </p>
+<h4>insert(cont[, type])</h4>
+<p><p>Description: Insert cont into each element in the collection according to type. </p></p>
+<dl><dl>
+<dt>cont:</dt>
+<dd>Type: selector or Element or QC or Node or NodeList or elementArray or htmlString</dd>
+<dd>
+            Selector, DOM element, node, node set, QC, html string.
+        </dd>
+<dt>type:</dt>
+<dd>Type: String</dd>
+<dd>append (default), prepend, before, after. </dd>
+<dt>return:</dt>
+<dd>QC object</dd>
+</dl></dl>
+<p> </p>
+<h4>append(cont)</h4>
+<p><p>Description: Insert cont at the end of each element in the collection. </p></p>
+<dl><dl>
+<dt>cont:</dt>
+<dd> is the same as cont of insert. </dd>
+</dl></dl>
+<p> </p>
+<h4>prepend(cont)</h4>
+<p><p>Description: Insert cont at the beginning of each element in the collection. </p></p>
+<dl><dl>
+<dt>cont:</dt>
+<dd> is the same as cont of insert. </dd>
+</dl></dl>
+<p> </p>
+<h4>before(cont)</h4>
+<p><p>Description: Insert cont in front of each element in the collection. </p></p>
+<dl><dl>
+<dt>cont:</dt>
+<dd> is the same as cont of insert. </dd>
+</dl></dl>
+<p> </p>
+<h4>after(cont)</h4>
+<p><p>Description: Insert cont after each element in the collection. </p></p>
+<dl><dl>
+<dt>cont:</dt>
+<dd> is the same as cont of insert. </dd>
+</dl></dl>
+<p> </p>
+<h4>remove()</h4>
+<p><p>Description: Remove the set of matched elements from the DOM. </p></p>
+<p> </p>
+<h4>clone()</h4>
+<p><p>Description: Create a copy of the set of matching elements. </p></p>
+<p> </p>
+<h4>empty()</h4>
+<p><p>Description: Delete all from the list. </p></p>
+<p> </p>
+<h4>attr(name[, value])</h4>
+<p><p>Description: Set or return attributes. </p></p>
+<dl><dl>
+<dt>name:</dt>
+<dd>The name of the attribute. </dd>
+<dt>value:</dt>
+<dd> Attribute value. </dd>
+</dl></dl>
+<p> </p>
+<h4>removeAttr(name)</h4>
+<p><p>Description: Delete the attribute with the specified name. </p></p>
+<dl><dl>
+<dt>name:</dt>
+<dd>The name of the attribute. </dd>
+</dl></dl>
+<p> </p>
+<h4>html(str)</h4>
+<p><p>Description: Set or return the innerHTML of the first element. </p></p>
+<dl><dl>
+<dt>str:</dt>
+<dd>Html string. </dd>
+</dl></dl>
+<p> </p>
+<h4>text(str)</h4>
+<p><p>Description: Set or return the Text of the first element. </p></p>
+<dl><dl>
+<dt>str:</dt>
+<dd> string. </dd>
+</dl></dl>
+<p> </p>
+<h4>css(name[, value])</h4>
+<p><p>Description: Set or return the style of the element. </p></p>
+<dl><dl>
+<dt>name:</dt>
+<dd>CSS name. </dd>
+<dt>value:</dt>
+<dd>CSS value. </dd>
+</dl></dl>
+<h4 class="imp">Code</h4>
+<pre class="code">
+        // html
+        &lt;ul class="ul"&gt;
+            &lt;li class="a1"&gt;a1&lt;/li&gt;
+            &lt;li&gt;a2&lt;/li&gt;
+            &lt;li class="a3"&gt;a3&lt;/li&gt;
+            &lt;li&gt;a4&lt;/li&gt;
+        &lt;/ul&gt;
+
+        // javascript
+        function print(obj) {
+            var ary = [];
+            obj.each(function () {
+                ary.push(this.outerHTML);
+            });
+            console.log(ary.join("\n"));
+        }
+
+        var ul = qc(".ul");
+        ul.prepend("&lt;li&gt;a0&lt;/li&gt;");
+        ul.append("&lt;li&gt;a5&lt;/li&gt;");
+        ul.find(".a3").before("&lt;li&gt;a3-before&lt;/li&gt;");
+        ul.find(".a3").after("&lt;li&gt;a3-after&lt;/li&gt;");
+
+        print(ul);                      // &lt;ul class="ul"&gt;
+                                        //      &lt;li&gt;a0&lt;/li&gt;
+                                        //      &lt;li class="a1"&gt;a1&lt;/li&gt;
+                                        //      &lt;li&gt;a2&lt;/li&gt;
+                                        //      &lt;li&gt;a3-before&lt;/li&gt;
+                                        //      &lt;li class="a3"&gt;a3&lt;/li&gt;
+                                        //      &lt;li&gt;a3-after&lt;/li&gt;
+                                        //      &lt;li&gt;a4&lt;/li&gt;
+                                        //      &lt;li&gt;a5&lt;/li&gt;
+                                        // &lt;/ul&gt;
+
+        // javascript
+        ul.find(".a3").remove();
+        var clone = ul.find(".a1").clone();
+        ul.append(clone);
+
+        pring(ul);                      // &lt;ul class="ul"&gt;&lt;li&gt;a0&lt;/li&gt;
+                                        //      &lt;li class="a1"&gt;a1&lt;/li&gt;
+                                        //      &lt;li&gt;a2&lt;/li&gt;
+                                        //      &lt;li&gt;a3-before&lt;/li&gt;
+                                        //      &lt;li&gt;a3-after&lt;/li&gt;
+                                        //      &lt;li&gt;a4&lt;/li&gt;
+                                        //      &lt;li&gt;a5&lt;/li&gt;
+                                        //      &lt;li class="a1"&gt;a1&lt;/li&gt;
+                                        //  &lt;/ul&gt;
+
+        // javascript
+        ul.empty();
+
+        pring(ul);                      // &lt;ul class="ul"&gt;&lt;/ul&gt;
+
+        // javascript
+        var a = qc("a");
+        a.attr("href", "http://www.baidu.com");
+        a.removeAttr("target");
+
+        print(a);                       // &lt;a href="http://www.baidu.com"&gt;
+                                        //      &lt;i class="fa fa-times"&gt;&lt;/i&gt; link&lt;/a&gt;
+
+        // javascript
+        console.log(a.html());          // &lt;i class="fa fa-times"&gt;&lt;/i&gt; link
+        console.log(a.text());          // link
+
+        // javascript
+        a.css("padding", "13px");
+        a.css({"border": "10px solid #c53434", "display": "inline-block"});
+
+        print(a);                       // &lt;a href="http://www.baidu.com" style="padding: 13px;
+                                        //    border: 10px solid rgb(197, 52, 52);
+                                        //    display: inline-block;"&gt;
+                                        //      &lt;i class="fa fa-times"&gt;&lt;/i&gt; link
+                                        //  &lt;/a&gt;
+
+        // javascript
+        console.log(a.css("border"));    // 10px solid #c53434
+        console.log(a.width());          // 69
+        console.log(a.outerWidth());     // 89
+        console.log(a.height());         // 47
+        console.log(a.outerHeight());    // 67
+
+        a.hide()                         // a is hidden
+        a.show()                         // a is show
+
+        var _left = a.offset().left;
+        var _top = a.offset().top;
+        console.log("left:", _left, ",", "top: ", _top);    // left: 264 , top:  1954
+
+        // html
+        &lt;input type="text" class="txt1"&gt;
+
+        // javascript
+        var inpt = qc("input");
+        inpt.addClass("txt2");
+        inpt.addClass("haha1 haha2");
+
+        print(inpt);        // &lt;input type="text" class="txt1 txt2 haha1 haha2"&gt;
+
+        // javascript
+        inpt.removeClass("haha1 txt1");     // &lt;input type="text" class="txt2 haha2"&gt;
+
+        // javascript
+        inpt.val("is text");
+        console.log(inpt.val());             // is text
+    </pre>
+</div>
+<script>
+</script>
+</body>
+</html>

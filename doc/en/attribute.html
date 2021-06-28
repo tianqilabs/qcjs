@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>qcjs help</title>
+    <script src="../link.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p></p>
+    <h2>Html attributes</h2>
+
+    <p></p>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>qc-control</td>
+            <td>Specify the widget name</td>
+        </tr>
+        <tr>
+            <td>qc-type</td>
+            <td>Type. <br/>
+                If qc-fn is defined, check the value of qc-type and event type. If true, execute the qc-fn method.
+                <br/>
+                If not defined, execute the qc-type method. Multiples are separated by spaces.
+            </td>
+        </tr>
+        <tr>
+            <Td> qc-page</Td>
+            <td>
+                The current page number, paired with qc-count, the default is 1.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-count</td>
+            <td>
+                The number of pages per page, paired with qc-page, the default is 20.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-fn</td>
+            <td>
+                method. <br/>
+                If qc-type is specified, check the value of qc-type and event type. If true, execute the qc-fn
+                method. <br/>
+                If not defined, execute the qc-fn method.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-mode</td>
+            <td>
+                Widget mode, please refer to the description of each widget.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-field</td>
+            <td>
+                The name of the data field.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-default</td>
+            <td>
+                The default value of the data field.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-value</td>
+            <td>
+                Data field value.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-key</td>
+            <td>
+                The key field of the submitted data. During qc-get or qc-post, key: qc-key name will be generated,
+                and multiples are separated by spaces.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-need</td>
+            <td>
+                Field that is required to submit data concurrently filed.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-subfield</td>
+            <td>
+                Subfield attributes.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-text</td>
+            <td>
+                Extended setting attributes.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-target</td>
+            <td>
+                A CSS selector that specifies the target widget or Html element.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-get</td>
+            <td>
+                The path or method to obtain the data.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-post</td>
+            <td>
+                The path or method of submitting data.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-upload</td>
+            <td>
+                The path or method of the uploaded file.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-for</td>
+            <td>
+                A CSS selector to bind widgets. <br/>
+                popfrm, colorpicker, and selector trigger the show method.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-rule</td>
+            <td>Rules for widgets.</td>
+        </tr>
+        <tr>
+            <td>qc-warp</td>
+            <Td> background properties.
+            </Td>
+        </tr>
+        <tr>
+            <td>qc-container</td>
+            <td>Container attributes.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-content</td>
+            <td>Content attributes.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-toolbar</td>
+            <td> Widget toolbar.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-title</td>
+            <td> Widget title.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-buttons</td>
+            <td> Widget button group.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-success</td>
+            <td>The verification is successful, a CSS selector.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-failure</td>
+            <td>Validation failed, a CSS selector.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-lang</td>
+            <td>
+                The name of the widget or object.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-lang-name</td>
+            <td>
+                The attribute name of the object.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-lang-attr</td>
+            <td>
+                The way to set the value of the qc.lang object, html: replace the content of the Html element,
+                title/value: replace the attribute of the Html element.
+            </td>
+        </tr>
+        <tr>
+            <td>qc-colorpicker-mode</td>
+            <td>
+                qc-colorpicker-mode properties. <br/>
+                Set the mode of qc-colorpicker: list (color list), panel (panel selector).
+            </td>
+        </tr>
+        <tr>
+            <td>qc-colorpicker-css</td>
+            <td>
+                qc-colorpicker-css attribute. <br/>
+                The css name to be set and obtained.
+            </td>
+        </tr>
+    </table>
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html
+        &lt;p&gt;
+            &lt;button id="pop1" qc-for="popfrm" qc-target="#pop-frm1"&gt;
+                Show popfrm, not toolbar&lt;/button&gt;
+        &lt;/p&gt;
+        &lt;div class="qc-popfrm" qc-control="popfrm" id="pop-frm1"&gt;
+            &lt;div class="qc-container" qc-container&gt;
+                &lt;div class="qc-toolbar" qc-toolbar&gt;
+                    &lt;span  class="qc-title" qc-title&gt;Tips&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div class="qc-content" qc-content&gt;
+                    This is a popfrm.
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;p&gt;
+            &lt;button id="pop2" qc-for="popfrm" qc-target="#pop-frm2"&gt;
+                Show popfrm toolbar&lt;/button&gt;
+        &lt;/p&gt;
+        &lt;div class="qc-popfrm" qc-control="popfrm" id="pop-frm2"&gt;
+            &lt;div class="qc-container" qc-container&gt;
+                &lt;div class="qc-toolbar" qc-toolbar&gt;
+                    &lt;span  class="qc-title" qc-title&gt;Tips&lt;/span&gt;
+                    &lt;div class='qc-buttons' qc-buttons&gt;
+                        &lt;a  href='javascript:void(0);' qc-fn="pop2_OK" title="OK"&gt;
+                            &lt;i class="fa fa-check"&gt; &lt;/i&gt;
+                        &lt;/a&gt;
+                        &lt;a  href='javascript:void(0);' qc-title="Close" qc-type="hide"&gt;
+                            &lt;i class="fa fa-times"&gt; &lt;/i&gt;
+                        &lt;/a&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div class="qc-content" qc-content&gt;
+                    This is a popfrm.
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;p&gt;
+            &lt;button id="pop3"&gt;dyShow popfrm&lt;/button&gt;
+        &lt;/p&gt;
+
+        // javascript
+        function pop2_OK(obj) {
+            alert("button title: " + obj.curr.attr("title"));
+            qc.popfrm.hide(obj);
+        }
+
+        qc(function () {
+            qc("#pop3").click(function () {
+                qc.popfrm.dyShow("Tips", [], "This is a popfrm.", qc(this));
+            });
+
+        });
+
+    </pre>
+
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <p style="padding-left: 32px;">
+            <button id="pop1" qc-for="popfrm" qc-target="#pop-frm1">
+                Show popfrm, not toolbar
+            </button>
+        </p>
+
+        <div class="qc-popfrm" id="pop-frm1" qc-control="popfrm">
+            <div class="qc-container" qc-container="">
+                <div class="qc-toolbar" qc-toolbar="">
+                    <span class="qc-title" qc-title="">Tips</span>
+                </div>
+                <div class="qc-content" qc-content="">
+                    This is a popfrm.
+                </div>
+            </div>
+        </div>
+        <p style="padding-left: 32px;">
+            <button id="pop2" qc-for="popfrm" qc-target="#pop-frm2">
+                Show popfrm toolbar
+            </button>
+        </p>
+
+        <div class="qc-popfrm" id="pop-frm2" qc-control="popfrm">
+            <div class="qc-container" qc-container="">
+                <div class="qc-toolbar" qc-toolbar="">
+                    <span class="qc-title" qc-title="">Tips</span>
+                    <div class="qc-buttons" qc-buttons="">
+                        <a href="javascript:void(0);" qc-fn="pop2_OK" title="OK">
+                            <i class="fa fa-check"> </i>
+                        </a>
+                        <a href="javascript:void(0);" qc-title="Close" qc-type="hide">
+                            <i class="fa fa-times"> </i>
+                        </a>
+                    </div>
+                </div>
+                <div class="qc-content" qc-content="">
+                    This is a popfrm.
+                </div>
+            </div>
+        </div>
+        <p style="padding-left: 32px;">
+            <button id="pop3">dyShow popfrm</button>
+        </p>
+    </div>
+</div>
+<script>
+    // javascript
+    function pop2_OK(obj) {
+        alert("button title: " + obj.curr.attr("title"));
+        qc.popfrm.hide(obj);
+    }
+
+    qc(function () {
+        qc("#pop3").click(function () {
+            qc.popfrm.dyShow("Tips", [], "This is a popfrm.", qc(this));
+        });
+
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p> </p>
+    <h2>事件</h2>
+
+    <p> </p>
+    <table>
+        <tr>
+            <th>方法</th>
+            <th>描述</th>
+        </tr>
+        <tr>
+            <td>on(event[, listener, capture])</td>
+            <td>
+                监听 event 事件。
+                <dl>
+                    <dt>event</dt>
+                    <dd>
+                        字符串，多个事件类型用空格分开。
+                    </dd>
+                    <dt>listener</dt>
+                    <dd>
+                        Event当指定类型的事件发生时，接收通知的对象 (实现接口的对象)。
+                    </dd>
+                    <dt>capture</dt>
+                    <dd>
+                        设置为 true 就在捕捉过程中执行,反之就在冒泡过程中执行处理函数。如果未指定,则 capture 默认为 false。
+                    </dd>
+                </dl>
+            </td>
+        </tr>
+        <tr>
+            <td>off(event[, listener])</td>
+            <td>
+                从事件目标中删除的事件处理程序的功能。
+                <dl>
+                    <dt>event</dt>
+                    <dd>
+                        字符串，多个事件类型用空格分开。
+                    </dd>
+                    <dt>listener</dt>
+                    <dd>
+                        与 on 中的 listener 相同。
+                    </dd>
+                </dl>
+            </td>
+        </tr>
+        <tr>
+            <td>bind(event[, callback])</td>
+            <td>向匹配元素绑定事件处理器，event 同上。</td>
+        </tr>
+        <tr>
+            <td>unbind(event)</td>
+            <td>匹配元素解除绑定事件，event 同上。</td>
+        </tr>
+        <tr>
+            <td>blur(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 blur 事件。</td>
+        </tr>
+        <tr>
+            <td>focus(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 focus 事件。</td>
+        </tr>
+        <tr>
+            <td>focusin(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 focusin 事件。</td>
+        </tr>
+        <tr>
+            <td>focusout(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 focusout 事件。</td>
+        </tr>
+        <tr>
+            <td>resize(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 resize 事件。</td>
+        </tr>
+        <tr>
+            <td>scroll(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 scroll 事件。</td>
+        </tr>
+        <tr>
+            <td>click(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 click 事件。</td>
+        </tr>
+        <tr>
+            <td>dblclick(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 double click 事件。</td>
+        </tr>
+        <tr>
+            <td>mousedown(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 mouse down 事件。</td>
+        </tr>
+        <tr>
+            <td>mouseup(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 mouse up 事件。</td>
+        </tr>
+        <tr>
+            <td>mousemove(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 mouse move 事件。</td>
+        </tr>
+        <tr>
+            <td>mouseover(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 mouse over 事件。</td>
+        </tr>
+        <tr>
+            <td>mouseout(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 mouse out 事件。</td>
+        </tr>
+        <tr>
+            <td>mouseenter(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 mouse enter 事件。</td>
+        </tr>
+        <tr>
+            <td>mouseleave(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 mouse leave 事件。</td>
+        </tr>
+        <tr>
+            <td>change(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 change 事件。</td>
+        </tr>
+        <tr>
+            <td>selec(callback)t</td>
+            <td>触发、或将函数绑定到指定元素的 select 事件。</td>
+        </tr>
+        <tr>
+            <td>submit(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 submit 事件。</td>
+        </tr>
+        <tr>
+            <td>keydown(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 key down 事件。</td>
+        </tr>
+        <tr>
+            <td>keypress(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 key press 事件。</td>
+        </tr>
+        <tr>
+            <td>keyup(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 key up 事件。</td>
+        </tr>
+        <tr>
+            <td>contextmenu(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 contextmenu 事件。</td>
+        </tr>
+        <tr>
+            <td>load(callback)</td>
+            <td>触发、或将函数绑定到指定元素的 load 事件。</td>
+        </tr>
+    </table>
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html
+        &lt;div&gt;
+            &lt;button id="click"&gt;click&lt;/button&gt;
+            &lt;button id="enter"&gt;mouse enter or leave&lt;/button&gt;
+            keyup: &lt;input type="text" id="keyup"&gt;
+        &lt;/div&gt;
+
+        // javascript
+        function print(v) {
+            qc("#cons").prepend("<div>" + v + "</div>");
+        }
+
+        qc("#click").click(function(ev) {
+            print(ev.type);
+        });
+
+        qc("#enter").on("mouseenter mouseleave", function(ev) {
+            print(ev.type);
+        });
+
+        qc("#keyup").bind("keyup", function(ev) {
+            print(ev.code);
+        });
+    </pre>
+
+    <h4 class="imp">Result</h4>
+    <div class="code1" style="background: #f7f7f7; box-shadow: 1px 1px 3px #aaa;">
+        <div style="padding: 8px 16px;">
+            <button id="click">click</button>
+            <button id="enter">mouse enter or leave</button>
+            keyup: <input type="text" id="keyup">
+        </div>
+
+        <div id="cons" style="padding: 0 64px; height: 200px; overflow: auto; margin: 8px 0;">
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function print(v) {
+        qc("#cons").prepend("<div>" + v + "</div>");
+    }
+
+    qc("#click").click(function(ev) {
+        print(ev.type);
+    });
+
+    qc("#enter").on("mouseenter mouseleave", function(ev) {
+        print(ev.type);
+    });
+
+    qc("#keyup").bind("keyup", function(ev) {
+        print(ev.code);
+    });
+</script>
+
+</body>
+</html>

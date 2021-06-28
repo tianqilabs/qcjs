@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>qcjs help</title>
+    <script src="../link.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p></p>
+    <h2>colorpicker</h2>
+    <p>Color picker</p>
+
+    <p></p>
+    <h4>Static call</h4>
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+        &lt;button id="color1" qc-for="colorpicker"&gt;
+                Show colorpicker&lt;/button&gt;
+
+        &lt;button id="color2" qc-for="colorpicker" qc-target="#text"
+            qc-colorpicker-mode="list" qc-clolorpicker-css="background-color"&gt;
+                Show colorpicker (background-color)&lt;/button&gt;
+        &lt;span id="text"&gt; text bgColor &lt;/span&gt;
+
+    </pre>
+
+    <p></p>
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <p style="padding-left: 32px;">
+            <button id="color1" qc-for="colorpicker">
+                Show colorpicker
+            </button>
+            <button id="color2" qc-colorpicker-css="background-color" qc-colorpicker-mode="list" qc-for="colorpicker"
+                    qc-target="#text">
+                Show colorpicker (background-color)
+            </button>
+            <span id="text"> text bgColor </span>
+        </p>
+    </div>
+
+    <p></p>
+    <h4>Dynamic call</h4>
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+        &lt;button id="color3"&gt;dyShow with panel&lt;/button&gt;
+        &lt;button id="color4"&gt;dyShow with list&lt;/button&gt;
+        &lt;span id="text2"&gt; text bgColor &lt;/span&gt;
+
+        // javascript
+        qc(function () {
+            qc("#color3").click(function () {
+                var obj = qc(this);
+                qc.colorpicker.dyShow(obj, obj.css("color"), "panel", function(color) {
+                    obj.css("color", color);
+                });
+            });
+
+            qc("#color4").click(function () {
+                var obj = qc("#text1");
+                qc.colorpicker.dyShow(obj, obj.css("background-color"), "list", function(color) {
+                    obj.css("background-color", color);
+                });
+            });
+
+        });
+
+    </pre>
+
+    <p></p>
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <p style="padding-left: 32px;">
+            <button id="color3"> dyShow with panel</button>
+            <button id="color4"> dyShow with list</button>
+            <span id="text1"> text bgColor </span>
+        </p>
+    </div>
+</div>
+<script>
+    // javascript
+    qc(function () {
+        qc("#color3").click(function () {
+            var obj = qc(this);
+            qc.colorpicker.dyShow(obj, obj.css("color"), "panel", function (color) {
+                obj.css("color", color);
+            });
+        });
+
+        qc("#color4").click(function () {
+            var obj = qc("#text1");
+            qc.colorpicker.dyShow(obj, obj.css("background-color"), "list", function (color) {
+                obj.css("background-color", color);
+            });
+        });
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<title>qcjs help</title>
+<script src="../link.js"></script>
+<style>
+</style>
+</head>
+<body>
+<div class="left">
+<div class="menu"></div>
+</div>
+<div class="right">
+<p></p>
+<h2>util</h2>
+<p></p>
+<h4>qc.util.init([...obj])</h4>
+<dl><dl>
+<dt>obj:</dt>
+<dd>Type: QC Widget</dd>
+<dd>
+            One or more widget controls
+        </dd>
+</dl></dl>
+<p></p>
+<h4>qc.util.addStart(fn)</h4>
+<dl><dl>
+<dt>fn:</dt>
+<dd>Type: Function</dd>
+<dd>util The method to be executed before initializing the widget. </dd>
+</dl></dl>
+<p></p>
+<h4>qc.util.addInited(fn)</h4>
+<dl><dl>
+<dt>fn:</dt>
+<dd>Type: Function</dd>
+<dd>util The method to be executed after initializing the widget. </dd>
+</dl></dl>
+<p></p>
+<h4>qc.util.getKeys(contrl[, args])</h4>
+<p><p>Description: Generate an args object based on the qc-key and qc-need of the widget. And generate the key attribute and value. </p></p>
+<dl><dl>
+<dt>contrl:</dt>
+<dd>Type: QC Widget</dd>
+<dd>
+            QC widget.
+        </dd>
+<dt>args:</dt>
+<dd>Type: Object</dd>
+<dd>
+            Submit the data object.
+        </dd>
+<dt>return:</dt>
+<dd>Type: Object</dd>
+<dd>
+            Return the object.
+        </dd>
+</dl></dl>
+<p></p>
+<h4>qc.util.getFields(contrl[, attr, args])</h4>
+<p><p>Description: Generate an args object based on the attr attribute of the widget. And generate the key attribute and value. </p></p>
+<dl><dl>
+<dt>contrl:</dt>
+<dd>Type: QC Widget</dd>
+<dd>
+            QC widget.
+        </dd>
+<dt>attr:</dt>
+<dd>Type: String</dd>
+<dd>
+            Generally refers to qc-key, qc-need, etc. The attr parameter is not defined, and all the qc-fields of the widget are traversed.
+        </dd>
+<dt>return:</dt>
+<dd>Type: Object</dd>
+<dd>
+            Return the object.
+        </dd>
+</dl></dl>
+<p></p>
+<h4>qc.util.getVal(obj[, args])</h4>
+<p><p>Description: Update the qc-value attribute of the object and return the qc-value. If you define args, set the args object. </p></p>
+<dl><dl>
+<dt>obj:</dt>
+<dd>Type: QC Object</dd>
+<dd>
+            QC object.
+        </dd>
+<dt>args:</dt>
+<dd>Type: Object</dd>
+<dd>
+            Submit the data object.
+        </dd>
+<dt>return:</dt>
+<dd>Type: String or Array or HTMLInputElement</dd>
+<dd>
+            Returns the qc-value value.
+        </dd>
+</dl></dl>
+<p></p>
+<h4>
+        qc.util.get(obj[, args, callback]) <br/>
+        qc.util.post(obj[, args, callback]) <br/>
+        qc.util.upload(obj[, args, callback])
+    </h4>
+<p><p>Description:
+        get: get data, post: submit data, upload: upload file.
+        Corresponding widget attributes qc-get, qc-post, qc-upload. </p></p>
+<dl><dl>
+<dt>obj:</dt>
+<dd>Type: QC Object</dd>
+<dd>
+            QC object.
+        </dd>
+<dt>args:</dt>
+<dd>Type: Object</dd>
+<dd>
+            Submit the data object.
+        </dd>
+<dt>callback:</dt>
+<dd>Type: Function(d, re)</dd>
+<p>Callback method. </p>
+<dd>
+<div>d: </div>
+<p>Type: JSON Object</p>
+<p>{"rows": array length, "data": array, "pages": total number of pages, "total": total number},</p>
+<div>re: </div>
+<p>Type: Object</p>
+<p>
+                {"contrl": widget object, "curr": current object, "args": parameters when transferring data}.
+            </p>
+</dd>
+</dl></dl>
+</div>
+<script>
+</script>
+</body>
+</html>

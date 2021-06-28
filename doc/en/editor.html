@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>qcjs help</title>
+    <script src="../link.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p></p>
+    <h2>editor</h2>
+    <p>Edit box</p>
+
+    <p></p>
+    <h4>Attributes</h4>
+    <dl>
+        <dt>qc-mode</dt>
+        <dd>
+            <ul>
+                <li>
+                    When qc-control ='editor' tag, multiples are separated by spaces.
+                    <div style="line-height: 2;">
+                        normal: Submit data manually. <br/>
+                        auto: The default value, automatically submit data. <br/>
+                        static: Default value, static display. <br/>
+                        fixed: fixed to the element. <br/>
+                    </div>
+                </li>
+                <li>
+                    When defining the authentication method in the qc-field tag, multiples are separated by spaces.
+                    <div style="line-height: 2;">
+                        change: The default value, validated in the change event. <br/>
+                        focus: Verify during focus event. <br/>
+                        blur: Validate during blur event. <br/>
+                        keyup: verify at keyup event
+                        submit: Verify when submitting.
+                    </div>
+                </li>
+            </ul>
+        </dd>
+        <dt>qc-get, qc-post</dt>
+        <dd>
+            The link or method of data exchange. <br/>
+            Method parameters:
+            <ul>
+                <li>re: object.</li>
+                <li>callee: callback function.</li>
+            </ul>
+        </dd>
+        <dt>qc-field</dt>
+        <dd>
+            The attribute name of the data object.
+        </dd>
+        <dt>qc-value</dt>
+        <dd>
+            The value of the data object.
+        </dd>
+        <dt>qc-rule</dt>
+        <dd>Data validation rules, multiple rules are separated by spaces.
+            <div style="line-height: 2;">
+                number: number format<br/>
+                date: Date format<br/>
+                notnull: not null<br/>
+                maxlen(len): The length cannot be greater than len <br/>
+                format(str): Custom format. str: js regular expression string
+            </div>
+        </dd>
+        <dt>qc-success</dt>
+        <dd>
+            The object triggered after successful verification, a CSS selector string.
+        </dd>
+        <dt>qc-failure</dt>
+        <dd>
+            The object triggered after validation fails, a CSS selector string.
+        </dd>
+    </dl>
+
+    <p></p>
+    <h4>Methods</h4>
+    <dl>
+        <dt>qc.editor.get(contrl[, args, callee])</dt>
+        <dd>
+            <ul>
+                <li>Load data.</li>
+                <li>
+                    Parameters: contrl
+                    <p class="indent">
+                        A selector widget object.
+                    </p>
+                    Parameters: args
+                    <p class="indent">
+                        The parameter object passed in.
+                    </p>
+                    Parameters: callee
+                    <p class="indent">
+                        Callback. callee(d, re), d: data, re: {contrl, curr, args}.
+                    </p>
+                </li>
+            </ul>
+        </dd>
+        <dt>qc.editor.change(obj[, callee])</dt>
+        <dd>
+            <ul>
+                <li>Triggered when the data changes, submit the data.</li>
+                <li>
+                    Parameters: obj
+                    <p class="indent">
+                        {contrl, curr, ev}, contrl: widget object, curr: current object, ev: Event.
+                    </p>
+                    Parameters: callee
+                    <p class="indent">
+                        Callback. callee(d, re), d: data, re: {contrl, curr, args}.
+                    </p>
+                </li>
+            </ul>
+        </dd>
+        <dt>qc.editor.post(contrl[, args, callee])</dt>
+        <dd>
+            <ul>
+                <li>Submit data.</li>
+                <li>
+                    Parameters: contrl
+                    <p class="indent">
+                        editor object.
+                    </p>
+                    Parameters: args
+                    <p class="indent">
+                        The parameter object passed in.
+                    </p>
+                    Parameters: callee
+                    <p class="indent">
+                        Callback. callee(d, re), d: data, re: {contrl, curr, args}.
+                    </p>
+                </li>
+            </ul>
+        </dd>
+        <dt>qc.editor.verify(obj)</dt>
+        <dd>
+            <ul>
+                <li>Verify the data.</li>
+                <li>
+                    Parameters: obj
+                    <p class="indent">
+                        QC object.
+                    </p>
+                    Returns: boolean
+                    <p class="indent">
+                        Verify the result and call the qc.editor.showMsg method at the same time.
+                    </p>
+                </li>
+            </ul>
+        </dd>
+        <dt>qc.editor.showMsg(obj[, re])</dt>
+        <dd>
+            <ul>
+                <li>The verification result is prompted, and the object is displayed according to the qc-success and
+                    qc-failure of obj.
+                </li>
+                <li>
+                    Parameters: obj
+                    <p class="indent">
+                        QC object.
+                    </p>
+                    Parameters: re
+                    <p class="indent">
+                        boolean, true for successful verification, false for failure.
+                    </p>
+                </li>
+            </ul>
+        </dd>
+        <dt>qc.editor.hideMsg(obj)</dt>
+        <dd>
+            <ul>
+                <li>Hide the verification prompt.</li>
+                <li>
+                    Parameters: obj
+                    <p class="indent">
+                        QC object. If qc-control, hide all verification prompts.
+                    </p>
+                </li>
+            </ul>
+        </dd>
+    </dl>
+
+    <p></p>
+    <h4>post example</h4>
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+       &lt;div id="editor2" qc-control="editor" qc-post="post2"&gt;
+            name:
+            &lt;input qc-field="name" type="text"&gt;
+
+            render:
+            &lt;select qc-control="selector" qc-field="gender"&gt;
+                &lt;option value=""/&gt;
+                &lt;option value="male"&gt;male&lt;/option&gt;
+                &lt;option value="female"&gt;female&lt;/option&gt;
+            &lt;/select&gt;
+
+            age:
+            &lt;input qc-field="age" type="text"&gt;
+            &lt;/div&gt;
+            &lt;button qc-fn="post_submit"&gt;Submit all&lt;/button&gt;
+        
+            &lt;p&gt; &lt;/p&gt;
+            &lt;div id="post2"&gt; &lt;/div&gt;
+        &lt;/div&gt;
+
+        // javascript
+        qc("#set1").click(function () {
+            qc.selector.val(qc("#setval"), 2);
+        });
+    </pre>
+
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <div style="padding: 16px 32px;">
+            <div id="editor2" qc-control="editor" qc-post="post2" style="line-height: 2.5;">
+                name:
+                <input class="text" qc-field="name" type="text"/>
+
+                render:
+                <select qc-control="selector" qc-field="gender">
+                    <option value=""/>
+                    <option value="male">male</option>
+                    <option value="female">female</option>
+                </select>
+
+                age:
+                <input class="text" qc-field="age" type="text"/>
+            </div>
+            <button qc-fn="post_submit">Submit all</button>
+            <p></p>
+            <div id="post2"></div>
+        </div>
+        <script>
+            function post2(re, callee) {
+                var args = re.args, lines = [];
+                for (var k in args) {
+                    if (k != "key")
+                        lines.push(k + "='" + args[k] + "'");
+                }
+                qc("#post2").html(lines.join(""));
+            }
+
+            function post_submit(obj) {
+                qc("#editor2").change();
+            }
+        </script>
+    </div>
+
+    <p></p>
+    <h4>verify example</h4>
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+        &lt;style&gt;
+            .success {
+                color: green;
+            }
+
+            .failure {
+                color: red;
+            }
+        &lt;/style&gt;
+        &lt;div id="editor3" qc-control="editor" qc-mode="normal" qc-post="post3"&gt;
+            name:
+            &lt;input id="name3" qc-failure="#name_failure" qc-field="name" qc-mode="blur" qc-rule="notnull"
+                   qc-success="#name_success" type="text"&gt;
+            &lt;span class="success" id="name_success"&gt;&lt;i class="fa fa-check"/&gt;&lt;/span&gt;
+            &lt;span class="failure" id="name_failure"&gt;&lt;i class="fa fa-times"/&gt;&lt;/span&gt;
+
+            render:
+            &lt;select qc-control="selector" qc-field="gender"&gt;
+                &lt;option value=""/&gt;
+                &lt;option value="male"&gt;male&lt;/option&gt;
+                &lt;option value="female"&gt;female&lt;/option&gt;
+            &lt;/select&gt;
+
+            age:
+            &lt;input qc-failure="#age_failure" qc-field="age" qc-rule="number maxlen(2)"
+                qc-success="#age_success" type="text"&gt;
+            &lt;span class="success" id="age_success"&gt;&lt;i class="fa fa-check"/&gt;&lt;/span&gt;
+            &lt;span class="failure" id="age_failure"&gt;&lt;i class="fa fa-times"/&gt;&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;button qc-fn="verify_submit"&gt; Manual submission &lt;/button&gt;
+        &lt;button qc-fn="hide_name"&gt; Hide name verification information &lt;/button&gt;
+        &lt;button qc-fn="hide_all"&gt; Hide all verification information &lt;/button&gt;
+
+        // javascript
+        function post3(re, callee) {
+            var args = re.args, lines = [];
+            for (var k in args) {
+                if (k != "key")
+                    lines.push(k + "='" + args[k] + "'");
+            }
+            qc("#post3").html(lines.join(""));
+        }
+
+        function verify_submit(obj) {
+            qc("#post3").html("");
+            qc("#editor3").change();
+        }
+
+        function hide_name() {
+            qc.editor.hideMsg(qc("#name3"));
+        }
+
+        function hide_all() {
+            qc.editor.hideMsg(qc("#editor3"));
+        }
+
+    </pre>
+
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <style>
+            .success {
+                color: green;
+            }
+
+            .failure {
+                color: red;
+            }
+        </style>
+        <div style="padding: 16px 32px;">
+            <div id="editor3" qc-control="editor" qc-mode="normal" qc-post="post3" style="line-height: 2.5;">
+                name:
+                <input class="text" id="name3" qc-failure="#name_failure"
+                       qc-field="name" qc-mode="blur" qc-rule="notnull" qc-success="#name_success" type="text"/>
+                <span class="success" id="name_success"><i class="fa fa-check"></i></span>
+                <span class="failure" id="name_failure"><i class="fa fa-times"></i></span>
+
+                render:
+                <select qc-control="selector" qc-field="gender">
+                    <option value=""/>
+                    <option value="male">male</option>
+                    <option value="female">female</option>
+                </select>
+
+                age:
+                <input class="text" qc-failure="#age_failure" qc-field="age" qc-rule="number maxlen(2)"
+                       qc-success="#age_success" type="text"/>
+                <span class="success" id="age_success"><i class="fa fa-check"></i></span>
+                <span class="failure" id="age_failure"><i class="fa fa-times"></i></span>
+            </div>
+            <button qc-fn="verify_submit"> Manual submission</button>
+            <button qc-fn="hide_name"> Hide name verification information</button>
+            <button qc-fn="hide_all"> Hide all verification information</button>
+            <p></p>
+            <div id="post3"></div>
+            <p></p>
+            <p></p>
+            <p></p>
+        </div>
+        <script>
+            function post3(re, callee) {
+                var args = re.args, lines = [];
+                for (var k in args) {
+                    if (k != "key")
+                        lines.push(k + "='" + args[k] + "'");
+                }
+                qc("#post3").html(lines.join(""));
+            }
+
+            function verify_submit(obj) {
+                qc("#post3").html("");
+                qc("#editor3").change();
+            }
+
+            function hide_name() {
+                qc.editor.hideMsg(qc("#name3"));
+            }
+
+            function hide_all() {
+                qc.editor.hideMsg(qc("#editor3"));
+            }
+        </script>
+    </div>
+</div>
+<script>
+</script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p> </p>
+    <h2>历遍</h2>
+
+    <p> </p>
+    <table>
+        <tr>
+            <th>方法</th>
+            <th>描述</th>
+        </tr>
+        <tr>
+            <td>first(selector)</td>
+            <td>将匹配元素集合缩减为集合中的第一个元素。</td>
+        </tr>
+        <tr>
+            <td>last</td>
+            <td>将匹配元素集合缩减为集合中的最后一个元素。</td>
+        </tr>
+        <tr>
+            <td>move(dir[, selector, once])</td>
+            <td>
+                获得匹配元素集合中每个元素紧邻的同辈元素。
+                <dl>
+                    <dt>dir</dt>
+                    <dd>
+                        移动方向，next (后面) 或 prev (前面) 或 parent (父级)，默认: next。
+                    </dd>
+                    <dt>selector</dt>
+                    <dd>
+                        可选，如果提供选择器，则根据 dir 的方向取回匹配该选择器的一个同胞元素。
+                    </dd>
+                    <dt>once</dt>
+                    <dd>
+                        可选，boolean 类型，默认 false。是否只移动一次。
+                    </dd>
+                </dl>
+            </td>
+        </tr>
+        <tr>
+            <td>prev(selector)</td>
+            <td>获得匹配元素集合中每个元素紧邻的同胞前一个元素。如果提供选择器，匹配是否相同。</td>
+        </tr>
+        <tr>
+            <td>prevAll(selector)</td>
+            <td>获得匹配元素集合中每个元素紧邻的同胞前所有元素。如果提供选择器，则取匹配相同。</td>
+        </tr>
+        <tr>
+            <td>next(selector)</td>
+            <td>获得匹配元素集合中每个元素紧邻的同胞后一个元素。如果提供选择器，匹配是否相同。</td>
+        </tr>
+        <tr>
+            <td>nextAll(selector)</td>
+            <td>获得匹配元素集合中每个元素紧邻的同胞后所有元素。如果提供选择器，则取匹配相同。</td>
+        </tr>
+        <tr>
+            <td>parent(selector)</td>
+            <td>获得匹配元素集合中每个元素的一个父级元素。如果提供选择器，匹配是否相同。</td>
+        </tr>
+        <tr>
+            <td>parents(selector)</td>
+            <td>获得匹配元素集合中每个元素的所有父级元素。如果提供选择器，则取匹配相同。</td>
+        </tr>
+        <tr>
+            <td>closest(selector)</td>
+            <td>方法获得匹配选择器的第一个祖先元素，从当前元素开始沿 DOM 树向上。</td>
+        </tr>
+        <tr>
+            <td>filter(selector)</td>
+            <td>将匹配元素集合缩减为匹配指定选择器的元素。</td>
+        </tr>
+        <tr>
+            <td>contents(selector)</td>
+            <td>获得匹配元素集合中每个元素的子节点，包括文本和注释节点。</td>
+        </tr>
+        <tr>
+            <td>eq(index)</td>
+            <td>匹配元素集缩减值指定 index 上的一个。</td>
+        </tr>
+        <tr>
+            <td>find(selector)</td>
+            <td>获得当前元素集合中每个元素的后代，通过选择器、QC 对象或元素来筛选。</td>
+        </tr>
+        <tr>
+            <td>is(selector)</td>
+            <td>根据选择器、元素或 QC 对象来检测匹配元素集合，如果这些元素中至少有一个元素匹配给定的参数，则返回 true。</td>
+        </tr>
+        <tr>
+            <td>index()</td>
+            <td>获得第一个匹配元素相对于父节点的子节点的 index 位置， 不包含文本和注释节点。</td>
+        </tr>
+        <tr>
+            <td>indexAll(isEl)</td>
+            <td>
+                获得第一个匹配元素相对于父节点的子节点的 index 位置， 包含文本和注释节点。
+                <dl>
+                    <dt>isEl</dt>
+                    <dd>
+                        可选。
+                        <p class="indent">
+                            isEl == true 时，返回同级节点为 Element 的 index 位置，等同 index() 方法。<br>
+                            isEl == undefined || false 时，返回同级节点的 index 位置 (包含文本和注释节点)。
+                        </p>
+                    </dd>
+                </dl>
+            </td>
+        </tr>
+    </table>
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html
+        &lt;ul&gt;
+            &lt;li&gt;a1&lt;/li&gt;
+            &lt;li&gt;a2&lt;/li&gt;
+            &lt;li class="a3"&gt;a3&lt;/li&gt;
+            &lt;li&gt;a4&lt;/li&gt;
+            &lt;li&gt;a5&lt;/li&gt;
+        &lt;/ul&gt;
+
+        // javascript
+        function print(obj) {
+            var ary = [];
+            obj.each(function () {
+                ary.push(this.outerHTML);
+            });
+            console.log(ary.join("\n"));
+        }
+
+        var lis = qc("li");
+
+        print(lis.first());     // &lt;li&gt;a1&lt;/li&gt;
+        print(lis.last());      // &lt;li&gt;a5&lt;/li&gt;
+
+        var a3 = lis.eq(2);
+        print(a3);              // &lt;li class="a3"&gt;a3&lt;/li&gt;
+
+        print(a3.prev());       // &lt;li&gt;a2&lt;/li&gt;
+
+        print(a3.prevAll());    // &lt;li&gt;a2&lt;/li&gt;
+                                // &lt;li&gt;a1&lt;/li&gt;
+
+        print(a3.next());       // &lt;li&gt;a4&lt;/li&gt;
+
+        print(a3.nextAll());    // &lt;li&gt;a4&lt;/li&gt;
+                                // &lt;li&gt;a5&lt;/li&gt;
+
+        print(a3.closest("ul"));       // &lt;ul&gt;
+                                       //     &lt;li&gt;a1&lt;/li&gt;
+                                       //     &lt;li&gt;a2&lt;/li&gt;
+                                       //     &lt;li class="a3"&gt;a3&lt;/li&gt;
+                                       //     &lt;li&gt;a4&lt;/li&gt;
+                                       //     &lt;li&gt;a5&lt;/li&gt;
+                                       // &lt;/ul&gt;
+
+        print(a3.parent());
+        print(a3.parents("ul"));       // &lt;ul&gt;
+                                       //     &lt;li&gt;a1&lt;/li&gt;
+                                       //     &lt;li&gt;a2&lt;/li&gt;
+                                       //     &lt;li class="a3"&gt;a3&lt;/li&gt;
+                                       //     &lt;li&gt;a4&lt;/li&gt;
+                                       //     &lt;li&gt;a5&lt;/li&gt;
+                                       // &lt;/ul&gt;
+
+        print(lis.filter(".a3"));      // &lt;li class="a3"&gt;a3&lt;/li&gt;
+
+        print(qc("ul").contents());    // &lt;li&gt;a1&lt;/li&gt;
+                                       // &lt;li&gt;a2&lt;/li&gt;
+                                       // &lt;li class="a3"&gt;a3&lt;/li&gt;
+                                       // &lt;li&gt;a4&lt;/li&gt;
+                                       // &lt;li&gt;a5&lt;/li&gt;
+
+        var a31 = lis.find(".a3");
+        print(a31);                    // &lt;li class="a3"&gt;a3&lt;/li&gt;
+
+        console.log(a31.is(".a3"));    // true
+
+        console.log(a31.index());      // 2
+
+        console.log(a31.indexAll());   // 5
+    </pre>
+
+</div>
+
+<script>
+    qc.util.setLangDir("../lang");
+</script>
+
+</body>
+</html>

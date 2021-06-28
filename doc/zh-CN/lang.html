@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN" qc-lang-dir="./lang" qc-lang-global="global">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p></p>
+    <h2>多国语言</h2>
+    <p>qcjs 小部件使用到的按钮、标题支持多国语言。</p>
+    <p>文档在 lang 文件夹里，命名方式：en.js (英文)，zh-CN.js (简体中文)。</p>
+
+    <p> </p>
+    <h3>说明</h3>
+
+    <p> </p>
+    <h4>qc.lang[widgetName] = {名称: 值}</h4>
+    <dl>
+        <dt>widgetName:</dt>
+        <dd>Type：String</dd>
+        <dd>
+            小部件名称或对象名
+        </dd>
+    </dl>
+
+    <p></p>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // global.js
+        qc.lang.global = {
+            "en": "English",
+            "zh-CN": "中文（简体）"
+        };
+
+        // zh-CN.js
+        qc.lang.popfrm = {
+            "OK": "确定",         // 小部件: popfrm，名称: OK，值: 确定
+            "cancel": "取消",      // 小部件: popfrm，名称: cancel，值: 取消
+            ...
+        };
+
+        // en.js
+        qc.lang.popfrm = {
+            "OK": "OK",
+            "cancel": "Cancel",
+            ...
+        };
+
+    </pre>
+
+    <p></p>
+    <h3>使用</h3>
+
+    <p> </p>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html 标签
+        &lt;html lang="zh-CN" qc-lang-dir="../lang" qc-lang-global="global"&gt;
+
+        // javascript:
+        qc.util.setLangDir('../lang');
+        qc.util.setLangGlobal('global');
+        qc.util.setLangName('zh-CN');
+    </pre>
+
+    <p> </p>
+    <h3>方法</h3>
+
+    <p> </p>
+    <h4>qc.util.setLangDir(dirPath)</h4>
+    <dl>
+        <dt>dirPath</dt>
+        <dd>Type: String</dd>
+        <dd>多国语言路径</dd>
+    </dl>
+
+    <p> </p>
+    <h4>qc.util.getLangDir()</h4>
+    <dl>
+        <dt>return</dt>
+        <dd>Type: String</dd>
+        <dd>返回多国语言路径</dd>
+    </dl>
+
+    <p> </p>
+    <h4>qc.util.setLangGlobal(fileName)</h4>
+    <dl>
+        <dt>fileName</dt>
+        <dd>Type：String</dd>
+        <dd>
+            设置语言列表文件名。
+        </dd>
+    </dl>
+
+    <p> </p>
+    <h4>qc.util.getLangGlobal()</h4>
+    <dl>
+        <dt>return</dt>
+        <dd>Type：String</dd>
+        <dd>
+            返回语言列表文件名。
+        </dd>
+    </dl>
+
+    <p> </p>
+    <h4>qc.util.setLangName(langName)</h4>
+    <dl>
+        <dt>fileName:</dt>
+        <dd>Type：String</dd>
+        <dd>
+            设置当前使用的语言。
+        </dd>
+    </dl>
+
+    <p> </p>
+    <h4>qc.util.getLangName()</h4>
+    <dl>
+        <dt>return</dt>
+        <dd>Type：String</dd>
+        <dd>
+            返回当前使用的语言。
+        </dd>
+    </dl>
+
+    <p> </p>
+    <h4>qc.util.initLang([langName, callback])</h4>
+    <p>初始化语言</p>
+    <dl>
+        <dt>langName</dt>
+        <dd>Type：String</dd>
+        <dd>
+            当前使用的语言。
+        </dd>
+        <dt>callback</dt>
+        <dd>Type：Function</dd>
+        <dd>
+            回调方法。
+        </dd>
+    </dl>
+
+    <p> </p>
+    <h4>qc.util.lang(obj, name[, attr, controlName])</h4>
+    <p>设置语言</p>
+    <dl>
+        <dt>obj</dt>
+        <dd>Type：QC</dd>
+        <dd>
+            要设置的 QC 对象。
+        </dd>
+        <dt>name</dt>
+        <dd>Type：String</dd>
+        <dd>
+            对象的属性名称。
+        </dd>
+        <dt>attr</dt>
+        <dd>Type：String</dd>
+        <dd>
+            Html 元素属性，html: 替换 Html 元素的内容，title/value: 替换 Html 元素的属性。<br>
+            支持多个属性，英文逗号分隔符。<br>
+            默认：title
+        </dd>
+        <dt>controlName</dt>
+        <dd>Type：String</dd>
+        <dd>
+            小部件或对象名称。<br>
+            默认：对象所属的小部件。
+        </dd>
+    </dl>
+
+</div>
+
+<script>
+</script>
+
+</body>
+</html>

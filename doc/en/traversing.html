@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>qcjs help</title>
+    <script src="../link.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p></p>
+    <h2>Traversal</h2>
+    <p></p>
+    <table>
+        <tr>
+            <th>Method</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>first(selector)</td>
+            <td> Reduce the set of matched elements to the first element in the set.</td>
+        </tr>
+        <tr>
+            <td>last</td>
+            <td> Reduce the set of matched elements to the last element in the set.</td>
+        </tr>
+        <tr>
+            <td>move(dir[, selector, once])</td>
+            <td>
+                Get the sibling element next to each element in the set of matched elements.
+                <dl>
+                    <dt>dir</dt>
+                    <dd>
+                        Moving direction, next (back) or prev (front) or parent (parent), default: next.
+                    </dd>
+                    <dt>selector</dt>
+                    <dd>
+                        Optional, if a selector is provided, a sibling element that matches the selector will be
+                        retrieved according to the direction of dir.
+                    </dd>
+                    <dt>once</dt>
+                    <dd>
+                        Optional, boolean type, default false. Whether to move only once.
+                    </dd>
+                </dl>
+            </td>
+        </tr>
+        <tr>
+            <td>prev(selector)</td>
+            <td> Get the element immediately before the sibling of each element in the set of matched elements. If a
+                selector is provided, are the matches the same.
+            </td>
+        </tr>
+        <tr>
+            <td>prevAll(selector)</td>
+            <td> Get all the elements immediately before the siblings of each element in the set of matched
+                elements. If a selector is provided, the match is the same.
+            </td>
+        </tr>
+        <tr>
+            <td>next(selector)</td>
+            <td> Get the next element of each element in the set of matched elements. If a selector is provided, are
+                the matches the same.
+            </td>
+        </tr>
+        <tr>
+            <td>nextAll(selector)</td>
+            <td> Get all the elements immediately after the sibling of each element in the set of matched elements.
+                If a selector is provided, the match is the same.
+            </td>
+        </tr>
+        <tr>
+            <td>parent(selector)</td>
+            <td> Get a parent element of each element in the set of matched elements. If a selector is provided, are
+                the matches the same.
+            </td>
+        </tr>
+        <tr>
+            <td>parents(selector)</td>
+            <td> Get all the parent elements of each element in the set of matched elements. If a selector is
+                provided, the match is the same.
+            </td>
+        </tr>
+        <tr>
+            <td>closest(selector)</td>
+            The
+            <td> method gets the first ancestor element that matches the selector, starting from the current element
+                and going up the DOM tree.
+            </td>
+        </tr>
+        <tr>
+            <td>filter(selector)</td>
+            <td> Reduce the set of matched elements to elements that match the specified selector.</td>
+        </tr>
+        <tr>
+            <td>contents(selector)</td>
+            <td>Get the child nodes of each element in the set of matched elements, including text and comment
+                nodes.
+            </td>
+        </tr>
+        <tr>
+            <td>eq(index)</td>
+            <td> The reduced value of the matched element set specifies one at index.</td>
+        </tr>
+        <tr>
+            <td>find(selector)</td>
+            <td>Get the descendants of each element in the current element set, and filter by selector, QC object or
+                element.
+            </td>
+        </tr>
+        <tr>
+            <td>is(selector)</td>
+            <td> Detect the set of matched elements based on the selector, element or QC object, and return true if
+                at least one of these elements matches the given parameter.
+            </td>
+        </tr>
+        <tr>
+            <td>index()</td>
+            <td> Get the index position of the first matching element relative to the child node of the parent node,
+                excluding text and comment nodes.
+            </td>
+        </tr>
+        <tr>
+            <td>indexAll(isEl)</td>
+            <td>
+                Get the index position of the first matching element relative to the child node of the parent node,
+                including text and comment nodes.
+                <dl>
+                    <dt>isEl</dt>
+                    <dd>
+                        Optional.
+                        <p class="indent">
+                            When isEl == true, the index position of the element at the same level is returned,
+                            which is equivalent to the index() method. <br/>
+                            When isEl == undefined || false, return the index position of the node at the same level
+                            (including text and comment nodes).
+                        </p>
+                    </dd>
+                </dl>
+            </td>
+        </tr>
+    </table>
+
+    <p></p>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html
+        &lt;ul&gt;
+            &lt;li&gt;a1&lt;/li&gt;
+            &lt;li&gt;a2&lt;/li&gt;
+            &lt;li class="a3"&gt;a3&lt;/li&gt;
+            &lt;li&gt;a4&lt;/li&gt;
+            &lt;li&gt;a5&lt;/li&gt;
+        &lt;/ul&gt;
+
+        // javascript
+        function print(obj) {
+            var ary = [];
+            obj.each(function () {
+                ary.push(this.outerHTML);
+            });
+            console.log(ary.join("\n"));
+        }
+
+        var lis = qc("li");
+
+        print(lis.first());     // &lt;li&gt;a1&lt;/li&gt;
+        print(lis.last());      // &lt;li&gt;a5&lt;/li&gt;
+
+        var a3 = lis.eq(2);
+        print(a3);              // &lt;li class="a3"&gt;a3&lt;/li&gt;
+
+        print(a3.prev());       // &lt;li&gt;a2&lt;/li&gt;
+
+        print(a3.prevAll());    // &lt;li&gt;a2&lt;/li&gt;
+                                // &lt;li&gt;a1&lt;/li&gt;
+
+        print(a3.next());       // &lt;li&gt;a4&lt;/li&gt;
+
+        print(a3.nextAll());    // &lt;li&gt;a4&lt;/li&gt;
+                                // &lt;li&gt;a5&lt;/li&gt;
+
+        print(a3.closest("ul"));       // &lt;ul&gt;
+                                       //     &lt;li&gt;a1&lt;/li&gt;
+                                       //     &lt;li&gt;a2&lt;/li&gt;
+                                       //     &lt;li class="a3"&gt;a3&lt;/li&gt;
+                                       //     &lt;li&gt;a4&lt;/li&gt;
+                                       //     &lt;li&gt;a5&lt;/li&gt;
+                                       // &lt;/ul&gt;
+
+        print(a3.parent());
+        print(a3.parents("ul"));       // &lt;ul&gt;
+                                       //     &lt;li&gt;a1&lt;/li&gt;
+                                       //     &lt;li&gt;a2&lt;/li&gt;
+                                       //     &lt;li class="a3"&gt;a3&lt;/li&gt;
+                                       //     &lt;li&gt;a4&lt;/li&gt;
+                                       //     &lt;li&gt;a5&lt;/li&gt;
+                                       // &lt;/ul&gt;
+
+        print(lis.filter(".a3"));      // &lt;li class="a3"&gt;a3&lt;/li&gt;
+
+        print(qc("ul").contents());    // &lt;li&gt;a1&lt;/li&gt;
+                                       // &lt;li&gt;a2&lt;/li&gt;
+                                       // &lt;li class="a3"&gt;a3&lt;/li&gt;
+                                       // &lt;li&gt;a4&lt;/li&gt;
+                                       // &lt;li&gt;a5&lt;/li&gt;
+
+        var a31 = lis.find(".a3");
+        print(a31);                    // &lt;li class="a3"&gt;a3&lt;/li&gt;
+
+        console.log(a31.is(".a3"));    // true
+
+        console.log(a31.index());      // 2
+
+        console.log(a31.indexAll());   // 5
+    </pre>
+</div>
+<script>
+    qc.util.setLangDir("../lang");
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p></p>
+    <h2>datepicker</h2>
+    <p>
+        时间选择器。
+    </p>
+
+    <p> </p>
+    <h4>属性</h4>
+    <dl>
+        <dt>qc-for</dt>
+        <dd>
+            值：datepicker。
+        </dd>
+        <dt>qc-target</dt>
+        <dd>
+            返回日期值的对象或元素，CSS selector 字符串。
+        </dd>
+        <dt>qc-mode</dt>
+        <dd>
+            date: 默认，日期方式。<br>
+            datetime: 日期时间方式。<br>
+            time: 时间方式。
+        </dd>
+    </dl>
+
+    <p> </p>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+        qc-mode: date (default)
+        &lt;input type="text" qc-for="datepicker" class="datepicker" value="2020-2-3"&gt;
+
+        qc-mode: datetime
+        &lt;input type="text" qc-for="datepicker" qc-mode="datetime" class="datepicker"&gt;
+
+        qc-mode: time
+        &lt;input type="text" qc-for="datepicker" qc-mode="time"  class="datepicker"&gt;
+
+    </pre>
+
+    <p> </p>
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <style>
+            .datepicker {
+                width: 160px;
+                padding: 6px 14px;
+                border: 1px solid #ccc;
+            }
+        </style>
+        <div style="padding: 16px 32px;">
+            qc-mode: date (default)<br>
+            <input type="text" qc-for="datepicker" class="datepicker" value="2020-2-3"><br><br>
+
+            qc-mode: datetime<br>
+            <input type="text" qc-for="datepicker" qc-mode="datetime" class="datepicker"><br><br>
+
+            qc-mode: time<br>
+            <input type="text" qc-for="datepicker" qc-mode="time"  class="datepicker"><br><br>
+        </div>
+
+        <script>
+
+        </script>
+
+    </div>
+
+</div>
+
+<script>
+</script>
+
+</body>
+</html>

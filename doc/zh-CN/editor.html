@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p></p>
+    <h2>editor</h2>
+    <p>编辑框</p>
+
+    <p> </p>
+    <h4>属性</h4>
+    <dl>
+        <dt>qc-mode</dt>
+        <dd>
+            <ul>
+                <li>
+                    在 qc-control = 'editor' 标签时，多个用空格分隔。
+                    <div style="line-height: 2;">
+                        normal: 手动提交数据。<br>
+                        auto: 默认值，自动提交数据。<br>
+                        static: 默认值，静态显示。<br>
+                        fixed: 固定到元素里。<br>
+                    </div>
+                </li>
+                <li>
+                    在 qc-field 标签时，定义验证方式，多个用空格分隔。
+                    <div style="line-height: 2;">
+                        change: 默认值，change 事件时验证。<br>
+                        focus: focus 事件时验证。<br>
+                        blur: blur 事件时验证。<br>
+                        keyup: keyup 事件时验证
+                        submit: 提交时验证。
+                    </div>
+                </li>
+            </ul>
+        </dd>
+
+        <dt>qc-get、qc-post</dt>
+        <dd>
+            数据交换的链接或方法。<br>
+            方法的参数:
+            <ul>
+                <li>re: 对象。</li>
+                <li>callee: 回调函数。</li>
+            </ul>
+        </dd>
+
+        <dt>qc-field</dt>
+        <dd>
+            数据对象的属性名称。
+        </dd>
+
+        <dt>qc-value</dt>
+        <dd>
+            数据对象的值。
+        </dd>
+
+        <dt>qc-rule</dt>
+        <dd>数据验证规则，多个规则用空格分隔。
+            <div style="line-height: 2;">
+                number: 数字格式<br>
+                date: 日期格式<br>
+                notnull: 不能为空<br>
+                maxlen(len): 长度不能大于 len <br>
+                format(str): 自定义格式。str : js 的正则表达式字符串
+            </div>
+        </dd>
+
+        <dt>qc-success</dt>
+        <dd>
+            验证成功后触发的对象，一个 CSS selector 字符串。
+        </dd>
+
+        <dt>qc-failure</dt>
+        <dd>
+            验证失败后触发的对象，一个 CSS selector 字符串。
+        </dd>
+    </dl>
+
+    <p> </p>
+    <h4>方法</h4>
+    <dl>
+        <dt>qc.editor.get(contrl[, args, callee])</dt>
+        <dd>
+            <ul>
+                <li>加载数据。</li>
+                <li>
+                    参数: contrl
+                    <p class="indent">
+                        一个 selector 小部件对象。
+                    </p>
+                    参数: args
+                    <p class="indent">
+                        传入的参数对象。
+                    </p>
+                    参数: callee
+                    <p class="indent">
+                        回调函数。callee(d, re)，d: 数据，re: {contrl, curr, args}。
+                    </p>
+                </li>
+            </ul>
+        </dd>
+
+        <dt>qc.editor.change(obj[, callee])</dt>
+        <dd>
+            <ul>
+                <li>数据改变时触发，提交数据。</li>
+                <li>
+                    参数: obj
+                    <p class="indent">
+                        {contrl, curr, ev}，contrl: 小部件对象，curr: 当前对象，ev: Event。
+                    </p>
+                    参数: callee
+                    <p class="indent">
+                        回调函数。callee(d, re)，d: 数据，re: {contrl, curr, args}。
+                    </p>
+                </li>
+            </ul>
+        </dd>
+
+        <dt>qc.editor.post(contrl[, args, callee])</dt>
+        <dd>
+            <ul>
+                <li>提交数据。</li>
+                <li>
+                    参数: contrl
+                    <p class="indent">
+                        editor 对象。
+                    </p>
+                    参数: args
+                    <p class="indent">
+                        传入的参数对象。
+                    </p>
+                    参数: callee
+                    <p class="indent">
+                        回调函数。callee(d, re)，d: 数据，re: {contrl, curr, args}。
+                    </p>
+                </li>
+            </ul>
+        </dd>
+
+        <dt>qc.editor.verify(obj)</dt>
+        <dd>
+            <ul>
+                <li>验证数据。</li>
+                <li>
+                    参数: obj
+                    <p class="indent">
+                        QC 对象。
+                    </p>
+                    返回: boolean
+                    <p class="indent">
+                        验证结果，同时调用 qc.editor.showMsg 方法。
+                    </p>
+                </li>
+            </ul>
+        </dd>
+
+        <dt>qc.editor.showMsg(obj[, re])</dt>
+        <dd>
+            <ul>
+                <li>验证结果提示，根据 obj 的 qc-success、qc-failure 显示对象。</li>
+                <li>
+                    参数: obj
+                    <p class="indent">
+                        QC 对象。
+                    </p>
+                    参数: re
+                    <p class="indent">
+                        boolean ，验证成功 true，失败 false。
+                    </p>
+                </li>
+            </ul>
+        </dd>
+
+        <dt>qc.editor.hideMsg(obj)</dt>
+        <dd>
+            <ul>
+                <li>隐藏验证提示。</li>
+                <li>
+                    参数: obj
+                    <p class="indent">
+                        QC 对象。如果 qc-control 时，隐藏所有验证提示。
+                    </p>
+                </li>
+            </ul>
+        </dd>
+
+    </dl>
+
+    <p> </p>
+    <h4>post 例子</h4>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+       &lt;div qc-control="editor" qc-post="post2" id="editor2"&gt;
+            name:
+            &lt;input type="text" qc-field="name"&gt;
+
+            render:
+            &lt;select qc-control="selector" qc-field="gender"&gt;
+                &lt;option value=""&gt;&lt;/option&gt;
+                &lt;option value="male"&gt;male&lt;/option&gt;
+                &lt;option value="female"&gt;female&lt;/option&gt;
+            &lt;/select&gt;
+
+            age:
+            &lt;input type="text" qc-field="age"&gt;
+        &lt;/div&gt;
+        &lt;button qc-fn="post_submit"&gt;全部提交&lt;/button&gt;
+
+        &lt;p&gt; &lt;/p&gt;
+        &lt;div id="post2"&gt; &lt;/div&gt;
+
+        // javascript
+        qc("#set1").click(function () {
+            qc.selector.val(qc("#setval"), 2);
+        });
+
+    </pre>
+
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <div style="padding: 16px 32px;">
+            <div qc-control="editor" qc-post="post2" id="editor2" style="line-height: 2.5;">
+                name:
+                <input type="text" qc-field="name" class="text">
+
+                render:
+                <select qc-control="selector" qc-field="gender">
+                    <option value=""></option>
+                    <option value="male">male</option>
+                    <option value="female">female</option>
+                </select>
+
+                age:
+                <input type="text" qc-field="age" class="text">
+            </div>
+            <button qc-fn="post_submit">全部提交</button>
+
+            <p> </p>
+            <div id="post2"> </div>
+        </div>
+
+
+        <script>
+            function post2(re, callee) {
+                var args = re.args, lines = [];
+                for (var k in args) {
+                    if (k != "key")
+                        lines.push(k + " = '" + args[k] + "'");
+                }
+                qc("#post2").html(lines.join("&nbsp;"));
+            }
+
+            function post_submit(obj) {
+                qc("#editor2").change();
+            }
+        </script>
+
+    </div>
+
+    <p> </p>
+    <h4>verify 例子</h4>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+        &lt;style&gt;
+            .success {
+                color: green;
+            }
+
+            .failure {
+                color: red;
+            }
+        &lt;/style&gt;
+        &lt;div qc-control="editor" qc-post="post3" id="editor3" qc-mode="normal"&gt;
+            name:
+            &lt;input type="text" qc-field="name" qc-mode="blur" id="name3"
+                   qc-rule="notnull" qc-success="#name_success" qc-failure="#name_failure"&gt;
+            &lt;span id="name_success" class="success"&gt;&lt;i class="fa fa-check"&gt;&lt;/i&gt;&lt;/span&gt;
+            &lt;span id="name_failure" class="failure"&gt;&lt;i class="fa fa-times"&gt;&lt;/i&gt;&lt;/span&gt;
+
+            render:
+            &lt;select qc-control="selector" qc-field="gender"&gt;
+                &lt;option value=""&gt;&lt;/option&gt;
+                &lt;option value="male"&gt;male&lt;/option&gt;
+                &lt;option value="female"&gt;female&lt;/option&gt;
+            &lt;/select&gt;
+
+            age:
+            &lt;input type="text" qc-field="age"
+                   qc-rule="number maxlen(2)" qc-success="#age_success" qc-failure="#age_failure"&gt;
+            &lt;span id="age_success" class="success"&gt;&lt;i class="fa fa-check"&gt;&lt;/i&gt;&lt;/span&gt;
+            &lt;span id="age_failure" class="failure"&gt;&lt;i class="fa fa-times"&gt;&lt;/i&gt;&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;button qc-fn="verify_submit"&gt; 手动提交 &lt;/button&gt;
+        &lt;button qc-fn="hide_name"&gt; 隐藏 name 验证信息 &lt;/button&gt;
+        &lt;button qc-fn="hide_all"&gt; 隐藏所有验证信息 &lt;/button&gt;
+
+        // javascript
+        function post3(re, callee) {
+            var args = re.args, lines = [];
+            for (var k in args) {
+                if (k != "key")
+                    lines.push(k + " = '" + args[k] + "'");
+            }
+            qc("#post3").html(lines.join("&nbsp;"));
+        }
+
+        function verify_submit(obj) {
+            qc("#post3").html("");
+            qc("#editor3").change();
+        }
+
+        function hide_name() {
+            qc.editor.hideMsg(qc("#name3"));
+        }
+
+        function hide_all() {
+            qc.editor.hideMsg(qc("#editor3"));
+        }
+
+    </pre>
+
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <style>
+            .success {
+                color: green;
+            }
+
+            .failure {
+                color: red;
+            }
+        </style>
+        <div style="padding: 16px 32px;">
+            <div qc-control="editor" qc-post="post3" id="editor3" qc-mode="normal" style="line-height: 2.5;">
+                name:
+                <input type="text" qc-field="name" class="text" qc-mode="blur" id="name3"
+                       qc-rule="notnull" qc-success="#name_success" qc-failure="#name_failure">
+                <span id="name_success" class="success"><i class="fa fa-check"></i></span>
+                <span id="name_failure" class="failure"><i class="fa fa-times"></i></span>
+
+                render:
+                <select qc-control="selector" qc-field="gender">
+                    <option value=""></option>
+                    <option value="male">male</option>
+                    <option value="female">female</option>
+                </select>
+
+                age:
+                <input type="text" qc-field="age" class="text"
+                       qc-rule="number maxlen(2)" qc-success="#age_success" qc-failure="#age_failure">
+                <span id="age_success" class="success"><i class="fa fa-check"></i></span>
+                <span id="age_failure" class="failure"><i class="fa fa-times"></i></span>
+            </div>
+            <button qc-fn="verify_submit"> 手动提交 </button>
+            <button qc-fn="hide_name"> 隐藏 name 验证信息 </button>
+            <button qc-fn="hide_all"> 隐藏所有验证信息 </button>
+
+            <p> </p>
+            <div id="post3"> </div>
+
+            <p> </p>
+            <p> </p>
+            <p> </p>
+        </div>
+
+
+        <script>
+            function post3(re, callee) {
+                var args = re.args, lines = [];
+                for (var k in args) {
+                    if (k != "key")
+                        lines.push(k + " = '" + args[k] + "'");
+                }
+                qc("#post3").html(lines.join("&nbsp;"));
+            }
+
+            function verify_submit(obj) {
+                qc("#post3").html("");
+                qc("#editor3").change();
+            }
+
+            function hide_name() {
+                qc.editor.hideMsg(qc("#name3"));
+            }
+
+            function hide_all() {
+                qc.editor.hideMsg(qc("#editor3"));
+            }
+        </script>
+
+    </div>
+
+</div>
+
+<script>
+</script>
+
+</body>
+</html>

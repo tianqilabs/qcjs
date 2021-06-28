@@ -1,0 +1,7 @@
+/.idea/
+/qcjs-core.iml
+/package.json
+/package-lock.json
+/Gruntfile.js
+/node_modules/
+/test/

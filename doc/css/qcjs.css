@@ -1,0 +1,671 @@
+/*
+ * Copyright 2020 老李, 20390965@qq.com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+html, body {
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.clear {
+    clear: both;
+}
+
+.qc-warp {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    opacity: 0.7;
+}
+
+.qc-container {
+    position: absolute;
+    display: inline-block;
+    margin: auto;
+    background: #fff;
+    /*border: 1px solid #ccc;*/
+    z-index: 10;
+    box-shadow: 3px 2px 5px 1px #aaa;
+}
+
+.qc-toolbar {
+    position: relative;
+    background: #f7f7f7;
+    /*height: 35px;*/
+    /*line-height: 35px;*/
+    line-height: 2;
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+    padding-left: 16px;
+}
+
+.qc-title {
+    font-weight: bold;
+}
+
+.qc-buttons {
+    position: absolute;
+    right: 4px;
+    top: 2px;
+    line-height: 1.5;
+    z-index: 1;
+}
+
+.qc-buttons a {
+    text-decoration: none;
+    color: #666;
+    padding: 0 6px;
+    font-size: 14px;
+}
+
+.qc-buttons a:hover {
+    background: #ccc;
+}
+
+.qc-content {
+    padding: 16px;
+    min-width: 200px;
+    min-height: 120px;
+    position: relative;
+    text-align: initial;
+}
+
+.qc-popfrm, .qc-colorpicker, .qc-selector,
+.qc-datepicker, .qc-lister, .qc-pagepicker,
+.qc-pagepicker, .qceditor {
+    margin: initial;
+    padding: initial;
+    font-size: initial;
+    background: none;
+    text-align: initial;
+    color: #000;
+    text-indent: initial;
+}
+
+.qc-popfrm {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    z-index: 1000;
+    display: none;
+}
+
+.qc-popfrm .qc-container {
+    cursor: default;
+    -webkit-user-select: none; /*谷歌 /Chrome*/
+    -moz-user-select: none; /*火狐/Firefox*/
+    -webkit-user-select: none; /*safari*/
+    -ms-user-select: none; /*IE 10+*/
+    user-select: none;
+}
+
+.qc-popfrm .qc-content iframe {
+    border: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.qc-popfrm .qc-popfrm-iframe {
+    padding: 0;
+}
+
+.qc-colorpicker {
+
+}
+
+.qc-colorpicker-row {
+    margin: 0 16px;
+}
+
+.qc-colorpicker-row:nth-child(1) {
+    margin: 16px;
+}
+
+.qc-colorpicker-box {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    /*float: left;*/
+    margin: 0 8px 8px 0;
+    text-decoration: none;
+    border: 1px solid #ccc;
+}
+
+.qc-colorpicker-box.selected {
+    box-shadow: 0 0 5px 1px #ff0000;
+}
+
+.qc-colorpicker-panel {
+    position: relative;
+    margin-bottom: 16px;
+    display: block;
+    overflow: hidden;
+    /*-webkit-user-select: none; !*谷歌 /Chrome*!*/
+    /*-moz-user-select: none; !*火狐/Firefox*!*/
+    /*-webkit-user-select: none; !*safari*!*/
+    /*-ms-user-select: none; !*IE 10+*!*/
+    /*user-select: none;*/
+}
+
+.qc-colorpicker-panel-pick {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    /*border: 1px solid #fff;*/
+    left: 10px;
+    top: 120px;
+    border-radius: 50%;
+    box-shadow: 0 0 2px 2px #fff;
+}
+
+.qc-colorpicker-bar {
+    position: relative;
+    height: 50px;
+    /*vertical-align: top;*/
+    /*-webkit-user-select: none; !*谷歌 /Chrome*!*/
+    /*-moz-user-select: none; !*火狐/Firefox*!*/
+    /*-webkit-user-select: none; !*safari*!*/
+    /*-ms-user-select: none; !*IE 10+*!*/
+    /*user-select: none;*/
+}
+
+.qc-colorpicker-cur, .qc-colorpicker-none {
+    border: 1px solid #ccc;
+    width: 20px;
+    height: 20px;
+    margin: 0 20px;
+    position: absolute;
+    top: 0;
+}
+
+.qc-colorpicker-none {
+    left: 30px;
+}
+
+.qc-colorpicker-bar canvas, .qc-colorpicker-a-back {
+    position: absolute;
+    margin-left: 76px;
+    top: 0;
+    left: 0;
+}
+
+.qc-colorpicker-a-back {
+    top: 25px;
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/nYDCgBDAm9BGDWAAJyRCgLaBCAAgXwixzAS0pgAAAABJRU5ErkJggg==") left center;
+}
+
+.qc-colorpicker-bar canvas.qc-colorpicker-a {
+    border: 1px solid #ccc;
+    top: 25px;
+}
+
+.qc-colorpicker-bar-pick, .qc-colorpicker-bar-pick-a {
+    position: absolute;
+    left: 52px;
+    top: -3px;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #ccc;
+    background: #eee;
+}
+
+.qc-colorpicker-bar-pick-a {
+    top: 23px;
+}
+
+.qc-colorpicker-textbox {
+    font-size: 12px;
+    margin: 4px 0 8px 0;
+    text-align: center;
+}
+
+.qc-colorpicker-textbox input[type="text"] {
+    border: 1px solid #ccc;
+    padding: 6px 4px;
+    text-align: center;
+    outline: none;
+}
+
+.qc-colorpicker-hex {
+    width: 80%;
+    display: block;
+    margin: 6px auto;
+}
+
+.qc-colorpicker-rgb {
+    width: 32px;
+    margin: 6px;
+    padding: 4px;
+}
+
+.qc-colorpicker-rgb-text {
+    display: inline-block;
+    width: 32px;
+    margin: 0 6px;
+    padding: 0 4px;
+}
+
+.qc-selector {
+    border: 1px solid #aaa;
+    display: inline-block;
+    position: relative;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+}
+
+.qc-selector .qc-selector-caret {
+    position: absolute;
+    right: 6px;
+    top: 8px;
+    color: #000;
+    text-decoration: none;
+    cursor: default;
+    padding: 0;
+}
+
+.qc-selector .qc-selector-text {
+    display: block;
+    padding: 8px 14px;
+    border: 0;
+    font-size: 14px;
+    cursor: default;
+    outline: none;
+    width: 100%;
+}
+
+.qc-selector ul {
+    list-style-type: none;
+    position: absolute;
+    background: #fff;
+    max-height: 200px;
+    overflow: auto;
+    z-index: 1000;
+    box-shadow: 2px 2px 5px 1px #aaa;
+    margin-bottom: 16px;
+    padding: initial;
+}
+
+.qc-selector ul li {
+    padding: 8px 14px;
+    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+    cursor: default;
+    margin: initial;
+    text-indent: initial;
+    min-height: 32px;
+}
+
+.qc-selector ul li:nth-last-child(1) {
+    border-bottom: 0;
+}
+
+.qc-selector ul li:hover, .qc-selector ul li.selected {
+    background: #eee;
+}
+
+.qc-datepicker {
+}
+
+.qc-datepicker-bar {
+    position: relative;
+    min-height: 30px;
+}
+
+.qc-datepicker-ymbox {
+    font-size: 18px;
+    height: 34px;
+    text-align: left;
+    padding: 8px 11px;
+}
+
+.qc-datepicker-buttons {
+    position: absolute;
+    right: 11px;
+    margin: 8px 0 0;
+    top: 0;
+}
+
+.qc-datepicker-buttons i {
+    font-size: 24px;
+}
+
+.qc-datepicker-bar span {
+    border: 1px solid #fff;
+    padding: 2px 6px;
+}
+
+.qc-datepicker-mspicker, .qc-datepicker-hpicker {
+    margin-bottom: 16px;
+}
+
+.qc-datepicker-bar table,
+.qc-datepicker-ympicker table,
+.qc-datepicker-hpicker table,
+.qc-datepicker-mspicker table {
+    border-spacing: 3px;
+    padding: 0 12px;
+}
+
+.qc-datepicker-bar th,
+.qc-datepicker-bar td,
+.qc-datepicker-ympicker td,
+.qc-datepicker-hpicker td,
+.qc-datepicker-mspicker td {
+    text-align: center;
+    padding: 4px 10px;
+    border: 1px solid #fff;
+    cursor: default;
+    margin: 1px;
+    font-size: 14px;
+}
+
+.qc-datepicker-mspicker td {
+    padding: 2px 10px;
+    font-size: 13px;
+}
+
+.qc-datepicker td.other {
+    color: #aaa;
+}
+
+.qc-datepicker td.picked {
+    border: 1px solid #ccc;
+}
+
+.qc-datepicker td.today {
+    border: 1px solid #ccc;
+    background: #eee;
+}
+
+.qc-datepicker-bar.times {
+    text-align: center;
+    padding: 6px 0 8px 0;
+}
+
+.qc-datepicker-bar span {
+    border: 1px solid #fff;
+    padding: 2px 4px;
+}
+
+.qc-datepicker-bar span:hover, .qc-datepicker td:hover {
+    border: 1px solid #ccc;
+}
+
+.qc-datepicker-hour, .qc-datepicker-minute, .qc-datepicker-second {
+    font-size: 18px;
+}
+
+.qc-datepicker-hour.selected,
+.qc-datepicker-minute.selected,
+.qc-datepicker-second.selected {
+    background: #e7e7e7;
+}
+
+.qc-datepicker-second {
+    margin-right: 0px;
+}
+
+.qc-datepicker-today, .qc-datepicker-cancel {
+    margin: 0 0 0 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.qc-datepicker-today {
+    color: #0646bb;
+}
+
+.qc-datepicker-cancel {
+    color: #aaa;
+}
+
+.qc-lister .qc-toolbar {
+    background: none;
+    text-align: right;
+    border: 0;
+    margin-bottom: 8px;
+}
+
+.qc-lister .qc-toolbar a {
+    color: #000;
+    margin: 2px;
+    padding: 4px;
+    border: 1px solid transparent;
+    cursor: default;
+    text-decoration: none;
+}
+
+.qc-lister .qc-toolbar a:hover {
+    border: 1px solid #ccc;
+}
+
+.qc-lister .qc-toolbar a.selected {
+    background: #eee;
+    border: 1px solid #ccc;
+}
+
+.qc-pagepicker {
+    list-style-type: none;
+    text-align: center;
+    margin: 24px 0;
+}
+
+.qc-pagepicker li[qc-type='page'] {
+    display: inline-block;
+    padding: 2px 4px;
+    cursor: default;
+    border: 1px solid rgba(0, 0, 0, 0);
+    line-height: 1;
+    margin: 6px 8px;
+}
+
+.qc-pagepicker li:hover {
+    border: 1px solid #ccc;
+}
+
+.qc-pagepicker li.selected {
+    background: #eee;
+    border: 1px solid #ccc;
+}
+
+.qceditor {
+    position: relative;
+    border: 0px solid #ccc;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.qceditor-toolbar {
+    /*position: relative;*/
+    /*background: #f7f7f7;*/
+    /*border-bottom: 1px solid #ddd;*/
+    padding: 0;
+    margin: 0;
+}
+
+.qceditor-iframe {
+    height: 300px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    width: 100%;
+}
+
+.qceditor-btn {
+    position: relative;
+    cursor: pointer;
+    margin: 0;
+    background: initial;
+    border: 0;
+    color: #000;
+    text-decoration: none;
+    /*height: 24px;*/
+    /*line-height: 24px;*/
+    /*text-align: center;*/
+    /*display: inline-block;*/
+    /*margin-bottom: -1em;*/
+    float: left;
+    font-size: 14px;
+    padding: 4px 4px;
+}
+
+.qceditor-btn i {
+    padding: 4px;
+}
+
+.qceditor-btn:hover {
+    background: #ccc;
+}
+
+.qceditor-btn.selected {
+    background: #ccc;
+}
+
+.qceditor-btn.disable {
+    color: #aaa;
+}
+
+.qceditor-btn.split {
+    color: #bbb;
+    cursor: default;
+    border-right: 1px solid #ccc;
+}
+
+.qceditor-btn.split:hover {
+    background: #f7f7f7;
+}
+
+.qceditor-btn.clear {
+    clear: both;
+    float: none;
+    height: 0;
+    line-height: 0;
+    padding: 0;
+    margin: 0;
+    font-size: 0;
+}
+
+.fa-font.fore {
+    border-bottom: 3px solid #ff0000;
+    padding: 2px 4px;
+}
+
+.fa-font.back {
+    background-color: #666666;
+    color: #fff;
+}
+
+.qceditor-linkbox {
+    width: 268px;
+    padding: 16px;
+    text-align: left;
+}
+
+.qceditor-linkbox label {
+    display: block;
+    margin: 8px 0;
+}
+
+.qceditor-linkbox textarea {
+    width: 100%;
+    height: 100px;
+    border: 1px solid #ccc;
+    outline: none;
+    resize: none;
+}
+
+.qceditor .qc-selector {
+    border: 0;
+    padding: 0;
+    min-width: auto;
+}
+
+.qceditor .qc-selector-text {
+    padding: 2px 14px;
+}
+
+.qceditor .qc-selector-caret {
+    top: -4px;
+}
+
+.qceditor .qc-selector li {
+    color: #000;
+}
+
+.qceditor-imagebox, .qceditor-videobox {
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.qceditor-imagebox input[type='file'], .qceditor-videobox input[type='file'] {
+    width: 94%;
+    /*display: block;*/
+    margin-bottom: 8px;
+}
+
+.qceditor-imagebox img, .qceditor-videobox video {
+    width: 300px;
+    height: 225px;
+    display: block;
+    margin: 0 auto 8px auto;
+    /*border: 1px solid #ccc;*/
+}
+
+.qceditor-imagebox .img-width, .qceditor-imagebox .img-height,
+.qceditor-videobox .video-width, .qceditor-videobox .video-height {
+    width: 60px;
+    margin: 0 8px;
+}
+
+.qceditor-imagebox .img-lock {
+    text-decoration: none;
+    color: #000;
+    padding: 0 4px;
+    margin-right: 8px;
+}
+
+.qceditor-imagebox .img-lock.selected {
+    background: #ccc;
+}
+
+.qceditor-lineheightbox {
+    padding: 8px;
+    text-align: left;
+}
+
+.qceditor-lineheightbox label {
+    display: block;
+    padding: 8px 0;
+}
+
+.qceditor-lineheightbox input[type='text'] {
+    display: block;
+    padding: 6px 4px;
+    width: 280px;
+}
+

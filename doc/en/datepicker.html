@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>qcjs help</title>
+    <script src="../link.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p></p>
+    <h2>datepicker</h2>
+    <p>
+        Time picker.
+    </p>
+
+    <p></p>
+    <h4>Attributes</h4>
+    <dl>
+        <dt>qc-for</dt>
+        <dd>
+            Value: datepicker.
+        </dd>
+        <dt>qc-target</dt>
+        <dd>
+            The object or element that returns the date value, CSS selector string.
+        </dd>
+        <dt>qc-mode</dt>
+        <dd>
+            date: Default, date mode. <br/>
+            datetime: Date and time mode. <br/>
+            time: Time method.
+        </dd>
+    </dl>
+
+    <p></p>
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        // html body
+        qc-mode: date (default)
+        &lt;input type="text" qc-for="datepicker" class="datepicker" value="2020-2-3"&gt;
+
+        qc-mode: datetime
+        &lt;input type="text" qc-for="datepicker" qc-mode="datetime" class="datepicker"&gt;
+
+        qc-mode: time
+        &lt;input type="text" qc-for="datepicker" qc-mode="time"  class="datepicker"&gt;
+
+    </pre>
+
+    <p></p>
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <style>
+            .datepicker {
+                width: 160px;
+                padding: 6px 14px;
+                border: 1px solid #ccc;
+            }
+        </style>
+        <div style="padding: 16px 32px;">
+            qc-mode: date (default)<br/>
+            <input class="datepicker" qc-for="datepicker" type="text" value="2020-2-3"/><br/><br/>
+
+            qc-mode: datetime<br/>
+            <input class="datepicker" qc-for="datepicker" qc-mode="datetime" type="text"/><br/><br/>
+
+            qc-mode: time<br/>
+            <input class="datepicker" qc-for="datepicker" qc-mode="time" type="text"/><br/><br/>
+        </div>
+        <script>
+        </script>
+    </div>
+</div>
+<script>
+</script>
+</body>
+</html>

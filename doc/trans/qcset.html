@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<title>qcjs help</title>
+<script src="../link.js"></script>
+<style>
+</style>
+</head>
+<body>
+<div class="left">
+<div class="menu"></div>
+</div>
+<div class="right">
+<p> </p>
+<h2>QCSet</h2>
+<p><p>
+        Description: QCSet is a Set, and the value in the set is unique.
+    </p></p>
+<p> </p>
+<h4 class="imp">Code</h4>
+<pre class="code"><pre class="code">
+        var qs1 = QCSet();
+        console.log(qs1); // QCSet.init {length: 0}
+
+        // String construction;
+        var qcs2 = QCSet("a,b,c");
+        console.log(qs2); // QCSet.init {0: "a", 1: "b", 2: "c", length: 3}
+
+        // Array creation;
+        var qcs3 = QCSet([1, 2, 3]);
+        console.log(qs3); // QCSet.init {0: 1, 1: 2, 2: 3, length: 3}
+
+        // Deduplication effect;
+        var qcs4 = QCSet('a,b,a,c');
+        console.log(qs4); // QCSet.init {0: "a", 1: "b", 2: "c", length: 3}
+
+        // Array deduplication
+        var ary = [1,2,3,4,1,4];
+        var qcs5 = QCSet(ary);
+        console.log(qcs5); // QCSet.init {0: 1, 1: 2, 2: 3, 3: 4, length: 4}
+
+    </pre></pre>
+<h4><h4>Attributes</h4></h4>
+<dl><dl>
+<dt>QCSet.prototype.length</dt>
+<dd>
+            The number of elements in the QCSet.
+        </dd>
+<dt>Element access</dt>
+<dd>
+            For similar numerical operations, use [index], the index where the index element is located. Returns the element.
+        </dd>
+</dl></dl>
+<h4 class="imp"><h4 class="imp">Example</h4></h4>
+<pre class="code">
+        var qcs = QCSet("a, b, c, d");
+        
+        console.log(qcs.length);    //  4
+        console.log(qcs[1]);        // b
+
+    </pre>
+<h4><h4>Methods</h4></h4>
+<dl><dl>
+<dt>QCSet.prototype.indexOf(arg[, index])</dt>
+<dd>
+<strong>Parameter:</strong>
+<p>arg: The element to be positioned in the QCSet. </p>
+<p>index [<i>Optional</i>]: The index to start the search. If the index is greater than or equal to the length of the QCSet, -1 is returned.
+                If the provided index value is negative, it will be treated as an offset from the end of the QCSet. Note: If the provided index is negative,
+                Then search QCSet from front to back. If the provided index is 0, the entire QCSet will be searched. Default value: 0 (search the entire QCSet). </p>
+</dd>
+<dd>
+<strong>Back:</strong>
+            The first index of the element in the QCSet; -1 (if not found).
+        </dd>
+<dt>QCSet.prototype.has(arg), QCSet.prototype.contains(arg)</dt>
+<dd>
+            Find arg in the QCSet element, if it exists, return true, otherwise, return false.
+        </dd>
+<dt>QCSet.prototype.add([arg1[, argN])</dt>
+<dd>
+            Add one or more elements to the end of the QCSet data and return the new length value of the array.
+        </dd>
+<dt>QCSet.prototype.remove([arg1[, argN])</dt>
+<dd>
+            Remove one or more elements from the QCSet.
+        </dd>
+<dt>QCSet.prototype.each(callback)</dt>
+<dd>
+<p>Go through QCSet</p>
+<p>callback: callback function. </p>
+<div class="indent">
+<p class="title">Parameters</p>
+<p>value: The current element being processed in the QCSet. </p>
+<p>index [<i>Optional</i>]: The index of <i>value</i> in QCSet. </p>
+<p>thisQCSet [<i>Optional</i>]: When the callback function is executed, it is used as the value of this. </p>
+<p class="title">Tips</p>
+<p>return true skip the following code and continue the loop. Similar to continue. </p>
+<p>return false to stop the loop and skip the following code. Similar to break. </p>
+</div>
+</dd>
+<dt>QCSet.prototype.merge(arg)</dt>
+<dd>
+            Combine arg into the current QCSet and return the current QCSet.
+        </dd>
+<dt>QCSet.prototype.join(split)</dt>
+<dd>
+            Concatenate all the elements of QCSet into a string.
+        </dd>
+<dt>QCSet.prototype.equals(obj)</dt>
+<dd>
+            Compare whether two QCSet objects are the same, and return boolean.
+        </dd>
+</dl></dl>
+<p> </p>
+<h4 class="imp"><h4 class="imp">Example</h4></h4>
+<pre class="code">
+        function print(qcs) {
+            console.log(qcs.join(","));
+        }
+
+        var qcs = QCSet("a, b, c, d");
+
+        qcs.add(1, 2, 3, 4);
+        print(qcs);             // a,b,c,d,1,2,3,4
+
+        qcs.remove('b');
+        print(qcs);             // a,c,d,1,2,3,4
+
+        qcs.each(function (v, i) {
+            console.log("'index': ", i, ",", "'value': ", v);
+            if (i &lt; 3)
+                return true;
+            else
+                return false
+            console.log("not print.");
+        });
+        // 'index':  0 , 'value':  a
+        // 'index':  1 , 'value':  c
+        // 'index':  2 , 'value':  d
+        // 'index':  3 , 'value':  1
+
+        qcs.indexOf('d');       // 2
+        qcs.indexOf(3, -2);     // 5
+        qcs.indexOf(3, -1);     // -1
+
+        qcs.has(3);             // true
+        qcs.has(8);             // false
+
+        var qcs1 = QCSet([1,2,3]);
+        var qcs2 = QCSet("a, b, c");
+
+        qcs1.merge(qcs2);
+        print(qcs1);            // 1,2,3,a,b,c
+
+        print(qcs2);            // a,b,c
+
+        qcs1.join(";");         // 1;2;3;a;b;c
+
+        var ary = [1, 2, 3];
+        qcs1 = QCSet(ary);
+        qcs2 = QCSet([1, 2, 3]);
+        qcs1.equals(qcs2);      // true
+
+        var qcs3 = QCSet([1, 2, 4]);
+        qcs1.equals(qcs3);      // false
+
+    </pre>
+</div>
+<script>
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p></p>
+    <h2>util</h2>
+
+    <p></p>
+    <h4>qc.util.init([...obj])</h4>
+    <dl>
+        <dt>obj:</dt>
+        <dd>Type：QC Widget</dd>
+        <dd>
+            一个或多个小部件控件
+        </dd>
+    </dl>
+
+    <p></p>
+    <h4>qc.util.addStart(fn)</h4>
+    <dl>
+        <dt>fn:</dt>
+        <dd>Type：Function</dd>
+        <dd>util 初始化小部件前执行的方法。</dd>
+    </dl>
+
+    <p></p>
+    <h4>qc.util.addInited(fn)</h4>
+    <dl>
+        <dt>fn:</dt>
+        <dd>Type：Function</dd>
+        <dd>util 初始化小部件结束后执行的方法。</dd>
+    </dl>
+
+    <p></p>
+    <h4>qc.util.getKeys(contrl[, args])</h4>
+    <p>描述：根据小部件的 qc-key、qc-need 生成 args 对象。并生成 key 属性和值。</p>
+    <dl>
+        <dt>contrl:</dt>
+        <dd>Type：QC Widget</dd>
+        <dd>
+            QC 小部件。
+        </dd>
+        <dt>args:</dt>
+        <dd>Type：Object</dd>
+        <dd>
+            提交数据对象。
+        </dd>
+        <dt>return:</dt>
+        <dd>Type：Object</dd>
+        <dd>
+            返回对象。
+        </dd>
+    </dl>
+
+    <p></p>
+    <h4>qc.util.getFields(contrl[, attr, args])</h4>
+    <p>描述：根据小部件的 attr 属性生成 args 对象。并生成 key 属性和值。</p>
+    <dl>
+        <dt>contrl:</dt>
+        <dd>Type：QC Widget</dd>
+        <dd>
+            QC 小部件。
+        </dd>
+        <dt>attr:</dt>
+        <dd>Type：String</dd>
+        <dd>
+            一般指 qc-key、qc-need 等。没有定义 attr 参数，历遍小部件所有 qc-field。
+        </dd>
+        <dt>return:</dt>
+        <dd>Type：Object</dd>
+        <dd>
+            返回对象。
+        </dd>
+    </dl>
+
+    <p></p>
+    <h4>qc.util.getVal(obj[, args])</h4>
+    <p>描述：更新对象的 qc-value 属性，返回 qc-value。如果定义 args，设置 args 对象。</p>
+    <dl>
+        <dt>obj:</dt>
+        <dd>Type：QC Object</dd>
+        <dd>
+            QC 对象。
+        </dd>
+        <dt>args:</dt>
+        <dd>Type：Object</dd>
+        <dd>
+            提交数据对象。
+        </dd>
+        <dt>return:</dt>
+        <dd>Type：String or Array or HTMLInputElement</dd>
+        <dd>
+            返回 qc-value 值。
+        </dd>
+    </dl>
+
+    <p></p>
+    <h4>
+        qc.util.get(obj[, args, callback]) <br>
+        qc.util.post(obj[, args, callback]) <br>
+        qc.util.upload(obj[, args, callback])
+    </h4>
+    <p>描述：
+        get: 获取数据，post: 提交数据，upload: 上传文件。
+        相对应小部件属性 qc-get、qc-post、qc-upload。</p>
+    <dl>
+        <dt>obj:</dt>
+        <dd>Type：QC Object</dd>
+        <dd>
+            QC 对象。
+        </dd>
+        <dt>args:</dt>
+        <dd>Type：Object</dd>
+        <dd>
+            提交数据对象。
+        </dd>
+        <dt>callback:</dt>
+        <dd>Type：Function(d, re)</dd>
+        <p>回调方法。</p>
+        <dd>
+            <div>d: </div>
+            <p>Type：JSON Object</p>
+            <p>{"rows": 数组长度, "data": 数组, "pages": 总页数, "total": 总数量}，</p>
+            <div>re: </div>
+            <p>Type：Object</p>
+            <p>
+                {"contrl": 小部件对象, "curr": 当前对象, "args": 传送数据时的参数}。
+            </p>
+        </dd>
+    </dl>
+
+
+</div>
+
+<script>
+</script>
+
+</body>
+</html>

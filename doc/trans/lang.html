@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" qc-lang-dir="./lang" qc-lang-global="global">
+<head>
+<meta charset="utf-8"/>
+<title>qcjs help</title>
+<script src="../link.js"></script>
+<style>
+</style>
+</head>
+<body>
+<div class="left">
+<div class="menu"></div>
+</div>
+<div class="right">
+<p></p>
+<h2><h2>Multi-language</h2></h2>
+<p><p>The buttons and titles used by the qcjs widget support multiple languages. </p></p>
+<p><p>The document is in the lang folder, naming method: en.js (English), zh-CN.js (Simplified Chinese). </p></p>
+<p> </p>
+<h3><h3>Description</h3></h3>
+<p> </p>
+<h4><h4>qc.lang[widgetName] = {Name: Value}</h4></h4>
+<dl><dl>
+<dt>widgetName:</dt>
+<dd>Type: String</dd>
+<dd>
+            Widget name or object name
+        </dd>
+</dl></dl>
+<p></p>
+<h4 class="imp">Code</h4>
+<pre class="code"><pre class="code">
+        // global.js
+        qc.lang.global = {
+            "en": "English",
+            "zh-CN": "Chinese (Simplified)"
+        };
+
+        // zh-CN.js
+        qc.lang.popfrm = {
+            "OK": "OK", // widget: popfrm, name: OK, value: OK
+            "cancel": "Cancel", // widget: popfrm, name: cancel, value: cancel
+            ...
+        };
+
+        // en.js
+        qc.lang.popfrm = {
+            "OK": "OK",
+            "cancel": "Cancel",
+            ...
+        };
+
+    </pre></pre>
+<p></p>
+<h3><h3>Use</h3></h3>
+<p> </p>
+<h4 class="imp">Code</h4>
+<pre class="code"><pre class="code">
+        // html tag
+        <html lang="zh-CN" qc-lang-dir="../lang" qc-lang-global="global">
+
+        // javascript:
+        qc.util.setLangDir('../lang');
+        qc.util.setLangGlobal('global');
+        qc.util.setLangName('zh-CN');
+    </html></pre></pre>
+<p> </p>
+<h3><h3>Methods</h3></h3>
+<p> </p>
+<h4>qc.util.setLangDir(dirPath)</h4>
+<dl><dl>
+<dt>dirPath</dt>
+<dd>Type: String</dd>
+<dd>Multi-language path</dd>
+</dl></dl>
+<p> </p>
+<h4>qc.util.getLangDir()</h4>
+<dl><dl>
+<dt>return</dt>
+<dd>Type: String</dd>
+<dd>Return to multi-language path</dd>
+</dl></dl>
+<p> </p>
+<h4>qc.util.setLangGlobal(fileName)</h4>
+<dl><dl>
+<dt>fileName</dt>
+<dd>Type: String</dd>
+<dd>
+            Set the language list file name.
+        </dd>
+</dl></dl>
+<p> </p>
+<h4>qc.util.getLangGlobal()</h4>
+<dl><dl>
+<dt>return</dt>
+<dd>Type: String</dd>
+<dd>
+            Returns the file name of the language list.
+        </dd>
+</dl></dl>
+<p> </p>
+<h4>qc.util.setLangName(langName)</h4>
+<dl><dl>
+<dt>fileName:</dt>
+<dd>Type: String</dd>
+<dd>
+            Set the current language.
+        </dd>
+</dl></dl>
+<p> </p>
+<h4>qc.util.getLangName()</h4>
+<dl><dl>
+<dt>return</dt>
+<dd>Type: String</dd>
+<dd>
+            Returns the language currently in use.
+        </dd>
+</dl></dl>
+<p> </p>
+<h4>qc.util.initLang([langName, callback])</h4>
+<p><p>Initialization language</p></p>
+<dl><dl>
+<dt>langName</dt>
+<dd>Type: String</dd>
+<dd>
+            The language currently used.
+        </dd>
+<dt>callback</dt>
+<dd>Type: Function</dd>
+<dd>
+            Callback method.
+        </dd>
+</dl></dl>
+<p> </p>
+<h4>qc.util.lang(obj, name[, attr, controlName])</h4>
+<p><p>Set language</p></p>
+<dl><dl>
+<dt>obj</dt>
+<dd>Type: QC</dd>
+<dd>
+            The QC object to be set.
+        </dd>
+<dt>name</dt>
+<dd>Type: String</dd>
+<dd>
+            The attribute name of the object.
+        </dd>
+<dt>attr</dt>
+<dd>Type: String</dd>
+<dd>
+            Html element attributes, html: replace the content of the Html element, title/value: replace the attributes of the Html element. <br/>
+            Support multiple attributes, English comma separator. <br/>
+            Default: title
+        </dd>
+<dt>controlName</dt>
+<dd>Type: String</dd>
+<dd>
+            The name of the widget or object. <br/>
+            Default: the widget to which the object belongs.
+        </dd>
+</dl></dl>
+</div>
+<script>
+</script>
+</body>
+</html>

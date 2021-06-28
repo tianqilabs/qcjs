@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p> </p>
+    <h2>QCSet</h2>
+    <p>
+        描述：QCSet 是一个 Set 集，在集合中的值是唯一的。
+    </p>
+    <p> </p>
+
+    <h4 class="imp">Code</h4>
+    <pre class="code">
+        var qs1 = QCSet();
+        console.log(qs1);       // QCSet.init {length: 0}
+
+        // 字符串构建;
+        var qcs2 = QCSet("a,b,c");
+        console.log(qs2);       // QCSet.init {0: "a", 1: "b", 2: "c", length: 3}
+
+        // 数组创建;
+        var qcs3 = QCSet([1, 2, 3]);
+        console.log(qs3);       // QCSet.init {0: 1, 1: 2, 2: 3, length: 3}
+
+        // 去重效果;
+        var qcs4 = QCSet('a,b,a,c');
+        console.log(qs4);       // QCSet.init {0: "a", 1: "b", 2: "c", length: 3}
+
+        // 数组去重
+        var ary = [1,2,3,4,1,4];
+        var qcs5 = QCSet(ary);
+        console.log(qcs5);      // QCSet.init {0: 1, 1: 2, 2: 3, 3: 4, length: 4}
+
+    </pre>
+
+    <h4>属性</h4>
+    <dl>
+        <dt>QCSet.prototype.length</dt>
+        <dd>
+            QCSet 中元素的数量。
+        </dd>
+        <dt>元素访问</dt>
+        <dd>
+            类似数值的操作，用 [index]，index 元素所在的索引。返回元素。
+        </dd>
+    </dl>
+    <h4 class="imp">例子</h4>
+    <pre class="code">
+        var qcs = QCSet("a, b, c, d");
+        
+        console.log(qcs.length);    //  4
+        console.log(qcs[1]);        // b
+
+    </pre>
+
+    <h4>方法</h4>
+    <dl>
+        <dt>QCSet.prototype.indexOf(arg[, index])</dt>
+        <dd>
+            <strong>参数：</strong>
+            <p>arg：要在 QCSet 中定位的元素。</p>
+            <p>index [<i>可选</i>]: 开始搜索的索引。如果索引大于或等于 QCSet 的长度，则返回-1。
+                如果提供的索引值为负数，则将其视为距QCSet末尾的偏移量。注意：如果提供的索引为负，
+                则仍从​​前到后搜索 QCSet。如果提供的索引为0，则将搜索整个 QCSet 。默认值：0（搜索整个 QCSet ）。</p>
+        </dd>
+        <dd>
+            <strong>返回：</strong>
+            QCSet中元素的第一个索引；-1（如果找不到）。
+        </dd>
+        <dt>QCSet.prototype.has(arg)、QCSet.prototype.contains(arg)</dt>
+        <dd>
+            QCSet 元素中查找 arg，如果存在，返回 true，否直返回 false。
+        </dd>
+        <dt>QCSet.prototype.add([arg1[, argN])</dt>
+        <dd>
+            将一个或多个元素添加到向 QCSet 数据的末尾，并返回数组的新 length 值。
+        </dd>
+        <dt>QCSet.prototype.remove([arg1[, argN])</dt>
+        <dd>
+            从 QCSet 中移除一个或多个元素。
+        </dd>
+        <dt>QCSet.prototype.each(callback)</dt>
+        <dd>
+            <p>历遍 QCSet</p>
+            <p>callback: 回调函数。</p>
+
+            <div class="indent">
+                <p class="title">参数</p>
+                <p>value: QCSet 中正在处理的当前元素。</p>
+                <p>index [<i>可选</i>]: QCSet 中 <i>value</i> 的索引。</p>
+                <p>thisQCSet [<i>可选</i>]: 当执行回调函数 callback 时，用作 this 的值。</p>
+                <p class="title">提示</p>
+                <p>return true 跳过后面代码，继续循环。类似 continue。</p>
+                <p>return false 停止循环，跳过后面代码。类似 break。</p>
+            </div>
+        </dd>
+        <dt>QCSet.prototype.merge(arg)</dt>
+        <dd>
+            把 arg 合并到当前 QCSet，返回当前 QCSet。
+        </dd>
+        <dt>QCSet.prototype.join(split)</dt>
+        <dd>
+            将 QCSet 的所有元素连接到字符串中。
+        </dd>
+        <dt>QCSet.prototype.equals(obj)</dt>
+        <dd>
+            两个 QCSet 对象比较是否相同，返回 boolean。
+        </dd>
+    </dl>
+    <p> </p>
+
+    <h4 class="imp">例子</h4>
+    <pre class="code">
+        function print(qcs) {
+            console.log(qcs.join(","));
+        }
+
+        var qcs = QCSet("a, b, c, d");
+
+        qcs.add(1, 2, 3, 4);
+        print(qcs);             // a,b,c,d,1,2,3,4
+
+        qcs.remove('b');
+        print(qcs);             // a,c,d,1,2,3,4
+
+        qcs.each(function (v, i) {
+            console.log("'index': ", i, ",", "'value': ", v);
+            if (i < 3)
+                return true;
+            else
+                return false
+            console.log("not print.");
+        });
+        // 'index':  0 , 'value':  a
+        // 'index':  1 , 'value':  c
+        // 'index':  2 , 'value':  d
+        // 'index':  3 , 'value':  1
+
+        qcs.indexOf('d');       // 2
+        qcs.indexOf(3, -2);     // 5
+        qcs.indexOf(3, -1);     // -1
+
+        qcs.has(3);             // true
+        qcs.has(8);             // false
+
+        var qcs1 = QCSet([1,2,3]);
+        var qcs2 = QCSet("a, b, c");
+
+        qcs1.merge(qcs2);
+        print(qcs1);            // 1,2,3,a,b,c
+
+        print(qcs2);            // a,b,c
+
+        qcs1.join(";");         // 1;2;3;a;b;c
+
+        var ary = [1, 2, 3];
+        qcs1 = QCSet(ary);
+        qcs2 = QCSet([1, 2, 3]);
+        qcs1.equals(qcs2);      // true
+
+        var qcs3 = QCSet([1, 2, 4]);
+        qcs1.equals(qcs3);      // false
+
+    </pre>
+
+</div>
+
+<script>
+</script>
+
+</body>
+</html>
