@@ -17,32 +17,32 @@ Please go to [here](http://quickcore.org/qcjs/doc) to view
 
 ### Introduction
 
-* [util](/util/ )   
+* [util](/src/control/ )   
     Core library and utility library.
     * Easily carry out HTML traversal and operation, and event processing.
     * support multi-languauge.
     * Custom icon style.
     * Data exchange with the server.
     
-* [popfrm](/control/)     
+* [popfrm](/src/control/)     
     Dialog box
     
-* [colorpicker](/control/)   
+* [colorpicker](/src/control/)   
     Color picker
     
-* [selector](/control/)    
+* [selector](/src/control/)    
     Select box
     
-* [editor](/control/)  
+* [editor](/src/control/)  
     Edit box
     
-* [datepicker](/control/)  
+* [datepicker](/src/control/)  
     Date picker
     
-* [lister](/control/)  
+* [lister](/src/control/)  
     Lister
     
-* [pagepicker](/control/)   
+* [pagepicker](/src/control/)   
     Page number selector
     
 
