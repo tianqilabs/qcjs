@@ -289,7 +289,7 @@ qc.prototype.show = function () {
             if (!display) {
                 var iframe = document.createElement("IFRAME");
                 document.body.appendChild(iframe);
-                var doc = iframe.contentDocument;
+                var doc = iframe.document || iframe.contentDocument;
                 var tmp = doc.createElement(tagn);
                 doc.body.appendChild(tmp);
                 display = qc(tmp).css("display");

@@ -1,4 +1,5 @@
 /* ! qcjs (c) 老李 (20390965@qq.com) v0.2.0 */
+
 (function () {
     function QC(selector, context) {
         return new QC.init(selector, context);
@@ -764,7 +765,7 @@ qc.prototype.show = function () {
             if (!display) {
                 var iframe = document.createElement("IFRAME");
                 document.body.appendChild(iframe);
-                var doc = iframe.contentDocument;
+                var doc = iframe.document || iframe.contentDocument;
                 var tmp = doc.createElement(tagn);
                 doc.body.appendChild(tmp);
                 display = qc(tmp).css("display");

@@ -1,4 +1,5 @@
 /* ! qcjs (c) 老李 (20390965@qq.com) v0.2.0 */
+
 qc.c = {};
 qc.icon = {};
 qc.lang = {};
@@ -168,7 +169,6 @@ qc["util"] = qc.c.util = {
             qc.util.hideObj.hides.add(tar);
         },
         remove: function (ev) {
-            var type = ev.type;
             qc.util.hideObj.hides.each(function (tars) {
                 var re = false;
                 tars.each(function (tar) {
@@ -513,22 +513,6 @@ qc["util"] = qc.c.util = {
 qc(function () {
     qc.util.init();
 });
-/*
- * Copyright 2020 老李, 20390965@qq.com
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 qc.c.popfrm = {
     control: "popfrm",
     create: function (arg) {
@@ -758,22 +742,6 @@ qc.c.popfrm = {
     }
 };
 
-/*
- * Copyright 2020 老李, 20390965@qq.com
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 qc.c.selector = {
     control: "selector",
     create: function (arg) {
@@ -947,15 +915,22 @@ qc.c.selector = {
         if (obj.contrl) {
             contrl = obj.contrl;
             _obj = obj;
-            isEvent = true;
         } else {
             contrl = obj;
-            var def = contrl.attr("qc-default"), list = contrl.find("li");
-            var curr = def == undefined ? list.eq(0) : list.filter("[qc-value='" + def + "']");
+            var def = contrl.attr("qc-default"),
+                list = contrl.find("li"),
+                curr = def == undefined ? list.eq(0) : list.filter("[qc-value='" + def + "']");
             _obj = {"contrl": contrl, "curr": curr};
         }
         qc.selector.selected(_obj);
-        qc("body").click();
+
+        var ul = contrl.find("ul");
+        qc.util.hideObj.hides.each(function (tars) {
+            if (tars[0].equals(ul)) {
+                ul.hide();
+                qc.util.hideObj.hides.remove(tars);
+            }
+        });
 
         if (!contrl[0].search || obj.ev)
             qc.selector.post(contrl);
@@ -1052,22 +1027,6 @@ qc.c.selector = {
 qc.util.addInited(function () {
     qc.selector.getDatas();
 });
-/*
- * Copyright 2020 老李, 20390965@qq.com
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 qc.c.colorpicker = {
     control: "colorpicker",
     show: function (obj) {
@@ -1539,22 +1498,6 @@ qc.c.colorpicker = {
         qc.popfrm.hide(obj);
     }
 };
-
-/*
- * Copyright 2020 老李, 20390965@qq.com
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 qc.c.datepicker = {
     control: "datepicker",
@@ -2225,22 +2168,6 @@ qc.c.datepicker = {
         qc.popfrm.hide(obj);
     }
 };
-/*
- * Copyright 2020 老李, 20390965@qq.com
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 qc.c.lister = {
     control: "lister",
     create: function (obj) {
@@ -2382,22 +2309,6 @@ qc.util.addInited(function () {
     qc.lister.getDatas();
 });
 
-/*
- * Copyright 2020 老李, 20390965@qq.com
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 qc.c.pagepicker = {
     control: "pagepicker",
     create: function (obj) {
@@ -2451,22 +2362,6 @@ qc.c.pagepicker = {
         _obj.get(tar);
     }
 };
-/*
- * Copyright 2020 老李, 20390965@qq.com
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 qc.c.editor = {
     control: "editor",
     create: function (obj) {

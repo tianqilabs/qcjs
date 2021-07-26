@@ -167,7 +167,6 @@ qc["util"] = qc.c.util = {
             qc.util.hideObj.hides.add(tar);
         },
         remove: function (ev) {
-            var type = ev.type;
             qc.util.hideObj.hides.each(function (tars) {
                 var re = false;
                 tars.each(function (tar) {

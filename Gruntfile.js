@@ -3,7 +3,7 @@ module.exports = function(grunt){
         pkg: grunt.file.readJSON('package.json'),
         concat: {
             options: {
-                banner: '/* ! <%= pkg.name %> (c) 老李 (20390965@qq.com) v<%= pkg.version %> */\n'
+                banner: '/* ! <%= pkg.name %> (c) 老李 (20390965@qq.com) v<%= pkg.version %> */\n\n'
             },
             core: {
                 src: [
