@@ -227,7 +227,9 @@
 
             qc("#pop8").click(function () {
                 qc.popfrm.dyShow("Tips", "",
-                    "This is a popfrm.", qc(this));
+                    "This is a popfrm.", qc(this), null, function() {
+                    alert("hidden ");
+                });
             });
 
         });
@@ -244,7 +246,7 @@
             <button id="pop7">dyShow popfrm and OK</button>
         </p>
         <p style="padding-left: 32px;">
-            <button id="pop8">dyShow popfrm, not toolbar</button>
+            <button id="pop8">dyShow popfrm, not toolbar and hidden callback</button>
         </p>
     </div>
 
@@ -300,7 +302,9 @@
 
         qc("#pop8").click(function () {
             qc.popfrm.dyShow("Tips", "",
-                "This is a popfrm.", qc(this));
+                "This is a popfrm.", qc(this), null, function() {
+                    alert("hidden ");
+                });
         });
 
         qc("#pop9").click(function () {

@@ -83,6 +83,7 @@ qc.prototype.empty = function () {
     this.each(function () {
         qc(this.childNodes).remove();
     });
+    return this;
 };
 
 qc.prototype.attr = function (name, value) {
@@ -291,7 +292,11 @@ qc.prototype.show = function () {
                 document.body.appendChild(iframe);
                 var doc = iframe.document || iframe.contentDocument;
                 var tmp = doc.createElement(tagn);
-                doc.body.appendChild(tmp);
+                if (doc.body) {
+                    doc.body.appendChild(tmp);
+                } else {
+                    doc.appendChild(tmp);
+                }
                 display = qc(tmp).css("display");
                 document.body.removeChild(iframe);
                 qc.displays[tagn] = display;
@@ -445,13 +450,8 @@ qc.prototype.contents = function (selector) {
         var nodes =  this.childNodes;
         for (var i = 0; i < nodes.length; i++) {
             var node = nodes[i];
-            if (selector) {
-                if (qc(node).is(selector)) {
-                    elems.push(node);
-                }
-            } else {
+            if (!selector || (selector && qc(node).is(selector)))
                 elems.push(node);
-            }
         }
     });
     return qc(elems);

@@ -37,11 +37,15 @@ qc.c.popfrm = {
     show: function (obj) {
         var curr = obj.curr,
             popfrm = qc(curr.attr("qc-target")),
-            callee = curr.attr("qc-fn");
+            callee = curr.attr("qc-fn"),
+            hideCallee = curr.attr("qc-post");
 
         if (popfrm[0]) {
             popfrm[0].origin = curr;
             popfrm[0].isHide = true;
+
+            if (hideCallee)
+                popfrm[0].hideCallee = qc.util.convert2fnc(hideCallee);
 
             popfrm.show();
 
@@ -64,7 +68,7 @@ qc.c.popfrm = {
             qc.popfrm.dyShow(title, btn, content, curr, callee);
         }
     },
-    dyShow: function (title, btn, content, originObj, callee) {
+    dyShow: function (title, btn, content, originObj, callee, hideCallee) {
         var popfrm = qc("<div class='qc-popfrm' qc-control='popfrm'>"),
             container = qc("<div class='qc-container' qc-container>"),
             warp = qc("<div class='qc-warp' qc-warp>");
@@ -91,6 +95,10 @@ qc.c.popfrm = {
 
         popfrm[0].origin = originObj;
         popfrm[0].isHide = false;
+
+        if (hideCallee)
+            popfrm[0].hideCallee = hideCallee;
+
         popfrm.show();
 
         if (callee) {
@@ -177,10 +185,17 @@ qc.c.popfrm = {
         return btns.length;
     },
     hide: function (obj) {
-        if (obj.contrl[0].isHide)
-            obj.contrl.hide();
-        else
-            obj.contrl.remove();
+        if (obj.contrl[0].hideCallee) {
+            obj.contrl[0].hideCallee();
+        }
+        qc.popfrm.hidden(obj.contrl);
+    },
+    hidden: function (popfrm) {
+        if (popfrm[0].isHide) {
+            popfrm.hide();
+        } else {
+            popfrm.remove();
+        }
     },
     layout: function (popfrm) {
         var originObj = popfrm[0].origin,
