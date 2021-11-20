@@ -25,10 +25,12 @@
                 <li>
                     When qc-control ='editor' tag, multiples are separated by spaces.
                     <div style="line-height: 2;">
-                        normal: Submit data manually. <br/>
-                        auto: The default value, automatically submit data. <br/>
-                        static: Default value, static display. <br/>
-                        fixed: fixed to the element. <br/>
+                        normal: Obtain and submit data manually. <br>
+                        get: Get data automatically. <br>
+                        post: Automatically submit data. <br>
+                        auto: The default value, which automatically obtains and submits data. <br>
+                        static: Default value, static display. <br>
+                        fixed: fixed to the element. <br>
                     </div>
                 </li>
                 <li>
@@ -214,9 +216,18 @@
         &lt;/div&gt;
 
         // javascript
-        qc("#set1").click(function () {
-            qc.selector.val(qc("#setval"), 2);
-        });
+        function post2(re, callee) {
+            var args = re.args, lines = [];
+            for (var k in args) {
+                if (k != "key")
+                    lines.push(k + " = '" + args[k] + "'");
+            }
+            qc("#post2").html(lines.join("&nbsp;"));
+        }
+
+        function post_submit(obj) {
+            qc("#editor2").change();
+        }
     </pre>
 
     <h4 class="imp">Result</h4>
@@ -247,7 +258,7 @@
                     if (k != "key")
                         lines.push(k + "='" + args[k] + "'");
                 }
-                qc("#post2").html(lines.join(""));
+                qc("#post2").html(lines.join("&nbsp;"));
             }
 
             function post_submit(obj) {
@@ -302,7 +313,7 @@
                 if (k != "key")
                     lines.push(k + "='" + args[k] + "'");
             }
-            qc("#post3").html(lines.join(""));
+            qc("#post3").html(lines.join("&nbsp;"));
         }
 
         function verify_submit(obj) {
@@ -368,7 +379,7 @@
                     if (k != "key")
                         lines.push(k + "='" + args[k] + "'");
                 }
-                qc("#post3").html(lines.join(""));
+                qc("#post3").html(lines.join("&nbsp;"));
             }
 
             function verify_submit(obj) {

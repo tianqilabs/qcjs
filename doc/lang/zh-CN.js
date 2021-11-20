@@ -13,6 +13,7 @@ qc.lang.menu = {
     "editor": "编辑器",
     "datepicker": "时间选择器",
     "lister": "列表器、页面选择器",
+    "treeview": "树状视图",
     "icon": "自定义图标",
     "lang": "多国语言"
 };

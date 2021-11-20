@@ -16,3 +16,9 @@ qc.icon.lister = {
     "view": "fa-th-large",
     "list": "fa-th-list"
 };
+
+qc.icon.treeview = {
+    "expand": "fa-angle-right",
+    "collapse": "fa-angle-down",
+    "addNew": "fa-plus-circle"
+};

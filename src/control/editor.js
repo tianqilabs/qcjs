@@ -1,12 +1,20 @@
 qc.c.editor = {
     control: "editor",
     create: function (obj) {
-        obj[0].edit = "auto";
+        obj[0].mode = QCSet();
         obj[0].pos = "static";
         var mode = obj.attr("qc-mode");
         if (mode) {
-            if (mode.contains("normal"))
-                obj[0].edit = "";
+            if (mode.contains("auto")) {
+                obj[0].mode.add(["get", "post"]);
+            } else {
+                if (mode.contains("get")) {
+                    obj[0].mode.add("get");
+                }
+                if (mode.contains("post")) {
+                    obj[0].mode.add("post");
+                }
+            }
             if (mode.contains("fixed")) {
                 obj[0].pos = "fixed";
                 obj.css("position", "absolute");
@@ -23,6 +31,9 @@ qc.c.editor = {
             }
         });
         qc.editor.hideMsg(obj);
+        if (obj[0].mode.contains("get")) {
+            qc.editor.get(obj, {});
+        }
     },
     show: function (obj) {
         var contrl = qc(obj.curr.attr("qc-target")), args = {};
@@ -43,9 +54,14 @@ qc.c.editor = {
     fill: function (d, re, callee) {
         var contrl = re.contrl;
         qc.editor.hideMsg(contrl);
-        for (var i = 0; i < d.rows; i++) {
-            var b = d.data[i];
-            qc.util.setDatas(contrl, b);
+
+        if (d.rows == 0) {
+            qc.util.initData(contrl);
+        } else {
+            for (var i = 0; i < d.rows; i++) {
+                var b = d.data[i];
+                qc.util.setDatas(contrl, b);
+            }
         }
         if (callee) callee(d, re);
     },
@@ -63,7 +79,7 @@ qc.c.editor = {
         }
 
         if (re) {
-            if (contrl[0].edit == "auto" || isContrl) {
+            if (contrl[0].mode.contains("post") || isContrl) {
                 qc.editor.post(curr, {}, callee);
             }
         }
@@ -94,25 +110,25 @@ qc.c.editor = {
 
             var rules = rule ? rule.split(" ") : [],
                 val = qc.util.getVal(_obj),
-                _re = false, match;
+                _re = true, match;
 
             rules.each(function (_rule) {
                 if (_rule == "number") {
-                    _re = /^-?\d+(\.\d+)?$/.exec(val);
+                    _re = _re && /^-?\d+(\.\d+)?$/.exec(val);
                 } else if (_rule == "date") {
                     try {
                         var dt = new Date(val);
-                        _re = !isNaN(dt.getTime());
+                        _re = _re && !isNaN(dt.getTime());
                     } catch (e) {
 
                     }
                 } else if (_rule == "notnull") {
-                    _re = val.length > 0;
+                    _re = _re && val.length > 0;
                 } else if (match = /^maxlen\((\d+)\)$/.exec(_rule)) {
-                    _re = val.length <= match[1];
+                    _re = _re && val.length <= match[1];
                 } else if (match = /^format\(([^\)]+)\)$/.exec(_rule)) {
                     var reg = new RegExp(match[1], "gi");
-                    _re = reg.exec(val);
+                    _re = _re && reg.exec(val);
                 }
             });
 

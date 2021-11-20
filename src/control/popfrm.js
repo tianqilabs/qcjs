@@ -49,9 +49,9 @@ qc.c.popfrm = {
 
             popfrm.show();
 
-            var callee = qc.util.convert2fnc(callee);
-            if (callee)
-                callee(popfrm);
+            var fnc = qc.util.convert2fnc(callee);
+            if (fnc)
+                fnc(popfrm);
             qc.popfrm.layout(popfrm);
         } else {
             var title = curr.attr("qc-title"),
@@ -65,7 +65,7 @@ qc.c.popfrm = {
                 }
                 node = node.nextSibling;
             }
-            qc.popfrm.dyShow(title, btn, content, curr, callee);
+            qc.popfrm.dyShow(title, btn, content, curr, callee, hideCallee);
         }
     },
     dyShow: function (title, btn, content, originObj, callee, hideCallee) {

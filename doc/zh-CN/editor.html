@@ -29,8 +29,10 @@
                 <li>
                     在 qc-control = 'editor' 标签时，多个用空格分隔。
                     <div style="line-height: 2;">
-                        normal: 手动提交数据。<br>
-                        auto: 默认值，自动提交数据。<br>
+                        normal: 手动获取和提交数据。<br>
+                        get: 自动获取数据。<br>
+                        post: 自动提交数据。<br>
+                        auto: 默认值，自动获取和提交数据。<br>
                         static: 默认值，静态显示。<br>
                         fixed: 固定到元素里。<br>
                     </div>
@@ -226,9 +228,18 @@
         &lt;div id="post2"&gt; &lt;/div&gt;
 
         // javascript
-        qc("#set1").click(function () {
-            qc.selector.val(qc("#setval"), 2);
-        });
+        function post2(re, callee) {
+            var args = re.args, lines = [];
+            for (var k in args) {
+                if (k != "key")
+                    lines.push(k + " = '" + args[k] + "'");
+            }
+            qc("#post2").html(lines.join("&nbsp;"));
+        }
+
+        function post_submit(obj) {
+            qc("#editor2").change();
+        }
 
     </pre>
 

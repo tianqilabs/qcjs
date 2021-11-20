@@ -207,7 +207,7 @@ qc["util"] = qc.c.util = {
         }
         qc.util.mobile = mobile;
     },
-    getKeys: function (contrl, args) {
+    getKeys_111: function (contrl, args) {
         args = args || {};
 
         qc.util.getFields(contrl, "qc-key qc-need", args);
@@ -223,7 +223,7 @@ qc["util"] = qc.c.util = {
                 var _attr = contrl.attr(att);
                 if (_attr) {
                     _attr.split(" ").each(function (_att) {
-                        _att = _att.trime();
+                        _att = _att.trim();
                         qc.util.getVal(contrl.find("[qc-field='" + _att + "']"), args);
                     });
                 }
@@ -242,7 +242,7 @@ qc["util"] = qc.c.util = {
         if (key) {
             keys.push.apply(keys, key.split(" "));
         }
-        args["key"] = keys.join(",")
+        args["key"] = keys.join(",");
 
         return args;
     },
@@ -327,6 +327,16 @@ qc["util"] = qc.c.util = {
             }
         }
     },
+    initData: function (contrl, b) {
+        contrl.find("[qc-field]").each(function () {
+            var def = qc(this).attr("qc-default"),
+                field = qc(this).attr("qc-field");
+
+            if (def != undefined) {
+                qc.util.setData(contrl, field, def);
+            }
+        });
+    },
     get: function (obj, args, callee) {
         qc.util.postData("qc-get", obj, args, callee);
     },
@@ -342,34 +352,90 @@ qc["util"] = qc.c.util = {
             args = {};
         }
 
-        var curr = obj, url,
-            contrl = curr.closest("[qc-control]"),
-            editor = contrl.closest("[qc-control='editor']");
+        var re = qc.util.parseArgs(type, obj, args),
+            fn = re.fn;
 
-        if ((type == "qc-post" || type == "qc-upload") && editor.equals(curr)) {
-            url = contrl.attr(type);
-            qc.util.getFields(editor, "", args);
+        if (typeof fn == "string") {
+            qc._post(fn, args, function (d) {
+                qc.util.postBack(d, re.re, callee);
+            });
+
         } else {
-            var _obj = editor.length == 0 ? contrl : editor;
-            url = _obj.attr(type);
-            qc.util.getKeys(_obj, args);
-            qc.util.getVal(curr, args);
+            fn(re.re, function (d) {
+                qc.util.postBack(d, re.re, callee);
+            });
         }
+    },
+    parseArgs: function (type, obj, args) {
+        var attrs = "qc-key" + (type == "qc-post" ? " qc-need" : ""),
+            fn,
+            re;
 
-        if (url) {
-            var fnc = qc.util.convert2fnc(url),
-                re = {"contrl": contrl, "curr": curr, "args": args};
+        if (typeof obj == "string") {
+            fn = qc.util.conver2fnc(obj) || obj;
+        } else {
+            var curr = obj,
+                contrl = curr.closest("[qc-control]"),
+                parent = contrl.parent().closest("[qc-control]");
 
-            if (fnc) {
-                fnc(re, function (d) {
-                    qc.util.postBack(d, re, callee);
-                });
-            } else {
-                qc._post(url, args, function (d) {
-                    qc.util.postBack(d, re, callee);
-                });
+            if (parent[0] && parent.attr(attrs)) {
+                qc.util.getFields(parent, attrs, args);
+            } else if (contrl[0] && contrl.attr(attrs)) {
+                qc.util.getFields(contrl, attrs, args);
             }
+
+            if (curr.attr("qc-control")) {
+                qc.util.getFields(curr, "", args);
+            } else {
+                qc.util.getFields(curr, attrs, args);
+            }
+
+            if (curr.attr(type)) {
+                fn = curr.attr(type);
+            } else if (contrl[0] && contrl.attr(type)) {
+                fn = contrl.attr(type);
+            } else if (parent[0] && parent.attr(type)) {
+                fn = parent.attr(type);
+            }
+
+            fn = qc.util.convert2fnc(fn) || fn;
+
+            re = {"contrl": contrl, "curr": curr, "args": args};
         }
+
+        return {"fn": fn, "re": re};
+    },
+    parseArgs_111: function (type, obj, args) {
+        var url,
+            re;
+
+        if (typeof obj == "string") {
+            url = qc.util.convert2fnc(obj) || obj;
+
+        } else {
+            var curr = obj,
+                contrl = curr.closest("[qc-control]"),
+                editor = contrl.closest("[qc-control='editor']");
+
+            if (editor[0] && editor.equals(curr)) {
+                qc.util.getFields(editor, "", args);
+                url = contrl[0] ? contrl.attr(type) : curr.attr(type);
+            } else if (contrl[0]) {
+                qc.util.getKeys(contrl, args);
+                qc.util.getVal(curr, args);
+                url = contrl.attr(type);
+            } else {
+                qc.util.getKeys(curr, args);
+                qc.util.getVal(curr, args);
+                url = curr.attr(type);
+            }
+
+            url = qc.util.convert2fnc(url) || url;
+
+            re = {"contrl": contrl, "curr": curr, "args": args};
+        }
+
+        return {"url": url, "re": re};
     },
     postBack: function (d, re, callee) {
         try {

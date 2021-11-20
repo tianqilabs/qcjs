@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>qcjs help</title>
+
+    <script src="../link.js"></script>
+
+    <style>
+
+    </style>
+
+</head>
+<body>
+<div class="left">
+    <div class="menu"></div>
+</div>
+<div class="right">
+    <p></p>
+    <h2>treeview</h2>
+    <p>
+        树状视图。
+    </p>
+
+    <p></p>
+    <h4>treeview 属性</h4>
+    <dl>
+        <dt>qc-get</dt>
+        <dd>
+            获取数据的链接或方法。<br>
+            方法的参数:
+            <div>
+                <ul>
+                    <li>re: 对象。</li>
+                    <li>callee: 回调函数。</li>
+                </ul>
+            </div>
+        </dd>
+
+        <dt>qc-mode</dt>
+        <dd>
+            manual: 手动加载数据 <br>
+            auto: 自动加载数据
+        </dd>
+
+        <dt>qc-content</dt>
+        <dd>
+            数据显示模板。
+        </dd>
+
+        <dt>qc-key</dt>
+        <dd>
+            唯一字段。
+        </dd>
+
+        <dt>qc-pKey</dt>
+        <dd>
+            获取数据关联关键字段。
+        </dd>
+
+        <dt>qc-value</dt>
+        <dd>
+            qc-pKey 值。
+        </dd>
+
+        <dt>qc-type</dt>
+        <dd>
+            在 qc-content 内。
+            <div>
+                <ul>
+                    <li>collapse：折叠按钮</li>
+                    <li>expand：展开按钮</li>
+                    <li>addNew：新增按钮</li>
+                </ul>
+            </div>
+        </dd>
+    </dl>
+    <p></p>
+
+    <p></p>
+    <h4 class="imp">例子</h4>
+    <pre class="code">
+        // html body
+
+        // javascript
+    </pre>
+
+    <p></p>
+    <h4 class="imp">Result</h4>
+    <div class="result">
+
+        <div qc-control="treeview" class="qc-treeview" qc-mode="auto" qc-get="get1">
+
+            <div qc-content qc-pKey="pid" qc-value="1" qc-key="id">
+                <span class="collexp" qc-type="collapse"></span>
+                <span class="collexp" qc-type></span>
+                <span qc-field="name" class="black"></span>
+                <span class="addNew" qc-type="addNew"></span>
+            </div>
+
+        </div>
+
+        <script>
+            var datas = [
+                {"id": "2", "name": "mobile", "pid": "1"},
+                {"id": "21", "name": "android", "pid": "2"},
+                {"id": "22", "name": "apple", "pid": "2"},
+                {"id": "3", "name": "pc", "pid": "1"},
+                {"id": "31", "name": "HP", "pid": "3"},
+                {"id": "32", "name": "apple", "pid": "3"},
+            ];
+
+            function get1(re, callee) {
+                var data = [],
+                    contrl = re.contrl,
+                    pKey = contrl[0].pKey,
+                    pVal = re.args[pKey];console.log(re);
+
+                for (var i = 0; i < datas.length; i++) {
+                    var b = datas[i];
+                    if (b[pKey] == pVal) {
+                        data.push(b);
+                    }
+                }
+                var d = {rows: data.length, data: data};
+                callee(d, re);
+            }
+        </script>
+
+    </div>
+
+
+</div>
+
+</body>
+</html>

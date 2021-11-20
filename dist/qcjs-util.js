@@ -209,7 +209,7 @@ qc["util"] = qc.c.util = {
         }
         qc.util.mobile = mobile;
     },
-    getKeys: function (contrl, args) {
+    getKeys_111: function (contrl, args) {
         args = args || {};
 
         qc.util.getFields(contrl, "qc-key qc-need", args);
@@ -225,7 +225,7 @@ qc["util"] = qc.c.util = {
                 var _attr = contrl.attr(att);
                 if (_attr) {
                     _attr.split(" ").each(function (_att) {
-                        _att = _att.trime();
+                        _att = _att.trim();
                         qc.util.getVal(contrl.find("[qc-field='" + _att + "']"), args);
                     });
                 }
@@ -244,7 +244,7 @@ qc["util"] = qc.c.util = {
         if (key) {
             keys.push.apply(keys, key.split(" "));
         }
-        args["key"] = keys.join(",")
+        args["key"] = keys.join(",");
 
         return args;
     },
@@ -329,6 +329,16 @@ qc["util"] = qc.c.util = {
             }
         }
     },
+    initData: function (contrl, b) {
+        contrl.find("[qc-field]").each(function () {
+            var def = qc(this).attr("qc-default"),
+                field = qc(this).attr("qc-field");
+
+            if (def != undefined) {
+                qc.util.setData(contrl, field, def);
+            }
+        });
+    },
     get: function (obj, args, callee) {
         qc.util.postData("qc-get", obj, args, callee);
     },
@@ -344,34 +354,90 @@ qc["util"] = qc.c.util = {
             args = {};
         }
 
-        var curr = obj, url,
-            contrl = curr.closest("[qc-control]"),
-            editor = contrl.closest("[qc-control='editor']");
+        var re = qc.util.parseArgs(type, obj, args),
+            fn = re.fn;
 
-        if ((type == "qc-post" || type == "qc-upload") && editor.equals(curr)) {
-            url = contrl.attr(type);
-            qc.util.getFields(editor, "", args);
+        if (typeof fn == "string") {
+            qc._post(fn, args, function (d) {
+                qc.util.postBack(d, re.re, callee);
+            });
+
         } else {
-            var _obj = editor.length == 0 ? contrl : editor;
-            url = _obj.attr(type);
-            qc.util.getKeys(_obj, args);
-            qc.util.getVal(curr, args);
+            fn(re.re, function (d) {
+                qc.util.postBack(d, re.re, callee);
+            });
         }
+    },
+    parseArgs: function (type, obj, args) {
+        var attrs = "qc-key" + (type == "qc-post" ? " qc-need" : ""),
+            fn,
+            re;
 
-        if (url) {
-            var fnc = qc.util.convert2fnc(url),
-                re = {"contrl": contrl, "curr": curr, "args": args};
+        if (typeof obj == "string") {
+            fn = qc.util.conver2fnc(obj) || obj;
+        } else {
+            var curr = obj,
+                contrl = curr.closest("[qc-control]"),
+                parent = contrl.parent().closest("[qc-control]");
 
-            if (fnc) {
-                fnc(re, function (d) {
-                    qc.util.postBack(d, re, callee);
-                });
-            } else {
-                qc._post(url, args, function (d) {
-                    qc.util.postBack(d, re, callee);
-                });
+            if (parent[0] && parent.attr(attrs)) {
+                qc.util.getFields(parent, attrs, args);
+            } else if (contrl[0] && contrl.attr(attrs)) {
+                qc.util.getFields(contrl, attrs, args);
             }
+
+            if (curr.attr("qc-control")) {
+                qc.util.getFields(curr, "", args);
+            } else {
+                qc.util.getFields(curr, attrs, args);
+            }
+
+            if (curr.attr(type)) {
+                fn = curr.attr(type);
+            } else if (contrl[0] && contrl.attr(type)) {
+                fn = contrl.attr(type);
+            } else if (parent[0] && parent.attr(type)) {
+                fn = parent.attr(type);
+            }
+
+            fn = qc.util.convert2fnc(fn) || fn;
+
+            re = {"contrl": contrl, "curr": curr, "args": args};
         }
+
+        return {"fn": fn, "re": re};
+    },
+    parseArgs_111: function (type, obj, args) {
+        var url,
+            re;
+
+        if (typeof obj == "string") {
+            url = qc.util.convert2fnc(obj) || obj;
+
+        } else {
+            var curr = obj,
+                contrl = curr.closest("[qc-control]"),
+                editor = contrl.closest("[qc-control='editor']");
+
+            if (editor[0] && editor.equals(curr)) {
+                qc.util.getFields(editor, "", args);
+                url = contrl[0] ? contrl.attr(type) : curr.attr(type);
+            } else if (contrl[0]) {
+                qc.util.getKeys(contrl, args);
+                qc.util.getVal(curr, args);
+                url = contrl.attr(type);
+            } else {
+                qc.util.getKeys(curr, args);
+                qc.util.getVal(curr, args);
+                url = curr.attr(type);
+            }
+
+            url = qc.util.convert2fnc(url) || url;
+
+            re = {"contrl": contrl, "curr": curr, "args": args};
+        }
+
+        return {"url": url, "re": re};
     },
     postBack: function (d, re, callee) {
         try {
@@ -564,9 +630,9 @@ qc.c.popfrm = {
 
             popfrm.show();
 
-            var callee = qc.util.convert2fnc(callee);
-            if (callee)
-                callee(popfrm);
+            var fnc = qc.util.convert2fnc(callee);
+            if (fnc)
+                fnc(popfrm);
             qc.popfrm.layout(popfrm);
         } else {
             var title = curr.attr("qc-title"),
@@ -580,7 +646,7 @@ qc.c.popfrm = {
                 }
                 node = node.nextSibling;
             }
-            qc.popfrm.dyShow(title, btn, content, curr, callee);
+            qc.popfrm.dyShow(title, btn, content, curr, callee, hideCallee);
         }
     },
     dyShow: function (title, btn, content, originObj, callee, hideCallee) {
@@ -2227,8 +2293,12 @@ qc.c.lister = {
     },
     getDatas: function () {
         qc("[qc-control='lister']").each(function () {
-            qc.lister.setView(qc(this), 0);
-            qc.lister.get(qc(this));
+            var obj = qc(this),
+                mode = obj.attr("qc-mode") || "auto";
+
+            qc.lister.setView(obj, 0);
+            if (mode == "auto")
+                qc.lister.get(obj);
         });
     },
     get: function (contrl, args, callee) {
@@ -2280,8 +2350,12 @@ qc.c.lister = {
         li.addClass(clsName || "");
         for (var k in b) {
             var _obj = clone.find("[qc-field='" + k + "']");
-            if (_obj[0])
-                _obj.attr("qc-value", b[k]).html(b[k]);
+            if (_obj[0]) {
+                if (_obj[0].value != undefined)
+                    _obj.val(b[k]);
+                else
+                    _obj.attr("qc-value", b[k]).html(b[k]);
+            }
         }
         li.append(clone.contents());
     },
@@ -2380,12 +2454,20 @@ qc.c.pagepicker = {
 qc.c.editor = {
     control: "editor",
     create: function (obj) {
-        obj[0].edit = "auto";
+        obj[0].mode = QCSet();
         obj[0].pos = "static";
         var mode = obj.attr("qc-mode");
         if (mode) {
-            if (mode.contains("normal"))
-                obj[0].edit = "";
+            if (mode.contains("auto")) {
+                obj[0].mode.add(["get", "post"]);
+            } else {
+                if (mode.contains("get")) {
+                    obj[0].mode.add("get");
+                }
+                if (mode.contains("post")) {
+                    obj[0].mode.add("post");
+                }
+            }
             if (mode.contains("fixed")) {
                 obj[0].pos = "fixed";
                 obj.css("position", "absolute");
@@ -2402,6 +2484,9 @@ qc.c.editor = {
             }
         });
         qc.editor.hideMsg(obj);
+        if (obj[0].mode.contains("get")) {
+            qc.editor.get(obj, {});
+        }
     },
     show: function (obj) {
         var contrl = qc(obj.curr.attr("qc-target")), args = {};
@@ -2422,9 +2507,14 @@ qc.c.editor = {
     fill: function (d, re, callee) {
         var contrl = re.contrl;
         qc.editor.hideMsg(contrl);
-        for (var i = 0; i < d.rows; i++) {
-            var b = d.data[i];
-            qc.util.setDatas(contrl, b);
+
+        if (d.rows == 0) {
+            qc.util.initData(contrl);
+        } else {
+            for (var i = 0; i < d.rows; i++) {
+                var b = d.data[i];
+                qc.util.setDatas(contrl, b);
+            }
         }
         if (callee) callee(d, re);
     },
@@ -2442,7 +2532,7 @@ qc.c.editor = {
         }
 
         if (re) {
-            if (contrl[0].edit == "auto" || isContrl) {
+            if (contrl[0].mode.contains("post") || isContrl) {
                 qc.editor.post(curr, {}, callee);
             }
         }
@@ -2473,25 +2563,25 @@ qc.c.editor = {
 
             var rules = rule ? rule.split(" ") : [],
                 val = qc.util.getVal(_obj),
-                _re = false, match;
+                _re = true, match;
 
             rules.each(function (_rule) {
                 if (_rule == "number") {
-                    _re = /^-?\d+(\.\d+)?$/.exec(val);
+                    _re = _re && /^-?\d+(\.\d+)?$/.exec(val);
                 } else if (_rule == "date") {
                     try {
                         var dt = new Date(val);
-                        _re = !isNaN(dt.getTime());
+                        _re = _re && !isNaN(dt.getTime());
                     } catch (e) {
 
                     }
                 } else if (_rule == "notnull") {
-                    _re = val.length > 0;
+                    _re = _re && val.length > 0;
                 } else if (match = /^maxlen\((\d+)\)$/.exec(_rule)) {
-                    _re = val.length <= match[1];
+                    _re = _re && val.length <= match[1];
                 } else if (match = /^format\(([^\)]+)\)$/.exec(_rule)) {
                     var reg = new RegExp(match[1], "gi");
-                    _re = reg.exec(val);
+                    _re = _re && reg.exec(val);
                 }
             });
 

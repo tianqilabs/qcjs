@@ -13,6 +13,7 @@ qc.lang.menu = {
     "editor": "editor",
     "datepicker": "datepicker",
     "lister": "lister or pagepicker",
+    "treeview": "tree view",
     "icon": "Custom icon style",
     "lang": "multi-lingual"
 };

@@ -42,8 +42,12 @@ qc.c.lister = {
     },
     getDatas: function () {
         qc("[qc-control='lister']").each(function () {
-            qc.lister.setView(qc(this), 0);
-            qc.lister.get(qc(this));
+            var obj = qc(this),
+                mode = obj.attr("qc-mode") || "auto";
+
+            qc.lister.setView(obj, 0);
+            if (mode == "auto")
+                qc.lister.get(obj);
         });
     },
     get: function (contrl, args, callee) {
@@ -95,8 +99,12 @@ qc.c.lister = {
         li.addClass(clsName || "");
         for (var k in b) {
             var _obj = clone.find("[qc-field='" + k + "']");
-            if (_obj[0])
-                _obj.attr("qc-value", b[k]).html(b[k]);
+            if (_obj[0]) {
+                if (_obj[0].value != undefined)
+                    _obj.val(b[k]);
+                else
+                    _obj.attr("qc-value", b[k]).html(b[k]);
+            }
         }
         li.append(clone.contents());
     },
