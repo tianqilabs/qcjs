@@ -213,18 +213,18 @@ qc._postData = function (type, url, data, callback) {
         if (v == undefined) continue;
         if (Array.isArray(v)) {
             v.each(function (arr) {
-                parms.push(k + "=" + encodeURI(encodeURI(arr)));
+                parms.push(k + "=" + (type == "get" ? encodeURI(encodeURI(arr)) : arr));
             });
         } else {
-            parms.push(k + "=" + encodeURI(encodeURI(v)));
+            parms.push(k + "=" + (type == "get" ? encodeURI(encodeURI(v)) : v));
         }
     }
 
     type = type.toLowerCase();
 
-    var data = null;
+    var sendData = null;
     if (type == "post") {
-        data = parms.join("&");
+        sendData = parms.join("&");
     } else {
         if (parms.length > 0)
             url += (url.lastIndexOf("?") == -1 ? "?" : "&") + parms.join("&");
@@ -233,7 +233,7 @@ qc._postData = function (type, url, data, callback) {
     xhr.open(type, url);
     if (type == "post")
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.send(data);
+    xhr.send(sendData);
 };
 
 qc._post = function (url, data, callback) {

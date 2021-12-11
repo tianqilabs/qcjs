@@ -49,12 +49,17 @@ qc["util"] = qc.c.util = {
     convert2fnc: function (fn) {
         var fnc;
         try {
-            if (typeof fn == "string")
-                fnc = Function("return " + fn)();
-            else if (typeof fn == "object" && fn.attr("qc-fn"))
-                fnc = Function("return " + fn.attr("qc-fn"))();
-            else if (typeof fn == "function")
+            if (typeof fn == "string") {
+                if (fn.match(/^[\w\d_\$\.]+$/)) {
+                    fnc = Function("return (" + fn + ")")();
+                }
+                // Function("return (" + fn + ")")();
+            } else if (typeof fn == "object" && fn.attr("qc-fn")) {
+                fnc = qc.util.convert2fnc(fn.attr("qc-fn"));
+                // fnc = Function("return (" + fn.attr("qc-fn") + ")")();
+            } else if (typeof fn == "function") {
                 fnc = fn;
+            }
         } catch (e) {
 
         }
@@ -209,22 +214,15 @@ qc["util"] = qc.c.util = {
         }
         qc.util.mobile = mobile;
     },
-    getKeys_111: function (contrl, args) {
-        args = args || {};
-
-        qc.util.getFields(contrl, "qc-key qc-need", args);
-
-        return args;
-    },
     getFields: function (contrl, attr, args) {
         args = args || {};
 
         if (attr) {
-            attr.split(" ").each(function (att) {
+            attr.split(",").each(function (att) {
                 att = att.trim();
                 var _attr = contrl.attr(att);
                 if (_attr) {
-                    _attr.split(" ").each(function (_att) {
+                    _attr.split(",").each(function (_att) {
                         _att = _att.trim();
                         qc.util.getVal(contrl.find("[qc-field='" + _att + "']"), args);
                     });
@@ -236,61 +234,65 @@ qc["util"] = qc.c.util = {
             });
         }
 
-        var keys = [], _key = args["key"];
-        if (_key) {
-            keys.push(_key);
-        }
+        var keys = QCSet(args["key"]);
+
         var key = contrl.attr("qc-key");
         if (key) {
-            keys.push.apply(keys, key.split(" "));
+            keys.add(key.split(","));
         }
         args["key"] = keys.join(",");
 
         return args;
     },
     getVal: function (obj, args) {
-        var tagName = obj[0].tagName.toLowerCase(),
-            type = obj.attr("type") || tagName,
-            vs = ["hidden", "text", "password", "select", "textarea"],
-            cs = ["checkbox", "radio"],
-            field = obj.attr("qc-field"), val = undefined;
+        var val = undefined;
+        if (obj[0]) {
+            var tagName = obj[0].tagName.toLowerCase(),
+                type = obj.attr("type") || tagName,
+                vs = ["hidden", "text", "password", "select", "textarea"],
+                cs = ["checkbox", "radio"],
+                field = obj.attr("qc-field"),
+                ctrl = qc[obj.attr("qc-control")];
 
-        if (vs.contains(type)) {
-            val = obj.val();
-            obj.attr("qc-value", val);
-        } else if (cs.contains(type)) {
-            val = obj.is(":checked") ? obj.attr("qc-value") || obj.val() : obj.attr("qc-default");
-        } else if (type == "file") {
-            val = obj[0];
-        } else {
-            var subs = obj.find("[qc-subfield]");
-            if (subs.length > 0) {
-                var vals = [];
-                subs.each(function () {
-                    var sub = qc(this),
-                        v = sub.attr("qc-value");
-                    vals.push(encodeURI(encodeURI(v)));
-                    // n = sub.attr("qc-subfield"),
-                    // n = n.replace(/@/gi, "%40");
-                    // n = n.replace(/,/gi, "%2C");
-                    // v = v.replace(/@/gi, "%40");
-                    // v = v.replace(/,/gi, "%2C");
-                    // vals.push(n + "=" + v);
-                });
-                obj.attr("qc-value", vals.join("&"));
-            }
-            val = obj.attr("qc-value");
-        }
-        if (args && field && val != undefined) {
-            var v = args[field];
-            if (v) {
-                if (Array.isArray(v)) {
-                    v.push(val);
-                } else {
-                    args[field] = [v, val];
-                }
+            if (vs.contains(type)) {
+                val = obj.val();
+                obj.attr("qc-value", val);
+
+            } else if (cs.contains(type)) {
+                val = obj.is(":checked") ? obj.attr("qc-value") || obj.val() : obj.attr("qc-default");
+
+            } else if (type == "file") {
+                val = obj[0];
+
+            } else if (ctrl && ctrl.val) {
+                val = ctrl.val(obj);
+
             } else {
-                args[field] = val;
+                var subs = obj.find("[qc-subfield]");
+                if (subs[0]) {
+                    var vals = [];
+                    subs.each(function () {
+                        var sub = qc(this),
+                            v = sub.attr("qc-value");
+                        vals.push(v);
+                    });
+                    obj.attr("qc-value", vals.join("&"));
+                }
+                val = obj.attr("qc-value");
+            }
+
+            if (args && field && val != undefined) {
+                var v = args[field];
+                if (v) {
+                    if (Array.isArray(v) && !v.contains(val)) {
+                        v.push(val);
+                    } else {
+                        if (val && v != val)
+                            args[field] = [v, val];
+                    }
+                } else {
+                    args[field] = val;
+                }
             }
         }
         return val;
@@ -302,11 +304,12 @@ qc["util"] = qc.c.util = {
     },
     setData: function (contrl, name, value) {
         var obj = contrl.find("[qc-field='" + name + "']");
-        if (obj.length > 0) {
+        if (obj[0]) {
             obj.attr("qc-value", value);
 
             if (obj.is("[qc-control='selector']")) {
                 qc.selector.val(obj, value);
+
             } else if (obj.is("[type='checkbox']") || obj.is("[type='radio']")) {
                 var def = obj.attr("qc-default");
                 if (value == def) {
@@ -320,11 +323,37 @@ qc["util"] = qc.c.util = {
                     if (["hidden", "text", "password", "select", "textarea"].contains(type)) {
                         obj.val(value);
                     }
+
                 } else {
-                    value.split("&").each(function (val) {
+                    var vs = value.split("&");
+                    vs.each(function (val) {
                         val = decodeURI(decodeURI(val));
-                        obj.append("<span qc-subfield qc-value='" + val + "']>" + val + "</span>");
+                        if (vs.length == 1) {
+                            obj.html(val);
+                        } else {
+                            obj.append("<span qc-subfield qc-value='" + val + "'>" + val + "</span>");
+                        }
                     });
+                }
+            }
+        }
+    },
+    setDefualt: function (contrl, name, value) {
+        var b = {};
+        if (typeof name == "object") {
+            b = name;
+        } else {
+            b[name] = value;
+        }
+        for (var k in b) {
+            var obj = contrl.find("[qc-field='" + k + "']");
+            if (obj[0]) {
+                obj.attr("qc-default", b[k]);
+                obj.removeAttr("qc-value");
+                if (obj[0].value) {
+                    obj.val("");
+                } else {
+                    obj.html("");
                 }
             }
         }
@@ -357,6 +386,9 @@ qc["util"] = qc.c.util = {
         var re = qc.util.parseArgs(type, obj, args),
             fn = re.fn;
 
+        if (!fn)
+            return;
+
         if (typeof fn == "string") {
             qc._post(fn, args, function (d) {
                 qc.util.postBack(d, re.re, callee);
@@ -369,28 +401,25 @@ qc["util"] = qc.c.util = {
         }
     },
     parseArgs: function (type, obj, args) {
-        var attrs = "qc-key" + (type == "qc-post" ? " qc-need" : ""),
-            fn,
+        var fn,
             re;
 
         if (typeof obj == "string") {
-            fn = qc.util.conver2fnc(obj) || obj;
+            fn = qc.util.convert2fnc(obj) || obj;
+
         } else {
-            var curr = obj,
+            var attrs = "qc-key, qc-need",
+                curr = obj,
                 contrl = curr.closest("[qc-control]"),
                 parent = contrl.parent().closest("[qc-control]");
 
-            if (parent[0] && parent.attr(attrs)) {
+            if (parent[0]) {
                 qc.util.getFields(parent, attrs, args);
-            } else if (contrl[0] && contrl.attr(attrs)) {
+            }
+            if (contrl[0]) {
                 qc.util.getFields(contrl, attrs, args);
             }
-
-            if (curr.attr("qc-control")) {
-                qc.util.getFields(curr, "", args);
-            } else {
-                qc.util.getFields(curr, attrs, args);
-            }
+            qc.util.getVal(curr, args);
 
             if (curr.attr(type)) {
                 fn = curr.attr(type);
@@ -400,44 +429,13 @@ qc["util"] = qc.c.util = {
                 fn = parent.attr(type);
             }
 
-            fn = qc.util.convert2fnc(fn) || fn;
+            var _fn = qc.util.convert2fnc(fn);
+            fn = _fn || fn;
 
             re = {"contrl": contrl, "curr": curr, "args": args};
         }
 
         return {"fn": fn, "re": re};
-    },
-    parseArgs_111: function (type, obj, args) {
-        var url,
-            re;
-
-        if (typeof obj == "string") {
-            url = qc.util.convert2fnc(obj) || obj;
-
-        } else {
-            var curr = obj,
-                contrl = curr.closest("[qc-control]"),
-                editor = contrl.closest("[qc-control='editor']");
-
-            if (editor[0] && editor.equals(curr)) {
-                qc.util.getFields(editor, "", args);
-                url = contrl[0] ? contrl.attr(type) : curr.attr(type);
-            } else if (contrl[0]) {
-                qc.util.getKeys(contrl, args);
-                qc.util.getVal(curr, args);
-                url = contrl.attr(type);
-            } else {
-                qc.util.getKeys(curr, args);
-                qc.util.getVal(curr, args);
-                url = curr.attr(type);
-            }
-
-            url = qc.util.convert2fnc(url) || url;
-
-            re = {"contrl": contrl, "curr": curr, "args": args};
-        }
-
-        return {"url": url, "re": re};
     },
     postBack: function (d, re, callee) {
         try {
@@ -570,7 +568,7 @@ qc["util"] = qc.c.util = {
         qc.iconStyle = cont;
     },
     iconInit: function () {
-        if (!qc["iconStyle"]) {
+        if (qc["iconStyle"] == undefined) {
             qc["iconStyle"] = "<i class='fa'>";
         }
     }
@@ -854,19 +852,27 @@ qc.c.selector = {
         var text = qc("<input type='text' class='qc-selector-text' qc-content readonly>"),
             caret = qc("<a href='javascript:void(0);' class='qc-selector-caret'></a>"),
             list = qc("<ul qc-selector-list>");
+
         contrl.append(caret).append(text).append(list);
 
-        qc.util.icon(caret, "caret");
+        var title = contrl.attr("qc-title"),
+            icon = contrl.attr("qc-icon");
+
+        text.attr("title", title || "");
+        qc.util.icon(caret, icon || "caret");
 
         var mode = contrl.attr("qc-mode") || "auto";
         contrl[0].mode = mode.contains("normal") ? "" : "auto";
-        if (mode.contains("search")) {
+        contrl[0].seMode = mode.contains("search") ? "search" : "";
+        if (contrl[0].seMode) {
+            text.attr("placeholder", title || "");
             text.removeAttr("readonly");
+
             text.change(function (ev) {
                 return false;
             });
             text.keyup(function (ev) {
-                qc.selector.search({"contrl": contrl, "curr": qc(this), "ev": ev});
+                qc.selector.show({"contrl": contrl, "curr": qc(this), "ev": ev});
             });
         }
 
@@ -880,10 +886,12 @@ qc.c.selector = {
             text = contrl.attr("qc-text") || field;
 
         obj.find("option").each(function () {
-            var opt = qc(this);
-            var b = {};
+            var opt = qc(this),
+                texts = opt.text(),
+                pass = true,
+                b = {};
+
             b[field] = opt.attr("value");
-            var texts = opt.text(), pass = true;
             texts.split(",").each(function (t) {
                 t = t.trim();
                 var m = /^([^=]+)=(.+)$/.exec(t);
@@ -892,10 +900,13 @@ qc.c.selector = {
                     pass = false;
                 }
             });
+
             if (pass)
                 b[text] = texts;
+
             data.push(b);
         });
+
         contrl[0].data = {"rows": data.length, "data": data};
         obj.remove();
     },
@@ -921,91 +932,127 @@ qc.c.selector = {
             }
         });
     },
-    getData: function (contrl) {
+    getData: function (contrl, callee) {
         var args = {};
         if (contrl[0].orEl) {
             qc.util.getVal(qc(contrl[0].orEl), args);
         }
         if (contrl[0].search) {
-            args["search_key"] = contrl[0].search;
+            args[contrl.attr("qc-search-key") || "search_key"] = contrl[0].search;
         }
 
-        if (contrl.attr("qc-get")) {
+        qc.selector.get(contrl.attr("qc-get"), contrl, args, callee);
+    },
+    get: function (url, contrl, args, callee) {
+        contrl.find("ul").empty();
+        if (url) {
+            var _url = contrl.attr("qc-get");
+            contrl.attr("qc-get", url);
             qc.util.get(contrl, args, function (d) {
+                contrl.attr("qc-get", _url);
                 contrl[0].data = d;
-                qc.selector.fillData(contrl);
+                qc.selector.fillData(contrl, callee);
             });
         } else {
-            qc.selector.fillData(contrl);
+            qc.selector.fillData(contrl, callee);
         }
     },
-    fillData: function (contrl) {
+    fillData: function (contrl, callee) {
         var data = contrl[0].data;
 
         var field = contrl.attr("qc-field") || "v",
-            text = contrl.attr("qc-text") || field,
-            texts = text.split(" "),
-            list = contrl.find("ul");
+            texts = (contrl.attr("qc-text") || field).split(","),
+            buttons = (contrl.attr("qc-buttons") || "").split(","),
+            ul = contrl.find("ul");
 
-        list.empty();
         for (var i = 0; i < data.rows; i++) {
-            var b = data.data[i], ts = [];
+            var b = data.data[i],
+                ts = [],
+                btns = [];
+
             texts.each(function (tx) {
+                tx = tx.trim();
                 var v = b[tx];
-                ts.push(v ==undefined ? tx : v);
+                ts.push(v == undefined ? tx : v);
             });
 
-            var text = ts.join("");
+            buttons.each(function (btn) {
+                var ary = btn.split("|"),
+                    name = ary[0], icon = ary[1], fn = ary[3], title = ary[2];
+
+                if (ary.length == 1 && !name)
+                    return true;
+
+                var a = qc("<a href='javascript:void(0);' class='qc-button'>" + name + "</a>");
+                if (icon) {
+                    qc.util.icon(a, icon, "selector");
+                }
+                if (title) {
+                    a.attr("title", title);
+                }
+                if (fn) {
+                    a.attr("qc-fn", fn);
+                }
+                btns.push(a);
+            });
+
+            var text = ts.join(" ");
             var li = qc("<li>" + text + "</li>");
             li.attr("qc-value", b[field]);
             li.attr("qc-text", text);
             li.attr("qc-type", "select");
-            list.append(li);
+            if (btns.length > 0) {
+                var bs = qc("<div class='qc-buttons'>");
+                bs.append(btns);
+                li.append(bs);
+            }
+            ul.append(li);
         }
 
         var def = contrl.attr("qc-default"),
             list = contrl.find("li"),
-            curr = def == undefined ? list.eq(0) : list.filter("[qc-value='" + def + "']");
+            curr = list.filter("[qc-value='" + def + "']");
+
+        if (def == undefined) {
+            curr = list.eq(0);
+        }
+
         qc.selector.selected({"contrl": contrl, "curr": curr});
+        if (callee)
+            callee(contrl);
     },
     show: function (obj) {
-        var ul = obj.contrl.find("ul"),
-            mode = obj.contrl.attr("qc-mode"),
-            search = obj.ev && obj.ev.type == "keyup",
-            hided = ul.css("display") != "none";
+        var contrl = obj.contrl,
+            hided = contrl.find("ul").css("display") != "none" && !(obj.ev && obj.ev.type.toLowerCase() == "keyup");
 
-        if (hided && !search) {
+        if (hided) {
             qc("body").click();
         } else {
-            ul.show();
-            qc.util.hideObj.set(ul, obj.contrl);
-
-            ul.css({
-                "left": "0px",
-                "top": obj.contrl.height() + "px",
-                "min-width": obj.contrl.width() + "px"
-            });
-
-            var seled = ul.find("li.selected");
-            if (seled.length > 0)
-                ul[0].scrollTop = seled[0].offsetTop;
+            if (contrl[0].seMode) {
+                qc.selector.search(obj, qc.selector.shown);
+            } else {
+                qc.selector.shown(contrl);
+            }
         }
     },
-    select: function (obj) {
-        var contrl, _obj;
-        if (obj.contrl) {
-            contrl = obj.contrl;
-            _obj = obj;
-        } else {
-            contrl = obj;
-            var def = contrl.attr("qc-default"),
-                list = contrl.find("li"),
-                curr = def == undefined ? list.eq(0) : list.filter("[qc-value='" + def + "']");
-            _obj = {"contrl": contrl, "curr": curr};
-        }
-        qc.selector.selected(_obj);
-
+    shown: function (contrl) {
         var ul = contrl.find("ul");
+        ul.show();
+        qc.util.hideObj.set(ul, contrl);
+        ul.css({
+            "left": "0px",
+            "top": contrl.height() + "px",
+            "min-width": contrl.width() + "px"
+        });
+
+        var seled = ul.find("li.selected");
+        if (seled.length > 0)
+            ul[0].scrollTop = seled[0].offsetTop;
+    },
+    select: function (obj) {
+        qc.selector.selected(obj);
+
+        var ul = obj.contrl.find("ul");
         qc.util.hideObj.hides.each(function (tars) {
             if (tars[0].equals(ul)) {
                 ul.hide();
@@ -1013,28 +1060,24 @@ qc.c.selector = {
             }
         });
 
-        if (!contrl[0].search || obj.ev)
-            qc.selector.post(contrl);
+        qc.selector.post(obj.contrl);
     },
     selected: function (obj) {
         var contrl = obj.contrl,
             curr = obj.curr,
-            text = curr.length > 0 ? curr.attr("qc-text") : "",
-            value = curr.length > 0 ? curr.attr("qc-value") : "";
+            text = curr[0] ? curr.attr("qc-text") : "",
+            value = curr[0] ? curr.attr("qc-value") : "";
 
         contrl.find("li").removeClass("selected");
-        if (curr.length > 0) {
+        if (curr[0]) {
             curr.addClass("selected");
         }
 
-        var cont = contrl.find("[qc-content]");
-        if (obj.ev) {
-            cont.val(text);
-        } else {
-            if (contrl[0].search == undefined)
-                cont.val(text);
-        }
+        if (obj.ev || contrl[0].search == undefined)
+            contrl.find("[qc-content]").val(text);
+
         contrl.attr("qc-value", value);
+        qc.selector.for(contrl);
     },
     post: function (contrl) {
         if (contrl.attr("qc-post")) {
@@ -1046,29 +1089,34 @@ qc.c.selector = {
         }
     },
     change: function (contrl) {
-        var fr = contrl.attr("qc-for");
-        if (fr) {
-            qc.selector.getData(qc(fr));
-        }
+        qc.selector.for(contrl);
         var editor = contrl.closest("[qc-control='editor']");
         if (editor.length > 0) {
             qc.editor.change({"contrl": editor, "curr": contrl});
         }
     },
+    for: function (contrl) {
+        var fr = contrl.attr("qc-for");
+        if (fr) {
+            qc.selector.getData(qc(fr));
+        }
+    },
     search: function (obj) {
-        var contrl = obj.contrl,
-            curr = obj.curr,
-            val = curr.val();
-
-        contrl[0].search = val;
-        qc.selector.getData(contrl);
-        qc.selector.show(obj);
+        var contrl = obj.contrl;
+        contrl[0].search = obj.curr.val();
+        qc.selector.getData(contrl, qc.selector.shown);
     },
     val: function (contrl, value) {
-        if (value)
-            contrl.find("li[qc-value='" + value + "']").click();
-        else
-            return contrl.attr("qc-value");
+        if (value == undefined) {
+            value = contrl.attr("qc-value");
+        } else {
+            if (!value && !contrl[0].search) {
+                contrl[0].search = undefined;
+            }
+            var curr = contrl.find("li[qc-value='" + value + "']");
+            qc.selector.selected({"contrl": contrl, "curr": curr});
+        }
+        return value;
     },
     text: function (contrl) {
         return contrl.find("[qc-content]").val();
@@ -2262,6 +2310,11 @@ qc.c.lister = {
             obj.append("<ul>");
         }
 
+        var fn = obj.attr("qc-fn");
+        if (fn) {
+            obj[0].callback = qc.util.convert2fnc(fn);
+        }
+
         var page = obj.attr("qc-page"), count = obj.attr("qc-count");
         if (!page) {
             obj.attr("qc-page", 1);
@@ -2276,7 +2329,7 @@ qc.c.lister = {
             var toolbar = qc("<div class='qc-toolbar' qc-toolbar></div>");
             contrl.prepend(toolbar);
 
-            btns.split(" ").each(function (btn) {
+            btns.split(",").each(function (btn) {
                 var m = btn.split("|");
                 var a = qc("<a href='javascript:void(0);' qc-type='view'></a>");
                 toolbar.append(a);
@@ -2284,6 +2337,7 @@ qc.c.lister = {
                     var attr = m.length > 2 ? m.slice(2) : [];
                     qc.util.lang(a, m[1], attr.join(","));
                     a.prepend("&nbsp;");
+                    a.attr("qc-type", ["view", "list"].contains(m[1]) ? "view" : m[1]);
                 }
                 if (m[0]) {
                     qc.util.icon(a, m[0]);
@@ -2303,8 +2357,8 @@ qc.c.lister = {
     },
     get: function (contrl, args, callee) {
         args = args || {};
-        args.page = contrl.attr("qc-page");
-        args.count = contrl.attr("qc-count");
+        args.page = contrl.attr("qc-page") || 1;
+        args.count = contrl.attr("qc-count") || 20;
         qc.util.get(contrl, args, function (d, re) {
             re.contrl[0].data = d;
             qc.lister.fill(d, re, callee);
@@ -2312,6 +2366,7 @@ qc.c.lister = {
     },
     fill: function (d, re, callee) {
         var contrl = re.contrl,
+            field = contrl.attr("qc-field"),
             conts = contrl.find("[qc-content]"),
             btns = contrl.find("[qc-toolbar] a.selected"), cont;
 
@@ -2331,7 +2386,7 @@ qc.c.lister = {
             var b = d.data[i];
 
             var li = qc("<li>");
-            qc.lister.content(cont, li, b);
+            qc.lister.content(cont, field, li, b);
 
             ul.append(li);
         }
@@ -2341,13 +2396,18 @@ qc.c.lister = {
             qc.pagepicker.show(qc(pn), contrl, d.pages);
         }
 
-        if (callee) callee(d, re);
+        var fn = callee || contrl[0].callback;
+        if (fn && typeof fn == "function") {
+            fn(d, re);
+        }
     },
-    content: function (cont, li, b) {
+    content: function (cont, field, li, b) {
         var clone = cont.clone(),
             clsName = clone.attr("class");
 
         li.addClass(clsName || "");
+        li.attr("qc-field", field);
+        li.attr("qc-value", b[field]);
         for (var k in b) {
             var _obj = clone.find("[qc-field='" + k + "']");
             if (_obj[0]) {
@@ -2374,23 +2434,6 @@ qc.c.lister = {
         qc.lister.setView(contrl, index);
         obj.args = {};
         qc.lister.fill(contrl[0].data, obj);
-    },
-    item: function (obj) {
-        var contrl = obj.contrl;
-        qc.util.post(contrl, args, function (d, re) {
-            qc.lister.showMsg(obj.curr, re);
-        });
-    },
-    showMsg: function (obj, re) {
-        var s = qc(obj.attr("qc-success")), f = qc(obj.attr("qc-failure"));
-        s.hide();
-        f.hide();
-        if (re) {
-            s.show();
-        } else {
-            f.show();
-        }
-        qc.util.hideObj.set(s, obj);
     }
 };
 
@@ -2408,15 +2451,16 @@ qc.c.pagepicker = {
         contrl[0].origin = origin;
         contrl.empty();
 
-        var _page = origin.attr("qc-page") || 1,
-            _count = origin.attr("qc-count") || 20,
+        var _page = origin.attr("qc-page") || 0,
+            _count = origin.attr("qc-count") || 0,
             _pc = contrl.attr("qc-count") || 10;
 
-        var page = parseInt(_page);
-        var count = parseInt(_count);
-        var pc = parseInt(_pc);
+        if (_page == 0 && _count == 0)
+            return;
 
-        var p = Math.floor((page - 1) / pc) * pc + 1;
+        var page = parseInt(_page),
+            pc = parseInt(_pc),
+            p = Math.floor((page - 1) / pc) * pc + 1;
 
         if (page > pc) {
             qc.pagepicker.setPage(contrl, p - 1, "&lt;", page);
@@ -2456,10 +2500,11 @@ qc.c.editor = {
     create: function (obj) {
         obj[0].mode = QCSet();
         obj[0].pos = "static";
-        var mode = obj.attr("qc-mode");
+
+        var mode = obj.attr("qc-mode") || "auto";
         if (mode) {
             if (mode.contains("auto")) {
-                obj[0].mode.add(["get", "post"]);
+                obj[0].mode.add("get", "post");
             } else {
                 if (mode.contains("get")) {
                     obj[0].mode.add("get");
@@ -2484,6 +2529,12 @@ qc.c.editor = {
             }
         });
         qc.editor.hideMsg(obj);
+
+        var fn = obj.attr("qc-fn");
+        if (fn) {
+            obj[0].callback = qc.util.convert2fnc(fn);
+        }
+
         if (obj[0].mode.contains("get")) {
             qc.editor.get(obj, {});
         }
@@ -2516,7 +2567,11 @@ qc.c.editor = {
                 qc.util.setDatas(contrl, b);
             }
         }
-        if (callee) callee(d, re);
+
+        var fn = callee || contrl[0].callback;
+        if (fn && typeof fn == "function") {
+            fn(d, re);
+        }
     },
     change: function (obj, callee) {
         var contrl = obj.contrl,
@@ -2578,7 +2633,16 @@ qc.c.editor = {
                 } else if (_rule == "notnull") {
                     _re = _re && val.length > 0;
                 } else if (match = /^maxlen\((\d+)\)$/.exec(_rule)) {
-                    _re = _re && val.length <= match[1];
+                    var k = 0;
+                    for (var i = 0; i < val.length; i++) {
+                        var code = val.charCodeAt(i);
+                        if (code >= 0 && code <= 128) {
+                            k++;
+                        } else {
+                            k += 2;
+                        }
+                    }
+                    _re = _re && k <= match[1];
                 } else if (match = /^format\(([^\)]+)\)$/.exec(_rule)) {
                     var reg = new RegExp(match[1], "gi");
                     _re = _re && reg.exec(val);
@@ -2610,6 +2674,358 @@ qc.c.editor = {
         } else {
             qc(obj.attr("qc-success")).hide();
             qc(obj.attr("qc-failure")).hide();
+        }
+    }
+};
+qc.c.treeview = {
+    control: "treeview",
+    create: function (obj) {
+        var mode = obj.attr("qc-mode") || "auto";
+
+        obj[0].mode = mode;
+
+        var fn = obj.attr("qc-fn");
+        if (fn) {
+            obj[0].callback = qc.util.convert2fnc(fn);
+        }
+
+        var content = obj.find("[qc-content]");
+        content.hide();
+
+        obj[0].qc_pKey = content.attr("qc-pKey");
+        obj[0].qc_key = content.attr("qc-key");
+        obj[0].qc_val = content.attr("qc-value");
+
+        if (obj.attr("qc-get") && mode.contains("auto")) {
+            qc.treeview.get(obj);
+        }
+    },
+    get: function (contrl, args, callee) {
+        args = args || {};
+        args[contrl[0].qc_pKey] = contrl[0].qc_val;
+        qc.util.get(contrl, args, function (d, re) {
+            qc.treeview.fill(d, re, callee);
+        });
+    },
+    fill: function (d, re, callee) {
+        var contrl = re.contrl,
+            cont = contrl.contents("[qc-content]"),
+            curr = contrl.find("[qc-key='" + contrl[0].qc_val + "']");
+
+        if (!curr[0])
+            curr = contrl;
+
+        var ul = curr.contents("ul").empty();
+        if (!ul[0]) {
+            ul = qc("<ul>");
+            curr.append(ul);
+        }
+
+        var li;
+        for (var i = 0; i < d.rows; i++) {
+            var b = d.data[i];
+
+            li = qc("<li>");
+            qc.treeview.content(cont, li, b);
+
+            ul.append(li);
+        }
+
+        if (cont.contents("[qc-type='addNew']")[0]) {
+            var pKey = curr.attr("qc-key") || "";
+            li = qc("<li qc-pKey='" + pKey + "'>");
+            qc.treeview.content(cont, li);
+            ul.append(li);
+        }
+
+        var fn = callee || contrl[0].callback;
+        if (fn && typeof fn == "function") {
+            fn(d, re);
+        }
+    },
+    content: function (cont, li, b) {
+        var clone = cont.clone(),
+            clsName = clone.attr("class"),
+            field = cont.attr("qc-key"),
+            pKey = cont.attr("qc-pKey");
+
+        li.addClass(clsName || "");
+        li.attr("qc-field", field);
+        if (b) {
+            li.attr("qc-key", b[field]);
+            li.attr("qc-pKey", b[pKey]);
+            li.append(clone.contents());
+            qc.util.setDatas(li, b);
+            qc.treeview.caretShow(li, "expand");
+
+        } else {
+            var addNew = clone.contents("[qc-type='addNew']");
+            if (addNew[0]) {
+                li.append(addNew);
+                addNew.removeAttr("qc-type");
+                addNew.show();
+            }
+
+        }
+
+    },
+    caretShow: function (li, name) {
+        li.contents("[qc-type]").each(function () {
+            var obj = qc(this),
+                type = obj.attr("qc-type");
+
+            if (name.contains(type)) {
+                obj.show();
+            } else {
+                obj.hide();
+            }
+        });
+    },
+    expand: function (re) {
+        var contrl = re.contrl,
+            curr = re.curr,
+            pKey = contrl[0].pKey,
+            li = curr.closest("li");
+
+        contrl[0].qc_val = li.attr("qc-key");
+        qc.treeview.get(contrl, {});
+        qc.treeview.caretShow(li, "collapse");
+    },
+    collapse: function (re) {
+        var curr = re.curr,
+            li = curr.closest("li");
+
+        li.contents("ul").remove();
+        qc.treeview.caretShow(li, "expand");
+
+        var par = li.parent().closest("li");
+        if (par[0]) {
+            re.contrl[0].qc_val = par.attr("qc-key");
+        } else {
+            re.contrl[0].qc_val = re.contrl.find("[qc-content]").attr("qc-value");
+        }
+    },
+    reload: function (re, callee) {
+        var contrl = re.contrl,
+            curr = re.curr,
+            par = curr.parent().closest("li");
+
+        if (par[0]) {
+            contrl[0].qc_val = par.attr("qc-key");
+        } else {
+            contrl[0].qc_val = contrl.find("[qc-content]").attr("qc-value");
+        }
+
+        qc.treeview.get(contrl, {}, callee);
+    }
+};
+qc.c.sheet = {
+    control: "sheet",
+    create: function (obj) {
+        var mode = obj.attr("qc-mode") || "auto",
+            getUrl = obj.attr("qc-get"),
+            table = obj.contents("table");
+
+        var fn = obj.attr("qc-fn");
+        if (fn) {
+            obj[0].callback = qc.util.convert2fnc(fn);
+        }
+
+        if (!table[0]) {
+            table = qc("<table>");
+            obj.append(table);
+        }
+
+        if (!table.contents("thead")[0]) {
+            table.append("<thead>");
+        }
+        if (!table.contents("tbody")[0]) {
+            table.append("<tbody>");
+        }
+
+        var cont = qc("<div qc-content>");
+        obj.append(cont);
+        cont.css("height", obj.height() + "px");
+        obj.css("height", "auto");
+
+        qc.sheet.foot(obj);
+
+        var warp = qc("<div qc-warp>");
+        warp.append(table);
+        cont.append(warp);
+
+        warp.on("scroll", qc.sheet.scroll);
+
+        if (getUrl && mode == "auto") {
+            qc.sheet.get(obj, {});
+        } else {
+            qc.sheet.format(table);
+            qc.sheet.layout(obj);
+            qc.sheet.pages(1, obj);
+        }
+    },
+    foot: function (contrl) {
+        var foot = qc("<div class='qc-sheet-foot' qc-foot>");
+        contrl.append(foot);
+
+        var first = qc("<span class='qc-sheet-page' qc-type='page' v='first'>");
+        qc.util.icon(first, "first", "sheet");
+        qc.util.lang(first, "first", "title", "sheet");
+        foot.append(first);
+
+        var left = qc("<span class='qc-sheet-page' qc-type='page' v='left'>");
+        qc.util.icon(left, "left", "sheet");
+        qc.util.lang(left, "left", "title", "sheet");
+        foot.append(left);
+
+        var inpt = qc("<input type='text' class='' v='page'>");
+        qc.util.lang(inpt, "page", "title", "sheet");
+        foot.append(inpt);
+        inpt[0].contrl = contrl;
+        inpt.keyup(qc.sheet.keyup);
+
+        foot.append("<span>/</span><span v='pages'></span>");
+
+
+        var right = qc("<span class='qc-sheet-page' qc-type='page' v='right'>");
+        qc.util.icon(right, "right", "sheet");
+        qc.util.lang(right, "right", "title", "sheet");
+        foot.append(right);
+
+        var last = qc("<span class='qc-sheet-page' qc-type='page' v='last'>");
+        qc.util.icon(last, "last", "sheet");
+        qc.util.lang(last, "last", "title", "sheet");
+        foot.append(last);
+
+
+    },
+    fromat: function (table) {
+        var ths = [];
+        table.find("thead th").each(function () {
+            ths.push(qc(this).attr("qc-fixed") == undefined ? "" : "qc-fixed");
+        });
+        table.find("tbody tr").each(function () {
+            qc(this).find("td").each(function (idx) {
+                if (ths[idx]) {
+                    qc(this).attr("qc-fixed", "");
+                }
+            });
+        });
+    },
+    get: function (contrl, args, callee) {
+        contrl.find(".qc-sheet-head-y, .qc-sheet-data-x, .qc-sheet-head-x").remove();
+
+        args = args || {};
+        args.page = contrl.attr("qc-page") || 1;
+        args.count = contrl.attr("qc-count") || 20;
+        qc.util.get(contrl, args, function (d, re) {
+            qc.sheet.fill(d, re, callee);
+            qc.sheet.pages(d.pages, contrl);
+            qc.sheet.layout(re.contrl);
+        });
+    },
+    fill: function (d, re, callee) {
+        var contrl = re.contrl,
+            tb = contrl.find("[qc-content] table"),
+            ths = tb.find("thead th");
+
+        var tbody = tb.find("tbody").empty();
+        for (var i = 0; i < d.rows; i++) {
+            var b = d.data[i],
+                tr = qc("<tr>");
+
+            tbody.append(tr);
+            qc.sheet.fill_tr(tr, ths, b);
+        }
+
+        var fn = callee || contrl[0].callback;
+        if (fn) {
+            fn(d, re);
+        }
+    },
+    fill_tr: function (tr, ths, b) {
+        for (var i = 0; i < ths.length; i++) {
+            var th = ths[i],
+                field = qc(th).attr("qc-field"),
+                fixed = qc(th).attr("qc-fixed") == undefined ? "" : "qc-fixed";
+
+            tr.append("<td qc-field='" + field + "' qc-value='" + b[field] + "' " + fixed + ">" + b[field] + "</td>");
+        }
+    },
+    layout: function (contrl) {
+        var cont = contrl.find("[qc-content]"),
+            warp = cont.find("[qc-warp]"),
+            tb = warp.find("table"),
+            thead_y = qc("<div class='qc-sheet-head-y'>"),
+            data_x = qc("<div class='qc-sheet-data-x'>"),
+            thead_x = qc("<div class='qc-sheet-head-x'>");
+
+        cont.append(thead_y.append(tb.clone()));
+        cont.append(data_x.append(tb.clone()));
+        cont.append(thead_x.append(tb.clone()));
+
+        warp[0].thead_y = thead_y;
+        warp[0].data_x = data_x;
+        warp[0].thead_x = thead_x;
+    },
+    scroll: function (ev) {
+        if (this.st != this.scrollTop) {
+            this.st = this.scrollTop;
+            this.data_x[0].scrollTop = this.st;
+        } else {
+            this.sl = this.scrollLeft;
+            this.thead_y[0].scrollLeft = this.sl;
+        }
+    },
+    pages: function (pages, contrl) {
+        var page = parseInt(contrl.attr("qc-page")) || 1,
+            foot = contrl.find("[qc-foot]");
+
+        foot.find(".qc-sheet-page").show();
+        foot.find("[v='page']").val(page);
+        foot.find("[v='pages']").html(pages);
+        if (page == 1) {
+            foot.find("[v='first']").hide();
+            foot.find("[v='left']").hide();
+        }
+        if (page == 2) {
+            foot.find("[v='left']").hide();
+        }
+        if (page == pages) {
+            foot.find("[v='last']").hide();
+            foot.find("[v='right']").hide();
+        }
+        if (page == pages - 1) {
+            foot.find("[v='right']").hide();
+        }
+    },
+    page: function (re) {
+        var curr = re.curr,
+            contrl = re.contrl,
+            v = curr.attr("v"),
+            foot = curr.parent(),
+            p = parseInt(foot.find("[v='page']").val()),
+            ps = parseInt(foot.find("[v='pages']").html());
+
+        if (v == "left") {
+            contrl.attr("qc-page", p - 1);
+        } else if (v == "right") {
+            contrl.attr("qc-page", p + 1);
+        } else if (v == "first") {
+            contrl.attr("qc-page", 1);
+        } else if (v == "last") {
+            contrl.attr("qc-page", ps);
+        } else {
+            if (p > ps)
+                p = ps;
+            curr.val(p);
+            contrl.attr("qc-page", p);
+        }
+        qc.sheet.get(contrl, {}, contrl[0].callee);
+    },
+    keyup: function (ev) {
+        if (["Enter", "NumpadEnter"].contains(ev.code)) {
+            qc.sheet.page({"contrl": this.contrl, "curr": qc(this), "ev": ev});
         }
     }
 };

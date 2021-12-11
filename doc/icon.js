@@ -22,3 +22,10 @@ qc.icon.treeview = {
     "collapse": "fa-angle-down",
     "addNew": "fa-plus-circle"
 };
+
+qc.icon.sheet = {
+    "first": "fa-angle-left",
+    "left": "fa-angle-double-left",
+    "right": "fa-angle-double-right",
+    "last": "fa-angle-right"
+};

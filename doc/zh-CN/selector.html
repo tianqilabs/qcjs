@@ -62,7 +62,29 @@
 
         <dt>qc-text</dt>
         <dd>
-            显示的内容，多个用空格分隔。如果对应数据对象的属性名称，则显示对象值，否则显示文本。
+            显示的内容，多个用英文逗号分隔。如果对应数据对象的属性名称，则显示对象值，否则显示文本。
+        </dd>
+
+        <dt>qc-title</dt>
+        <dd>
+            mode 为 search 时 text 的 placeholder 属性, 其它为标签 title。
+        </dd>
+
+        <dt>qc-icon</dt>
+        <dd>
+            自定义下拉图标。
+        </dd>
+
+        <dt>qc-search-key</dt>
+        <dd>
+            搜索 get data 的关键字。
+        </dd>
+
+        <dt>qc-buttons</dt>
+        <dd>
+            列表按钮，多个用英文逗号分隔。<br>
+            qc-buttons="name|icon|title|event, name2|icon2|title2|event2" <br>
+            name: 名称，icon：图标，title：标题，event：事件
         </dd>
 
         <dt>小部件属性 qc-get、qc-post、qc-upload 为方法时</dt>
@@ -136,7 +158,7 @@
         // html body
         get 例子: <br>
         &lt;select qc-control='selector' qc-get='get' qc-field='id'
-                    qc-text='name ,&amp;nbsp;age: [ age ]'&gt;&lt;/select&gt;
+                    qc-text='name, ,age: ,age'&gt;&lt;/select&gt;
 
         // javascript
         function get(re, callee) {
@@ -155,7 +177,7 @@
         // html body
         post 例子: <br>
         &lt;select qc-control='selector' qc-get='get' qc-field='id' qc-post='post'
-                    qc-text='name ,&amp;nbsp;age: [ age ]'&gt;&lt;/select&gt;
+                    qc-text='name , age: [ age ]'&gt;&lt;/select&gt;
 
         &lt;input type="text" id="result1"&gt;
 
@@ -169,7 +191,7 @@
         // html body
         set val 例子: <br>
         &lt;select qc-control='selector' qc-get='get' qc-field='id' id='setval'
-                    qc-text='name , age: [ age ]'&gt;&lt;/select&gt;
+                    qc-text='name, age: [, age , ]'&gt;&lt;/select&gt;
         &lt;button id="set1"&gt; set val &lt;/button&gt;
 
         // javascript
@@ -193,7 +215,7 @@
         <div style="padding: 16px 32px;">
             get test: <br>
             <select qc-control='selector' qc-get='get' qc-field='id'
-                    qc-text='name ,&nbsp;age: age'></select>
+                    qc-text='name, ,age: ,age'></select>
 
         </div>
         <div style="padding: 16px 32px;margin-bottom: 64px;">
@@ -206,7 +228,7 @@
         <div style="padding: 16px 32px;margin-bottom: 64px;">
             set val 例子: <br>
             <select qc-control='selector' qc-get='get' qc-field='id' id='setval'
-                    qc-text='name , age: [ age ]'></select>
+                    qc-text='name, age: [, age , ]'></select>
             <button id="set1"> set val </button>
         </div>
 
@@ -390,7 +412,7 @@
     <pre class="code">
         // html body
         &lt;p&gt;
-            &lt;select qc-control='selector' id='selector4' qc-get='get4'
+            &lt;select qc-control='selector' id='selector4' qc-get='get4' qc-buttons='into|fa-chevron-right|into text|get5'
                         qc-post='post4' qc-field='name' qc-mode='search normal'&gt; &lt;/select&gt;
         &lt;/p&gt;
 
@@ -432,13 +454,17 @@
             qc("#text4").val(re.curr.attr("qc-value"));
         }
 
+        function get5(re) {
+            alert("list button event");
+        }
+
     </pre>
 
     <h4 class="imp">Result</h4>
     <div class="result">
         <div style="padding: 16px 32px; height: 200px;">
             <p>
-                <select qc-control='selector' id='selector4' qc-get='get4'
+                <select qc-control='selector' id='selector4' qc-get='get4' qc-buttons="into|fa-chevron-right|into text|get5"
                         qc-post='post4' qc-field='name' qc-mode='search normal'> </select>
             </p>
             <p>
@@ -478,6 +504,10 @@
 
             function post4(re) {
                 qc("#text4").val(re.curr.attr("qc-value"));
+            }
+
+            function get5(re) {
+                alert("list button event");
             }
 
         </script>

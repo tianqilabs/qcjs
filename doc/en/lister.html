@@ -46,10 +46,10 @@
         </dd>
         <dt>qc-buttons</dt>
         <dd>
-            Buttons for multiple list templates, separated by spaces. Corresponds to the sequence of qc-content.
+            Buttons for multiple list templates, separated by commas. Corresponds to the sequence of qc-content.
             <br/>
             <p>
-                Rule: qc-buttons='icon|text|attribute icon2|text2|attribute2'.
+                Rule: qc-buttons='icon|text|attribute,icon2|text2|attribute2'.
             </p>
             <p>
                 icon: String type. Icon css class name;<br/>
@@ -256,7 +256,7 @@
     <pre class="code">
         // html body
         &lt;div qc-control="lister" class="qc-lister" qc-get="get1" qc-for="#pn3"
-             qc-page="1" qc-count="3" qc-buttons="fa-th-large|view fa-th-list|list|html"&gt;
+             qc-page="1" qc-count="3" qc-buttons="fa-th-large|view, fa-th-list|list|html"&gt;
             &lt;div qc-content class="view"&gt;
                 &lt;h3 qc-field="name" class="black"&gt;&lt;/h3&gt;
                 &lt;p&gt;gender: &lt;span qc-field="gender" class="black"&gt;&lt;/span&gt;&lt;/p&gt;
@@ -277,7 +277,7 @@
     <p></p>
     <h4 class="imp">Result</h4>
     <div class="result">
-        <div class="qc-lister" qc-buttons="fa-th-large|view fa-th-list|list|html" qc-control="lister" qc-count="3"
+        <div class="qc-lister" qc-buttons="fa-th-large|view, fa-th-list|list|html" qc-control="lister" qc-count="3"
              qc-for="#pn3" qc-get="get1" qc-page="1">
             <div class="view" qc-content="">
                 <h3 class="black" qc-field="name"></h3>

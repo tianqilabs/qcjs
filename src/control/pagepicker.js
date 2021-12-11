@@ -8,15 +8,16 @@ qc.c.pagepicker = {
         contrl[0].origin = origin;
         contrl.empty();
 
-        var _page = origin.attr("qc-page") || 1,
-            _count = origin.attr("qc-count") || 20,
+        var _page = origin.attr("qc-page") || 0,
+            _count = origin.attr("qc-count") || 0,
             _pc = contrl.attr("qc-count") || 10;
 
-        var page = parseInt(_page);
-        var count = parseInt(_count);
-        var pc = parseInt(_pc);
+        if (_page == 0 && _count == 0)
+            return;
 
-        var p = Math.floor((page - 1) / pc) * pc + 1;
+        var page = parseInt(_page),
+            pc = parseInt(_pc),
+            p = Math.floor((page - 1) / pc) * pc + 1;
 
         if (page > pc) {
             qc.pagepicker.setPage(contrl, p - 1, "&lt;", page);

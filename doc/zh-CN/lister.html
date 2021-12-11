@@ -54,9 +54,9 @@
 
         <dt>qc-buttons</dt>
         <dd>
-            多个列表模板的按钮，用空格分隔。与 qc-content 的序列对应。<br>
+            多个列表模板的按钮，用英文逗号分隔。与 qc-content 的序列对应。<br>
             <p>
-                规则：qc-buttons='icon|text|attribute icon2|text2|attribute2'。
+                规则：qc-buttons='icon|text|attribute,icon2|text2|attribute2'。
             </p>
             <p>
                 icon: String 类型。图标 css 类名称；<br>
@@ -265,7 +265,7 @@
     <pre class="code">
         // html body
         &lt;div qc-control="lister" class="qc-lister" qc-get="get1" qc-for="#pn3"
-             qc-page="1" qc-count="3" qc-buttons="fa-th-large|view fa-th-list|list|html"&gt;
+             qc-page="1" qc-count="3" qc-buttons="fa-th-large|view, fa-th-list|list|html"&gt;
             &lt;div qc-content class="view"&gt;
                 &lt;h3 qc-field="name" class="black"&gt;&lt;/h3&gt;
                 &lt;p&gt;gender: &lt;span qc-field="gender" class="black"&gt;&lt;/span&gt;&lt;/p&gt;
@@ -287,7 +287,7 @@
     <h4 class="imp">Result</h4>
     <div class="result">
         <div qc-control="lister" class="qc-lister" qc-get="get1" qc-for="#pn3"
-             qc-page="1" qc-count="3" qc-buttons="fa-th-large|view fa-th-list|list|html">
+             qc-page="1" qc-count="3" qc-buttons="fa-th-large|view, fa-th-list|list|html">
             <div qc-content class="view">
                 <h3 qc-field="name" class="black"></h3>
                 <p>gender: <span qc-field="gender" class="black"></span></p>

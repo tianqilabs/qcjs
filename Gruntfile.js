@@ -1,4 +1,4 @@
-module.exports = function(grunt){
+module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         concat: {
@@ -25,13 +25,21 @@ module.exports = function(grunt){
                     "src/control/datepicker.js",
                     "src/control/lister.js",
                     "src/control/pagepicker.js",
-                    "src/control/editor.js"],
+                    "src/control/editor.js",
+                    "src/control/treeview.js",
+                    "src/control/sheet.js"],
                 dest: "dist/<%= pkg.name %>-util.js"
             }
         },
         watch: {
-            files: [ "src/*/*.js" ],
-            tasks: [ "concat", "uglify"]
+            js: {
+                files: ["src/*/*.js"],
+                tasks: ['concat', 'uglify', 'copy:zg_js']
+            },
+            css: {
+                files: ["doc/css/qcjs.css"],
+                tasks: ['copy:zg_css']
+            }
         },
         uglify: {
             options: {
@@ -47,11 +55,44 @@ module.exports = function(grunt){
                     'dist/<%= pkg.name %>-util.min.js': ['dist/<%= pkg.name %>-util.js']
                 }
             }
+        },
+        copy: {
+            zg_js: {
+                files: [
+                    {
+                        expand: true,
+                        src: ['dist/**'],
+                        dest: 'E:/mydisk/deveplor/com.tianqilabs/zhangui/project/zg-cash2/web/qcjs/',
+                        flatten: true,
+                        filter: 'isFile'
+                    },
+                    {
+                        expand: true,
+                        src: ['dist/**', 'src/control/**'],
+                        dest: 'E:/mydisk/deveplor/com.tianqilabs/zhangui/project/out/artifacts/zgcash2_war_exploded/qcjs/',
+                        flatten: true,
+                        filter: 'isFile'
+                    }
+                ]
+            },
+            zg_css: {
+                files: [
+                    {
+                        src: ['doc/css/qcjs.css'],
+                        dest: 'E:/mydisk/deveplor/com.tianqilabs/zhangui/project/zg-cash2/web/css/def/qcjs.css'
+                    },
+                    {
+                        src: ['doc/css/qcjs.css'],
+                        dest: 'E:/mydisk/deveplor/com.tianqilabs/zhangui/project/out/artifacts/zgcash2_war_exploded/css/def/qcjs.css'
+                    }
+                ]
+            }
         }
     });
 
-    require( "load-grunt-tasks" )( grunt );
+    require("load-grunt-tasks")(grunt);
 
-    grunt.registerTask('default', ['concat', 'uglify', "watch"]);
+    // grunt.registerTask('default', ['concat', 'uglify', 'copy', 'watch']);
+    grunt.registerTask('default', ['watch']);
 
 };

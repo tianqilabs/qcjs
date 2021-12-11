@@ -24,6 +24,7 @@ document.write("\n" +
     "    <script src=\"../../src/control/popfrm.js\"></script>\n" +
     "    <script src=\"../../src/control/selector.js\"></script>\n" +
     "    <script src=\"../../src/control/treeview.js\"></script>\n" +
+    "    <script src=\"../../src/control/sheet.js\"></script>\n" +
 
     "    <script src=\"../icon.js\"></script>\n" +
     "    <script src=\"../doc.js\"></script>\n" +

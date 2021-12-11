@@ -29,19 +29,27 @@ qc.c.selector = {
         var text = qc("<input type='text' class='qc-selector-text' qc-content readonly>"),
             caret = qc("<a href='javascript:void(0);' class='qc-selector-caret'></a>"),
             list = qc("<ul qc-selector-list>");
+
         contrl.append(caret).append(text).append(list);
 
-        qc.util.icon(caret, "caret");
+        var title = contrl.attr("qc-title"),
+            icon = contrl.attr("qc-icon");
+
+        text.attr("title", title || "");
+        qc.util.icon(caret, icon || "caret");
 
         var mode = contrl.attr("qc-mode") || "auto";
         contrl[0].mode = mode.contains("normal") ? "" : "auto";
-        if (mode.contains("search")) {
+        contrl[0].seMode = mode.contains("search") ? "search" : "";
+        if (contrl[0].seMode) {
+            text.attr("placeholder", title || "");
             text.removeAttr("readonly");
+
             text.change(function (ev) {
                 return false;
             });
             text.keyup(function (ev) {
-                qc.selector.search({"contrl": contrl, "curr": qc(this), "ev": ev});
+                qc.selector.show({"contrl": contrl, "curr": qc(this), "ev": ev});
             });
         }
 
@@ -55,10 +63,12 @@ qc.c.selector = {
             text = contrl.attr("qc-text") || field;
 
         obj.find("option").each(function () {
-            var opt = qc(this);
-            var b = {};
+            var opt = qc(this),
+                texts = opt.text(),
+                pass = true,
+                b = {};
+
             b[field] = opt.attr("value");
-            var texts = opt.text(), pass = true;
             texts.split(",").each(function (t) {
                 t = t.trim();
                 var m = /^([^=]+)=(.+)$/.exec(t);
@@ -67,10 +77,13 @@ qc.c.selector = {
                     pass = false;
                 }
             });
+
             if (pass)
                 b[text] = texts;
+
             data.push(b);
         });
+
         contrl[0].data = {"rows": data.length, "data": data};
         obj.remove();
     },
@@ -96,91 +109,127 @@ qc.c.selector = {
             }
         });
     },
-    getData: function (contrl) {
+    getData: function (contrl, callee) {
         var args = {};
         if (contrl[0].orEl) {
             qc.util.getVal(qc(contrl[0].orEl), args);
         }
         if (contrl[0].search) {
-            args["search_key"] = contrl[0].search;
+            args[contrl.attr("qc-search-key") || "search_key"] = contrl[0].search;
         }
 
-        if (contrl.attr("qc-get")) {
+        qc.selector.get(contrl.attr("qc-get"), contrl, args, callee);
+    },
+    get: function (url, contrl, args, callee) {
+        contrl.find("ul").empty();
+        if (url) {
+            var _url = contrl.attr("qc-get");
+            contrl.attr("qc-get", url);
             qc.util.get(contrl, args, function (d) {
+                contrl.attr("qc-get", _url);
                 contrl[0].data = d;
-                qc.selector.fillData(contrl);
+                qc.selector.fillData(contrl, callee);
             });
         } else {
-            qc.selector.fillData(contrl);
+            qc.selector.fillData(contrl, callee);
         }
     },
-    fillData: function (contrl) {
+    fillData: function (contrl, callee) {
         var data = contrl[0].data;
 
         var field = contrl.attr("qc-field") || "v",
-            text = contrl.attr("qc-text") || field,
-            texts = text.split(" "),
-            list = contrl.find("ul");
+            texts = (contrl.attr("qc-text") || field).split(","),
+            buttons = (contrl.attr("qc-buttons") || "").split(","),
+            ul = contrl.find("ul");
 
-        list.empty();
         for (var i = 0; i < data.rows; i++) {
-            var b = data.data[i], ts = [];
+            var b = data.data[i],
+                ts = [],
+                btns = [];
+
             texts.each(function (tx) {
+                tx = tx.trim();
                 var v = b[tx];
-                ts.push(v ==undefined ? tx : v);
+                ts.push(v == undefined ? tx : v);
             });
 
-            var text = ts.join("");
+            buttons.each(function (btn) {
+                var ary = btn.split("|"),
+                    name = ary[0], icon = ary[1], fn = ary[3], title = ary[2];
+
+                if (ary.length == 1 && !name)
+                    return true;
+
+                var a = qc("<a href='javascript:void(0);' class='qc-button'>" + name + "</a>");
+                if (icon) {
+                    qc.util.icon(a, icon, "selector");
+                }
+                if (title) {
+                    a.attr("title", title);
+                }
+                if (fn) {
+                    a.attr("qc-fn", fn);
+                }
+                btns.push(a);
+            });
+
+            var text = ts.join(" ");
             var li = qc("<li>" + text + "</li>");
             li.attr("qc-value", b[field]);
             li.attr("qc-text", text);
             li.attr("qc-type", "select");
-            list.append(li);
+            if (btns.length > 0) {
+                var bs = qc("<div class='qc-buttons'>");
+                bs.append(btns);
+                li.append(bs);
+            }
+            ul.append(li);
         }
 
         var def = contrl.attr("qc-default"),
             list = contrl.find("li"),
-            curr = def == undefined ? list.eq(0) : list.filter("[qc-value='" + def + "']");
+            curr = list.filter("[qc-value='" + def + "']");
+
+        if (def == undefined) {
+            curr = list.eq(0);
+        }
+
         qc.selector.selected({"contrl": contrl, "curr": curr});
+        if (callee)
+            callee(contrl);
     },
     show: function (obj) {
-        var ul = obj.contrl.find("ul"),
-            mode = obj.contrl.attr("qc-mode"),
-            search = obj.ev && obj.ev.type == "keyup",
-            hided = ul.css("display") != "none";
+        var contrl = obj.contrl,
+            hided = contrl.find("ul").css("display") != "none" && !(obj.ev && obj.ev.type.toLowerCase() == "keyup");
 
-        if (hided && !search) {
+        if (hided) {
             qc("body").click();
         } else {
-            ul.show();
-            qc.util.hideObj.set(ul, obj.contrl);
-
-            ul.css({
-                "left": "0px",
-                "top": obj.contrl.height() + "px",
-                "min-width": obj.contrl.width() + "px"
-            });
-
-            var seled = ul.find("li.selected");
-            if (seled.length > 0)
-                ul[0].scrollTop = seled[0].offsetTop;
+            if (contrl[0].seMode) {
+                qc.selector.search(obj, qc.selector.shown);
+            } else {
+                qc.selector.shown(contrl);
+            }
         }
     },
-    select: function (obj) {
-        var contrl, _obj;
-        if (obj.contrl) {
-            contrl = obj.contrl;
-            _obj = obj;
-        } else {
-            contrl = obj;
-            var def = contrl.attr("qc-default"),
-                list = contrl.find("li"),
-                curr = def == undefined ? list.eq(0) : list.filter("[qc-value='" + def + "']");
-            _obj = {"contrl": contrl, "curr": curr};
-        }
-        qc.selector.selected(_obj);
-
+    shown: function (contrl) {
         var ul = contrl.find("ul");
+        ul.show();
+        qc.util.hideObj.set(ul, contrl);
+        ul.css({
+            "left": "0px",
+            "top": contrl.height() + "px",
+            "min-width": contrl.width() + "px"
+        });
+
+        var seled = ul.find("li.selected");
+        if (seled.length > 0)
+            ul[0].scrollTop = seled[0].offsetTop;
+    },
+    select: function (obj) {
+        qc.selector.selected(obj);
+
+        var ul = obj.contrl.find("ul");
         qc.util.hideObj.hides.each(function (tars) {
             if (tars[0].equals(ul)) {
                 ul.hide();
@@ -188,28 +237,24 @@ qc.c.selector = {
             }
         });
 
-        if (!contrl[0].search || obj.ev)
-            qc.selector.post(contrl);
+        qc.selector.post(obj.contrl);
     },
     selected: function (obj) {
         var contrl = obj.contrl,
             curr = obj.curr,
-            text = curr.length > 0 ? curr.attr("qc-text") : "",
-            value = curr.length > 0 ? curr.attr("qc-value") : "";
+            text = curr[0] ? curr.attr("qc-text") : "",
+            value = curr[0] ? curr.attr("qc-value") : "";
 
         contrl.find("li").removeClass("selected");
-        if (curr.length > 0) {
+        if (curr[0]) {
             curr.addClass("selected");
         }
 
-        var cont = contrl.find("[qc-content]");
-        if (obj.ev) {
-            cont.val(text);
-        } else {
-            if (contrl[0].search == undefined)
-                cont.val(text);
-        }
+        if (obj.ev || contrl[0].search == undefined)
+            contrl.find("[qc-content]").val(text);
+
         contrl.attr("qc-value", value);
+        qc.selector.for(contrl);
     },
     post: function (contrl) {
         if (contrl.attr("qc-post")) {
@@ -221,29 +266,34 @@ qc.c.selector = {
         }
     },
     change: function (contrl) {
-        var fr = contrl.attr("qc-for");
-        if (fr) {
-            qc.selector.getData(qc(fr));
-        }
+        qc.selector.for(contrl);
         var editor = contrl.closest("[qc-control='editor']");
         if (editor.length > 0) {
             qc.editor.change({"contrl": editor, "curr": contrl});
         }
     },
+    for: function (contrl) {
+        var fr = contrl.attr("qc-for");
+        if (fr) {
+            qc.selector.getData(qc(fr));
+        }
+    },
     search: function (obj) {
-        var contrl = obj.contrl,
-            curr = obj.curr,
-            val = curr.val();
-
-        contrl[0].search = val;
-        qc.selector.getData(contrl);
-        qc.selector.show(obj);
+        var contrl = obj.contrl;
+        contrl[0].search = obj.curr.val();
+        qc.selector.getData(contrl, qc.selector.shown);
     },
     val: function (contrl, value) {
-        if (value)
-            contrl.find("li[qc-value='" + value + "']").click();
-        else
-            return contrl.attr("qc-value");
+        if (value == undefined) {
+            value = contrl.attr("qc-value");
+        } else {
+            if (!value && !contrl[0].search) {
+                contrl[0].search = undefined;
+            }
+            var curr = contrl.find("li[qc-value='" + value + "']");
+            qc.selector.selected({"contrl": contrl, "curr": curr});
+        }
+        return value;
     },
     text: function (contrl) {
         return contrl.find("[qc-content]").val();

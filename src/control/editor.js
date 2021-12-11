@@ -3,10 +3,11 @@ qc.c.editor = {
     create: function (obj) {
         obj[0].mode = QCSet();
         obj[0].pos = "static";
-        var mode = obj.attr("qc-mode");
+
+        var mode = obj.attr("qc-mode") || "auto";
         if (mode) {
             if (mode.contains("auto")) {
-                obj[0].mode.add(["get", "post"]);
+                obj[0].mode.add("get", "post");
             } else {
                 if (mode.contains("get")) {
                     obj[0].mode.add("get");
@@ -31,6 +32,12 @@ qc.c.editor = {
             }
         });
         qc.editor.hideMsg(obj);
+
+        var fn = obj.attr("qc-fn");
+        if (fn) {
+            obj[0].callback = qc.util.convert2fnc(fn);
+        }
+
         if (obj[0].mode.contains("get")) {
             qc.editor.get(obj, {});
         }
@@ -63,7 +70,11 @@ qc.c.editor = {
                 qc.util.setDatas(contrl, b);
             }
         }
-        if (callee) callee(d, re);
+
+        var fn = callee || contrl[0].callback;
+        if (fn && typeof fn == "function") {
+            fn(d, re);
+        }
     },
     change: function (obj, callee) {
         var contrl = obj.contrl,
@@ -125,7 +136,16 @@ qc.c.editor = {
                 } else if (_rule == "notnull") {
                     _re = _re && val.length > 0;
                 } else if (match = /^maxlen\((\d+)\)$/.exec(_rule)) {
-                    _re = _re && val.length <= match[1];
+                    var k = 0;
+                    for (var i = 0; i < val.length; i++) {
+                        var code = val.charCodeAt(i);
+                        if (code >= 0 && code <= 128) {
+                            k++;
+                        } else {
+                            k += 2;
+                        }
+                    }
+                    _re = _re && k <= match[1];
                 } else if (match = /^format\(([^\)]+)\)$/.exec(_rule)) {
                     var reg = new RegExp(match[1], "gi");
                     _re = _re && reg.exec(val);

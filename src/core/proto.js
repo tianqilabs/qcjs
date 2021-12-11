@@ -10,31 +10,37 @@ qc.prototype.each = function (callback) {
 
 // manipulation
 qc.prototype.insert = function (cont, type) {
-    var obj = this, ins = qc._convert(cont), type = type || "append";
-    if (ins.length > 0) {
-        obj.each(function () {
-            var el = this.nodeType == 9 ? this.body : this;
-            var refor = el;
-            if (type == "prepend")
-                refor = el.firstChild;
-            else if (type == "after") {
-                refor = el.nextSibling;
-            }
+    var obj = this,
+        type = type || "append";
 
-            ins.each(function () {
-                var inEl = this;
-                if (type == "append") {
-                    el.appendChild(inEl);
-                } else if (type == "prepend") {
-                    el.insertBefore(inEl, refor);
-                } else if (type == "before") {
-                    el.parentNode.insertBefore(inEl, refor);
-                } else if (type == "after") {
-                    el.parentNode.insertBefore(inEl, refor);
-                }
-            });
+    obj.each(function () {
+        var ins = qc._convert(cont),
+            el = this.nodeType == 9 ? this.body : this,
+            refor = el;
+
+        if (!ins[0])
+            return true;
+
+        if (type == "prepend") {
+            refor = el.firstChild;
+        } else if (type == "after") {
+            refor = el.nextSibling;
+        }
+
+        ins.each(function () {
+            var inEl = this;
+            if (type == "append") {
+                el.appendChild(inEl);
+            } else if (type == "prepend") {
+                el.insertBefore(inEl, refor);
+            } else if (type == "before") {
+                el.parentNode.insertBefore(inEl, refor);
+            } else if (type == "after") {
+                el.parentNode.insertBefore(inEl, refor);
+            }
         });
-    }
+    });
+
     return obj;
 };
 
@@ -268,11 +274,13 @@ qc.prototype.scrollLeft = function (num) {
 
 qc.prototype.hide = function () {
     this.each(function () {
-        var el = this,
-            display = qc(el).css("display");
-        if (display != "none" && !el.display)
-            el.display = qc(el).css("display");
-        el.style.display = "none";
+        var el = this;
+        if (el.nodeType == 1) {
+            var display = qc(el).css("display");
+            if (display != "none" && !el.display)
+                el.display = qc(el).css("display");
+            el.style.display = "none";
+        }
     });
     return this;
 };
@@ -280,28 +288,30 @@ qc.prototype.hide = function () {
 qc.prototype.show = function () {
     this.each(function () {
         var el = this;
-        var display = qc(el).css("display");
-        if (display == "none") {
-            if (!qc.displays) {
-                qc.displays = {};
-            }
-            var tagn = el.tagName;
-            display = el.display || qc.displays[tagn];
-            if (!display) {
-                var iframe = document.createElement("IFRAME");
-                document.body.appendChild(iframe);
-                var doc = iframe.document || iframe.contentDocument;
-                var tmp = doc.createElement(tagn);
-                if (doc.body) {
-                    doc.body.appendChild(tmp);
-                } else {
-                    doc.appendChild(tmp);
+        if (el.nodeType == 1) {
+            var display = qc(el).css("display");
+            if (display == "none") {
+                if (!qc.displays) {
+                    qc.displays = {};
                 }
-                display = qc(tmp).css("display");
-                document.body.removeChild(iframe);
-                qc.displays[tagn] = display;
+                var tagn = el.tagName;
+                display = el.display || qc.displays[tagn];
+                if (!display) {
+                    var iframe = document.createElement("IFRAME");
+                    document.body.appendChild(iframe);
+                    var doc = iframe.document || iframe.contentDocument;
+                    var tmp = doc.createElement(tagn);
+                    if (doc.body) {
+                        doc.body.appendChild(tmp);
+                    } else {
+                        doc.appendChild(tmp);
+                    }
+                    display = qc(tmp).css("display");
+                    document.body.removeChild(iframe);
+                    qc.displays[tagn] = display;
+                }
+                el.style.display = display;
             }
-            el.style.display = display;
         }
     });
     return this;

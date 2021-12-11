@@ -34,6 +34,7 @@ function menuInit() {
         "           <li><a href='datepicker.html' qc-lang='menu' qc-lang-name='datepicker', qc-lang-attr='html'></a></li>\n" +
         "           <li><a href='lister.html' qc-lang='menu' qc-lang-name='lister', qc-lang-attr='html'></a></li>\n" +
         "           <li><a href='treeview.html' qc-lang='menu' qc-lang-name='treeview', qc-lang-attr='html'></a></li>\n" +
+        "           <li><a href='sheet.html' qc-lang='menu' qc-lang-name='sheet', qc-lang-attr='html'></a></li>\n" +
         "       </ul>" +
         "   </li>" +
         "</ul>\n" +

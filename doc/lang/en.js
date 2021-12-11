@@ -14,6 +14,7 @@ qc.lang.menu = {
     "datepicker": "datepicker",
     "lister": "lister or pagepicker",
     "treeview": "tree view",
+    "sheet": "sheet",
     "icon": "Custom icon style",
     "lang": "multi-lingual"
 };
@@ -46,5 +47,13 @@ qc.lang.datepicker = {
 qc.lang.lister = {
     "view": "View",
     "list": "List"
+};
+
+qc.lang.sheet = {
+    "first": "First",
+    "left": "Left",
+    "right": "Right",
+    "last": "Last",
+    "page": "页数"
 };
 

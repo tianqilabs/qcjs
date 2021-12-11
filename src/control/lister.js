@@ -11,6 +11,11 @@ qc.c.lister = {
             obj.append("<ul>");
         }
 
+        var fn = obj.attr("qc-fn");
+        if (fn) {
+            obj[0].callback = qc.util.convert2fnc(fn);
+        }
+
         var page = obj.attr("qc-page"), count = obj.attr("qc-count");
         if (!page) {
             obj.attr("qc-page", 1);
@@ -25,7 +30,7 @@ qc.c.lister = {
             var toolbar = qc("<div class='qc-toolbar' qc-toolbar></div>");
             contrl.prepend(toolbar);
 
-            btns.split(" ").each(function (btn) {
+            btns.split(",").each(function (btn) {
                 var m = btn.split("|");
                 var a = qc("<a href='javascript:void(0);' qc-type='view'></a>");
                 toolbar.append(a);
@@ -33,6 +38,7 @@ qc.c.lister = {
                     var attr = m.length > 2 ? m.slice(2) : [];
                     qc.util.lang(a, m[1], attr.join(","));
                     a.prepend("&nbsp;");
+                    a.attr("qc-type", ["view", "list"].contains(m[1]) ? "view" : m[1]);
                 }
                 if (m[0]) {
                     qc.util.icon(a, m[0]);
@@ -52,8 +58,8 @@ qc.c.lister = {
     },
     get: function (contrl, args, callee) {
         args = args || {};
-        args.page = contrl.attr("qc-page");
-        args.count = contrl.attr("qc-count");
+        args.page = contrl.attr("qc-page") || 1;
+        args.count = contrl.attr("qc-count") || 20;
         qc.util.get(contrl, args, function (d, re) {
             re.contrl[0].data = d;
             qc.lister.fill(d, re, callee);
@@ -61,6 +67,7 @@ qc.c.lister = {
     },
     fill: function (d, re, callee) {
         var contrl = re.contrl,
+            field = contrl.attr("qc-field"),
             conts = contrl.find("[qc-content]"),
             btns = contrl.find("[qc-toolbar] a.selected"), cont;
 
@@ -80,7 +87,7 @@ qc.c.lister = {
             var b = d.data[i];
 
             var li = qc("<li>");
-            qc.lister.content(cont, li, b);
+            qc.lister.content(cont, field, li, b);
 
             ul.append(li);
         }
@@ -90,13 +97,18 @@ qc.c.lister = {
             qc.pagepicker.show(qc(pn), contrl, d.pages);
         }
 
-        if (callee) callee(d, re);
+        var fn = callee || contrl[0].callback;
+        if (fn && typeof fn == "function") {
+            fn(d, re);
+        }
     },
-    content: function (cont, li, b) {
+    content: function (cont, field, li, b) {
         var clone = cont.clone(),
             clsName = clone.attr("class");
 
         li.addClass(clsName || "");
+        li.attr("qc-field", field);
+        li.attr("qc-value", b[field]);
         for (var k in b) {
             var _obj = clone.find("[qc-field='" + k + "']");
             if (_obj[0]) {
@@ -123,23 +135,6 @@ qc.c.lister = {
         qc.lister.setView(contrl, index);
         obj.args = {};
         qc.lister.fill(contrl[0].data, obj);
-    },
-    item: function (obj) {
-        var contrl = obj.contrl;
-        qc.util.post(contrl, args, function (d, re) {
-            qc.lister.showMsg(obj.curr, re);
-        });
-    },
-    showMsg: function (obj, re) {
-        var s = qc(obj.attr("qc-success")), f = qc(obj.attr("qc-failure"));
-        s.hide();
-        f.hide();
-        if (re) {
-            s.show();
-        } else {
-            f.show();
-        }
-        qc.util.hideObj.set(s, obj);
     }
 };
 

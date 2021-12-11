@@ -1,7 +1,7 @@
 qc.c = {};
 qc.icon = {};
 qc.lang = {};
-qc["util"] = qc.c.util = {
+qc["util"] = {
     mobile: false,
     _starts: [],
     _initeds: [],
@@ -47,12 +47,17 @@ qc["util"] = qc.c.util = {
     convert2fnc: function (fn) {
         var fnc;
         try {
-            if (typeof fn == "string")
-                fnc = Function("return " + fn)();
-            else if (typeof fn == "object" && fn.attr("qc-fn"))
-                fnc = Function("return " + fn.attr("qc-fn"))();
-            else if (typeof fn == "function")
+            if (typeof fn == "string") {
+                if (fn.match(/^[\w\d_\$\.]+$/)) {
+                    fnc = Function("return (" + fn + ")")();
+                }
+                // Function("return (" + fn + ")")();
+            } else if (typeof fn == "object" && fn.attr("qc-fn")) {
+                fnc = qc.util.convert2fnc(fn.attr("qc-fn"));
+                // fnc = Function("return (" + fn.attr("qc-fn") + ")")();
+            } else if (typeof fn == "function") {
                 fnc = fn;
+            }
         } catch (e) {
 
         }
@@ -207,22 +212,15 @@ qc["util"] = qc.c.util = {
         }
         qc.util.mobile = mobile;
     },
-    getKeys_111: function (contrl, args) {
-        args = args || {};
-
-        qc.util.getFields(contrl, "qc-key qc-need", args);
-
-        return args;
-    },
     getFields: function (contrl, attr, args) {
         args = args || {};
 
         if (attr) {
-            attr.split(" ").each(function (att) {
+            attr.split(",").each(function (att) {
                 att = att.trim();
                 var _attr = contrl.attr(att);
                 if (_attr) {
-                    _attr.split(" ").each(function (_att) {
+                    _attr.split(",").each(function (_att) {
                         _att = _att.trim();
                         qc.util.getVal(contrl.find("[qc-field='" + _att + "']"), args);
                     });
@@ -234,61 +232,65 @@ qc["util"] = qc.c.util = {
             });
         }
 
-        var keys = [], _key = args["key"];
-        if (_key) {
-            keys.push(_key);
-        }
+        var keys = QCSet(args["key"]);
+
         var key = contrl.attr("qc-key");
         if (key) {
-            keys.push.apply(keys, key.split(" "));
+            keys.add(key.split(","));
         }
         args["key"] = keys.join(",");
 
         return args;
     },
     getVal: function (obj, args) {
-        var tagName = obj[0].tagName.toLowerCase(),
-            type = obj.attr("type") || tagName,
-            vs = ["hidden", "text", "password", "select", "textarea"],
-            cs = ["checkbox", "radio"],
-            field = obj.attr("qc-field"), val = undefined;
+        var val = undefined;
+        if (obj[0]) {
+            var tagName = obj[0].tagName.toLowerCase(),
+                type = obj.attr("type") || tagName,
+                vs = ["hidden", "text", "password", "select", "textarea"],
+                cs = ["checkbox", "radio"],
+                field = obj.attr("qc-field"),
+                ctrl = qc[obj.attr("qc-control")];
 
-        if (vs.contains(type)) {
-            val = obj.val();
-            obj.attr("qc-value", val);
-        } else if (cs.contains(type)) {
-            val = obj.is(":checked") ? obj.attr("qc-value") || obj.val() : obj.attr("qc-default");
-        } else if (type == "file") {
-            val = obj[0];
-        } else {
-            var subs = obj.find("[qc-subfield]");
-            if (subs.length > 0) {
-                var vals = [];
-                subs.each(function () {
-                    var sub = qc(this),
-                        v = sub.attr("qc-value");
-                    vals.push(encodeURI(encodeURI(v)));
-                    // n = sub.attr("qc-subfield"),
-                    // n = n.replace(/@/gi, "%40");
-                    // n = n.replace(/,/gi, "%2C");
-                    // v = v.replace(/@/gi, "%40");
-                    // v = v.replace(/,/gi, "%2C");
-                    // vals.push(n + "=" + v);
-                });
-                obj.attr("qc-value", vals.join("&"));
-            }
-            val = obj.attr("qc-value");
-        }
-        if (args && field && val != undefined) {
-            var v = args[field];
-            if (v) {
-                if (Array.isArray(v)) {
-                    v.push(val);
-                } else {
-                    args[field] = [v, val];
-                }
+            if (vs.contains(type)) {
+                val = obj.val();
+                obj.attr("qc-value", val);
+
+            } else if (cs.contains(type)) {
+                val = obj.is(":checked") ? obj.attr("qc-value") || obj.val() : obj.attr("qc-default");
+
+            } else if (type == "file") {
+                val = obj[0];
+
+            } else if (ctrl && ctrl.val) {
+                val = ctrl.val(obj);
+
             } else {
-                args[field] = val;
+                var subs = obj.find("[qc-subfield]");
+                if (subs[0]) {
+                    var vals = [];
+                    subs.each(function () {
+                        var sub = qc(this),
+                            v = sub.attr("qc-value");
+                        vals.push(v);
+                    });
+                    obj.attr("qc-value", vals.join("&"));
+                }
+                val = obj.attr("qc-value");
+            }
+
+            if (args && field && val != undefined) {
+                var v = args[field];
+                if (v) {
+                    if (Array.isArray(v) && !v.contains(val)) {
+                        v.push(val);
+                    } else {
+                        if (val && v != val)
+                            args[field] = [v, val];
+                    }
+                } else {
+                    args[field] = val;
+                }
             }
         }
         return val;
@@ -300,11 +302,12 @@ qc["util"] = qc.c.util = {
     },
     setData: function (contrl, name, value) {
         var obj = contrl.find("[qc-field='" + name + "']");
-        if (obj.length > 0) {
+        if (obj[0]) {
             obj.attr("qc-value", value);
 
             if (obj.is("[qc-control='selector']")) {
                 qc.selector.val(obj, value);
+
             } else if (obj.is("[type='checkbox']") || obj.is("[type='radio']")) {
                 var def = obj.attr("qc-default");
                 if (value == def) {
@@ -318,11 +321,37 @@ qc["util"] = qc.c.util = {
                     if (["hidden", "text", "password", "select", "textarea"].contains(type)) {
                         obj.val(value);
                     }
+
                 } else {
-                    value.split("&").each(function (val) {
+                    var vs = value.split("&");
+                    vs.each(function (val) {
                         val = decodeURI(decodeURI(val));
-                        obj.append("<span qc-subfield qc-value='" + val + "']>" + val + "</span>");
+                        if (vs.length == 1) {
+                            obj.html(val);
+                        } else {
+                            obj.append("<span qc-subfield qc-value='" + val + "'>" + val + "</span>");
+                        }
                     });
+                }
+            }
+        }
+    },
+    setDefualt: function (contrl, name, value) {
+        var b = {};
+        if (typeof name == "object") {
+            b = name;
+        } else {
+            b[name] = value;
+        }
+        for (var k in b) {
+            var obj = contrl.find("[qc-field='" + k + "']");
+            if (obj[0]) {
+                obj.attr("qc-default", b[k]);
+                obj.removeAttr("qc-value");
+                if (obj[0].value) {
+                    obj.val("");
+                } else {
+                    obj.html("");
                 }
             }
         }
@@ -355,6 +384,9 @@ qc["util"] = qc.c.util = {
         var re = qc.util.parseArgs(type, obj, args),
             fn = re.fn;
 
+        if (!fn)
+            return;
+
         if (typeof fn == "string") {
             qc._post(fn, args, function (d) {
                 qc.util.postBack(d, re.re, callee);
@@ -367,28 +399,25 @@ qc["util"] = qc.c.util = {
         }
     },
     parseArgs: function (type, obj, args) {
-        var attrs = "qc-key" + (type == "qc-post" ? " qc-need" : ""),
-            fn,
+        var fn,
             re;
 
         if (typeof obj == "string") {
-            fn = qc.util.conver2fnc(obj) || obj;
+            fn = qc.util.convert2fnc(obj) || obj;
+
         } else {
-            var curr = obj,
+            var attrs = "qc-key, qc-need",
+                curr = obj,
                 contrl = curr.closest("[qc-control]"),
                 parent = contrl.parent().closest("[qc-control]");
 
-            if (parent[0] && parent.attr(attrs)) {
+            if (parent[0]) {
                 qc.util.getFields(parent, attrs, args);
-            } else if (contrl[0] && contrl.attr(attrs)) {
+            }
+            if (contrl[0]) {
                 qc.util.getFields(contrl, attrs, args);
             }
-
-            if (curr.attr("qc-control")) {
-                qc.util.getFields(curr, "", args);
-            } else {
-                qc.util.getFields(curr, attrs, args);
-            }
+            qc.util.getVal(curr, args);
 
             if (curr.attr(type)) {
                 fn = curr.attr(type);
@@ -398,44 +427,13 @@ qc["util"] = qc.c.util = {
                 fn = parent.attr(type);
             }
 
-            fn = qc.util.convert2fnc(fn) || fn;
+            var _fn = qc.util.convert2fnc(fn);
+            fn = _fn || fn;
 
             re = {"contrl": contrl, "curr": curr, "args": args};
         }
 
         return {"fn": fn, "re": re};
-    },
-    parseArgs_111: function (type, obj, args) {
-        var url,
-            re;
-
-        if (typeof obj == "string") {
-            url = qc.util.convert2fnc(obj) || obj;
-
-        } else {
-            var curr = obj,
-                contrl = curr.closest("[qc-control]"),
-                editor = contrl.closest("[qc-control='editor']");
-
-            if (editor[0] && editor.equals(curr)) {
-                qc.util.getFields(editor, "", args);
-                url = contrl[0] ? contrl.attr(type) : curr.attr(type);
-            } else if (contrl[0]) {
-                qc.util.getKeys(contrl, args);
-                qc.util.getVal(curr, args);
-                url = contrl.attr(type);
-            } else {
-                qc.util.getKeys(curr, args);
-                qc.util.getVal(curr, args);
-                url = curr.attr(type);
-            }
-
-            url = qc.util.convert2fnc(url) || url;
-
-            re = {"contrl": contrl, "curr": curr, "args": args};
-        }
-
-        return {"url": url, "re": re};
     },
     postBack: function (d, re, callee) {
         try {
@@ -568,7 +566,7 @@ qc["util"] = qc.c.util = {
         qc.iconStyle = cont;
     },
     iconInit: function () {
-        if (!qc["iconStyle"]) {
+        if (qc["iconStyle"] == undefined) {
             qc["iconStyle"] = "<i class='fa'>";
         }
     }

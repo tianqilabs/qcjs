@@ -65,7 +65,7 @@ html, body {
 .qc-buttons {
     position: absolute;
     right: 4px;
-    top: 2px;
+    top: 6px;
     line-height: 1.5;
     z-index: 1;
 }
@@ -317,6 +317,7 @@ html, body {
     margin: initial;
     text-indent: initial;
     min-height: 32px;
+    position: relative;
 }
 
 .qc-selector ul li:nth-last-child(1) {
@@ -473,12 +474,15 @@ html, body {
     list-style-type: none;
     border-bottom: 1px solid #ccc;
     padding: 16px 8px;
+    position: relative;
 }
+
 .qc-lister li span.black {
     margin-right: 8px;
     color: #000;
     font-weight: normal;
 }
+
 .qc-lister li.view {
     list-style-type: none;
     display: inline-block;
@@ -486,6 +490,10 @@ html, body {
     height: 200px;
     border: 1px solid #ccc;
     padding: 16px 8px;
+}
+
+.qc-lister .qc-buttons {
+    top: 16px;
 }
 
 .qc-pagepicker {
@@ -518,6 +526,8 @@ html, body {
 
 .qc-treeview li {
     padding: 10px 0;
+    cursor: default;
+    position: relative;
     /*margin: 8px 0 8px 8px;*/
 }
 
@@ -525,19 +535,116 @@ html, body {
     padding-left: 24px;
 }
 
-.qc-treeview .collexp {
+.qc-treeview .qc-toolbar {
+    position: absolute;
+    right: 12px;top: 5px;
+    background: none;
+    border: 0;
+}
+
+.qc-treeview .button {
     color: #000;
     text-decoration: none;
     padding: 2px 6px;
     font-size: 1rem;
+    cursor: pointer;
+    margin: 0 6px 0 0;
+    border: 0;
+    background: none;
 }
 
-.qc-treeview .collexp:hover {
+.qc-treeview .button:hover {
     background: #ccc;
 }
 
-.qc-treeview .addNew {
-    margin-left: 16px;
+.qc-sheet {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+
+.qc-sheet [qc-content] {
+    position: relative;
+}
+
+.qc-sheet [qc-warp] {
+    position: relative;
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+}
+
+.qc-sheet table {
+    border-spacing: 0;
+    border: 0;
+    width: max-content;
+}
+
+.qc-sheet-head-x,
+.qc-sheet-data-x,
+.qc-sheet-head-y {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 1rem;
+    bottom: 1rem;
+    overflow: hidden;
+}
+
+.qc-sheet table th,
+.qc-sheet table td {
+    padding: 8px;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    background: #fff;
+}
+
+.qc-sheet table td.fixed,
+.qc-sheet table th {
+    background: #f7f7f7;
+}
+
+.qc-sheet-head-x th,
+.qc-sheet-head-x td,
+.qc-sheet-data-x th,
+.qc-sheet-data-x td,
+.qc-sheet-head-y td {
+    visibility: hidden;
+}
+
+.qc-sheet-head-x th[qc-fixed],
+.qc-sheet-data-x th[qc-fixed],
+.qc-sheet-data-x td[qc-fixed],
+.qc-sheet-head-y th[qc-fixed] {
+    visibility: visible;
+}
+
+.qc-sheet [qc-foot] {
+    padding: 6px 16px;
+    font-size: 0.9rem;
+}
+
+.qc-sheet [qc-foot] input[type='text'] {
+    border: 1px solid #ccc;
+    width: 40px;
+    outline: none;
+    text-align: center;
+    padding: 4px;
+}
+
+.qc-sheet [qc-foot] span {
+    padding: 4px 8px;
+    display: inline-block;
+    cursor: default;
+    margin: 0 2px;
+}
+
+.qc-sheet [qc-foot] .qc-sheet-page {
+    cursor: pointer;
+}
+
+.qc-sheet [qc-foot] .qc-sheet-page:hover {
+    background: #ccc;
 }
 
 .qceditor {

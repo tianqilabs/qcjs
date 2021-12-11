@@ -1,129 +1,142 @@
 qc.c.treeview = {
     control: "treeview",
     create: function (obj) {
-        var mode = obj.attr("qc-mode") || "auto",
-            callee = obj.attr("qc-fn");
+        var mode = obj.attr("qc-mode") || "auto";
 
-        var fn = qc.util.convert2fnc(callee);
-        obj[0].callback = fn;
         obj[0].mode = mode;
 
-        var content = obj.find("[qc-content]"),
-            pKey = content.attr("qc-pKey"),
-            val = content.attr("qc-value"),
-            args = {};
+        var fn = obj.attr("qc-fn");
+        if (fn) {
+            obj[0].callback = qc.util.convert2fnc(fn);
+        }
 
+        var content = obj.find("[qc-content]");
         content.hide();
 
-        obj[0].pKey = pKey;
-        obj[0].key = content.attr("qc-key");
-
-        var coll = content.contents("[qc-collapse]");
-        if (coll[0]) {
-            var _icon = coll.attr("qc-collapse") || "collapse";
-            qc.util.icon(coll, _icon, "treeview");
-            // content[0].coll_icon = qc.icon.treeview[_icon] || _icon;
-        }
-        var exp = content.contents("[qc-expand]");
-        if (exp[0]) {
-            var _icon = exp.attr("qc-expand") || "expand";
-            qc.util.icon(exp, _icon, "treeview");
-            // content[0].exp_icon = qc.icon.treeview[_icon] || _icon;
-        }
-        var addNew = content.contents("[qc-addNew]");
-        if (addNew[0]) {
-            var _icon = addNew.attr("qc-addNew") || "addNew";
-            qc.util.icon(addNew, _icon, "treeview");
-            // content[0].add_icon = qc.icon.treeview[_icon] || _icon;
-        }
+        obj[0].qc_pKey = content.attr("qc-pKey");
+        obj[0].qc_key = content.attr("qc-key");
+        obj[0].qc_val = content.attr("qc-value");
 
         if (obj.attr("qc-get") && mode.contains("auto")) {
-            args[pKey] = val;
-            qc.treeview.get(obj, obj, args, fn);
+            qc.treeview.get(obj);
         }
     },
-    get: function (contrl, curr, args, callee) {
+    get: function (contrl, args, callee) {
+        args = args || {};
+        args[contrl[0].qc_pKey] = contrl[0].qc_val;
         qc.util.get(contrl, args, function (d, re) {
-            if (re) {
-                re.curr = curr;
-            }
             qc.treeview.fill(d, re, callee);
         });
     },
     fill: function (d, re, callee) {
-        var curr = re.curr,
-            contrl = re.contrl,
+        var contrl = re.contrl,
             cont = contrl.contents("[qc-content]"),
+            curr = contrl.find("[qc-key='" + contrl[0].qc_val + "']");
+
+        if (!curr[0])
+            curr = contrl;
+
+        var ul = curr.contents("ul").empty();
+        if (!ul[0]) {
             ul = qc("<ul>");
+            curr.append(ul);
+        }
 
-        curr.find("ul").remove();
-        curr.append(ul);
-
+        var li;
         for (var i = 0; i < d.rows; i++) {
             var b = d.data[i];
 
-            var li = qc("<li>");
-            qc.treeview.content(cont, li, b, contrl[0].key);
+            li = qc("<li>");
+            qc.treeview.content(cont, li, b);
 
             ul.append(li);
         }
 
-        if (re.contrl[0].mode.contains("edit")) {
-            var li = qc("<li>");
+        if (cont.contents("[qc-type='addNew']")[0]) {
+            var pKey = curr.attr("qc-key") || "";
+            li = qc("<li qc-pKey='" + pKey + "'>");
             qc.treeview.content(cont, li);
             ul.append(li);
         }
 
-        if (callee) {
-            callee(d, re);
+        var fn = callee || contrl[0].callback;
+        if (fn && typeof fn == "function") {
+            fn(d, re);
         }
     },
-    content: function (cont, li, b, key) {
+    content: function (cont, li, b) {
         var clone = cont.clone(),
-            clsName = clone.attr("class");
+            clsName = clone.attr("class"),
+            field = cont.attr("qc-key"),
+            pKey = cont.attr("qc-pKey");
 
         li.addClass(clsName || "");
+        li.attr("qc-field", field);
         if (b) {
-            qc.util.setDatas(clone, b);
+            li.attr("qc-key", b[field]);
+            li.attr("qc-pKey", b[pKey]);
             li.append(clone.contents());
-            qc.treeview.caret(li, "expand", b[key]);
-
-            li.contents("[qc-collapse], [qc-addNew]").hide();
-            li.contents("[qc-expand]").show();
+            qc.util.setDatas(li, b);
+            qc.treeview.caretShow(li, "expand");
 
         } else {
-            li.contents("[qc-expand], [qc-collapse]").hide();
-            li.contents("[qc-addNew]").show();
+            var addNew = clone.contents("[qc-type='addNew']");
+            if (addNew[0]) {
+                li.append(addNew);
+                addNew.removeAttr("qc-type");
+                addNew.show();
+            }
+
         }
 
     },
-    caret: function (li, type, val) {
-        li.contents(".qc-treeview-caret").remove();
+    caretShow: function (li, name) {
+        li.contents("[qc-type]").each(function () {
+            var obj = qc(this),
+                type = obj.attr("qc-type");
 
-        var caret = qc("<a href='javascript:void(0);' class='qc-treeview-caret'>");
-        caret.attr("qc-type", type);
-        caret.attr("qc-value", val);
-        qc.util.icon(caret, type, "treeview");
-
-        li.prepend(caret);
+            if (name.contains(type)) {
+                obj.show();
+            } else {
+                obj.hide();
+            }
+        });
     },
     expand: function (re) {
         var contrl = re.contrl,
             curr = re.curr,
             pKey = contrl[0].pKey,
-            li = curr.closest("li"),
-            val = curr.attr("qc-value"),
-            callee = contrl[0].callback;
+            li = curr.closest("li");
 
-        qc.treeview.get(contrl, li, {pKey: val}, callee);
-        qc.treeview.caret(li, "collapse", val);
+        contrl[0].qc_val = li.attr("qc-key");
+        qc.treeview.get(contrl, {});
+        qc.treeview.caretShow(li, "collapse");
     },
     collapse: function (re) {
         var curr = re.curr,
-            val = curr.attr("qc-value"),
             li = curr.closest("li");
 
         li.contents("ul").remove();
-        qc.treeview.caret(li, "expand", val);
+        qc.treeview.caretShow(li, "expand");
+
+        var par = li.parent().closest("li");
+        if (par[0]) {
+            re.contrl[0].qc_val = par.attr("qc-key");
+        } else {
+            re.contrl[0].qc_val = re.contrl.find("[qc-content]").attr("qc-value");
+        }
+    },
+    reload: function (re, callee) {
+        var contrl = re.contrl,
+            curr = re.curr,
+            par = curr.parent().closest("li");
+
+        if (par[0]) {
+            contrl[0].qc_val = par.attr("qc-key");
+        } else {
+            contrl[0].qc_val = contrl.find("[qc-content]").attr("qc-value");
+        }
+
+        qc.treeview.get(contrl, {}, callee);
     }
 };

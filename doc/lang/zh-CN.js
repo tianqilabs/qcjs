@@ -14,6 +14,7 @@ qc.lang.menu = {
     "datepicker": "时间选择器",
     "lister": "列表器、页面选择器",
     "treeview": "树状视图",
+    "sheet": "表格",
     "icon": "自定义图标",
     "lang": "多国语言"
 };
@@ -45,4 +46,12 @@ qc.lang.datepicker = {
 qc.lang.lister = {
     "view": "分组",
     "list": "列表"
+};
+
+qc.lang.sheet = {
+    "first": "首页",
+    "left": "前一页",
+    "right": "后一页",
+    "last": "最后一页",
+    "page": "页数"
 };
