@@ -46,6 +46,9 @@ qc.c.lister = {
             });
         }
     },
+    init: function () {
+        qc.lister.getDatas();
+    },
     getDatas: function () {
         qc("[qc-control='lister']").each(function () {
             var obj = qc(this),
@@ -137,7 +140,3 @@ qc.c.lister = {
         qc.lister.fill(contrl[0].data, obj);
     }
 };
-
-qc.util.addInited(function () {
-    qc.lister.getDatas();
-});

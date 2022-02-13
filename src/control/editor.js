@@ -54,6 +54,7 @@ qc.c.editor = {
         }
     },
     get: function (contrl, args, callee) {
+        args = args || {};
         qc.util.get(contrl, args, function (d, re) {
             qc.editor.fill(d, re, callee)
         });
@@ -125,7 +126,7 @@ qc.c.editor = {
 
             rules.each(function (_rule) {
                 if (_rule == "number") {
-                    _re = _re && /^-?\d+(\.\d+)?$/.exec(val);
+                    _re = _re && /^-?[1-9]?\d*(\.\d{0,2})?$/.exec(val);
                 } else if (_rule == "date") {
                     try {
                         var dt = new Date(val);

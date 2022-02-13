@@ -191,6 +191,20 @@ qc.prototype.css = function (name, value) {
 };
 
 qc.prototype.val = function (str) {
+    if (str == undefined) {
+        if (this[0].value != undefined)
+            return this[0].value;
+        else
+            return null;
+    } else {
+        this.each(function () {
+            if (this.value != undefined) {
+                this.value = str;
+            }
+        });
+        return this;
+    }
+
     var el = this[0];
     if (el.value != undefined) {
         if (str == undefined) {
@@ -457,7 +471,7 @@ qc.prototype.filter = function (selector) {
 qc.prototype.contents = function (selector) {
     var objs = this, elems = [];
     objs.each(function () {
-        var nodes =  this.childNodes;
+        var nodes = this.contentDocument ? [this.contentDocument.documentElement] : this.childNodes;
         for (var i = 0; i < nodes.length; i++) {
             var node = nodes[i];
             if (!selector || (selector && qc(node).is(selector)))

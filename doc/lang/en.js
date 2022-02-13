@@ -54,6 +54,8 @@ qc.lang.sheet = {
     "left": "Left",
     "right": "Right",
     "last": "Last",
-    "page": "页数"
+    "page": "page",
+    "rows": "rows:",
+    "total": "total:"
 };
 

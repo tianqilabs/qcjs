@@ -37,20 +37,38 @@
             </div>
         </dd>
 
+        <dt>qc-post</dt>
+        <dd>
+            The link or method that is triggered when the selection changes.
+        </dd>
+
         <dt>qc-mode</dt>
         <dd>
             manual: Load the data manually. <br>
-            auto: The data is loaded automatically.
+            auto: The data is loaded automatically (default). <br>
+            single: single choice (默认) <br>
+            multiple: multiple choice
+        </dd>
+
+        <dt>qc-key</dt>
+        <dd>
+            Get the key field of the data, the unique value.
+        </dd>
+
+        <dt>qc-text</dt>
+        <dd>
+            JSON format, multi-select content corresponding options.
         </dd>
 
     </dl>
     <p></p>
 
     <p></p>
-    <h4 class="imp">Example</h4>
+    <h4 class="imp">Dynamic call</h4>
     <pre class="code">
         // html body
-        &lt;div qc-control="sheet" qc-get="get1" class="qc-sheet" qc-count="6"&gt;
+        &lt;div qc-control="sheet" qc-get="get1" class="qc-sheet" qc-count="6"
+             qc-key="id" qc-mode="multiple" qc-post="post"&gt;
             &lt;table&gt;
                 &lt;thead&gt;
                 &lt;th qc-field="id" qc-fixed&gt;ID&lt;/th&gt;
@@ -92,6 +110,10 @@
             callee(d, re);
         }
 
+        function post(re, callee) {
+            alert("selected: " + re.args.selected);
+        }
+
     </pre>
 
     <p></p>
@@ -110,7 +132,8 @@
             }
         </style>
 
-        <div qc-control="sheet" qc-get="get1" class="qc-sheet" qc-count="6">
+        <div qc-control="sheet" qc-get="get1" class="qc-sheet" qc-count="6"
+             qc-key="id" qc-mode="multiple" qc-post="post">
             <table>
                 <thead>
                 <th qc-field="id" qc-fixed>ID</th>
@@ -121,146 +144,6 @@
                 </thead>
             </table>
         </div>
-
-        <!--
-        <div style="height: 100px;"></div>
-
-        <div qc-control="sheet" class="qc-sheet" style="width: 500px; height: 300px;">
-            <table>
-                <thead>
-                <tr>
-                    <th qc-field="id" qc-fixed="">ID</th>
-                    <th qc-field="name" qc-fixed="">Name</th>
-                    <th qc-field="age">Age</th>
-                    <th qc-field="gender">Gender</th>
-                    <th qc-field="summary">summary</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td qc-field="id" qc-value="1" qc-fixed="">1</td>
-                    <td qc-field="name" qc-value="Name 1" qc-fixed="">Name 1</td>
-                    <td qc-field="age" qc-value="23">23</td>
-                    <td qc-field="gender" qc-value="male">male</td>
-                    <td qc-field="summary"
-                        qc-value="This is a sheet example, you can fix the header and multiple columns">This is a sheet
-                        example, you can fix the header and multiple columns
-                    </td>
-                </tr>
-                <tr>
-                    <td qc-field="id" qc-value="2" qc-fixed="">2</td>
-                    <td qc-field="name" qc-value="Name 2" qc-fixed="">Name 2</td>
-                    <td qc-field="age" qc-value="24">24</td>
-                    <td qc-field="gender" qc-value="female">female</td>
-                    <td qc-field="summary"
-                        qc-value="This is a sheet example, you can fix the header and multiple columns">This is a sheet
-                        example, you can fix the header and multiple columns
-                    </td>
-                </tr>
-                <tr>
-                    <td qc-field="id" qc-value="3" qc-fixed="">3</td>
-                    <td qc-field="name" qc-value="Name 3" qc-fixed="">Name 3</td>
-                    <td qc-field="age" qc-value="25">25</td>
-                    <td qc-field="gender" qc-value="male">male</td>
-                    <td qc-field="summary"
-                        qc-value="This is a sheet example, you can fix the header and multiple columns">This is a sheet
-                        example, you can fix the header and multiple columns
-                    </td>
-                </tr>
-                <tr>
-                    <td qc-field="id" qc-value="4" qc-fixed="">4</td>
-                    <td qc-field="name" qc-value="Name 4" qc-fixed="">Name 4</td>
-                    <td qc-field="age" qc-value="26">26</td>
-                    <td qc-field="gender" qc-value="female">female</td>
-                    <td qc-field="summary"
-                        qc-value="This is a sheet example, you can fix the header and multiple columns">This is a sheet
-                        example, you can fix the header and multiple columns
-                    </td>
-                </tr>
-                <tr>
-                    <td qc-field="id" qc-value="5" qc-fixed="">5</td>
-                    <td qc-field="name" qc-value="Name 5" qc-fixed="">Name 5</td>
-                    <td qc-field="age" qc-value="27">27</td>
-                    <td qc-field="gender" qc-value="male">male</td>
-                    <td qc-field="summary"
-                        qc-value="This is a sheet example, you can fix the header and multiple columns">This is a sheet
-                        example, you can fix the header and multiple columns
-                    </td>
-                </tr>
-                <tr>
-                    <td qc-field="id" qc-value="6" qc-fixed="">6</td>
-                    <td qc-field="name" qc-value="Name 6" qc-fixed="">Name 6</td>
-                    <td qc-field="age" qc-value="28">28</td>
-                    <td qc-field="gender" qc-value="female">female</td>
-                    <td qc-field="summary"
-                        qc-value="This is a sheet example, you can fix the header and multiple columns">This is a sheet
-                        example, you can fix the header and multiple columns
-                    </td>
-                </tr>
-                <tr>
-                    <td qc-field="id" qc-value="7" qc-fixed="">7</td>
-                    <td qc-field="name" qc-value="Name 7" qc-fixed="">Name 7</td>
-                    <td qc-field="age" qc-value="29">29</td>
-                    <td qc-field="gender" qc-value="male">male</td>
-                    <td qc-field="summary"
-                        qc-value="This is a sheet example, you can fix the header and multiple columns">This is a sheet
-                        example, you can fix the header and multiple columns
-                    </td>
-                </tr>
-                <tr>
-                    <td qc-field="id" qc-value="8" qc-fixed="">8</td>
-                    <td qc-field="name" qc-value="Name 8" qc-fixed="">Name 8</td>
-                    <td qc-field="age" qc-value="23">23</td>
-                    <td qc-field="gender" qc-value="male">male</td>
-                    <td qc-field="summary"
-                        qc-value="This is a sheet example, you can fix the header and multiple columns">This is a sheet
-                        example, you can fix the header and multiple columns
-                    </td>
-                </tr>
-                <tr>
-                    <td qc-field="id" qc-value="9" qc-fixed="">9</td>
-                    <td qc-field="name" qc-value="Name 9" qc-fixed="">Name 9</td>
-                    <td qc-field="age" qc-value="24">24</td>
-                    <td qc-field="gender" qc-value="female">female</td>
-                    <td qc-field="summary"
-                        qc-value="This is a sheet example, you can fix the header and multiple columns">This is a sheet
-                        example, you can fix the header and multiple columns
-                    </td>
-                </tr>
-                <tr>
-                    <td qc-field="id" qc-value="10" qc-fixed="">10</td>
-                    <td qc-field="name" qc-value="Name 10" qc-fixed="">Name 10</td>
-                    <td qc-field="age" qc-value="25">25</td>
-                    <td qc-field="gender" qc-value="male">male</td>
-                    <td qc-field="summary"
-                        qc-value="This is a sheet example, you can fix the header and multiple columns">This is a sheet
-                        example, you can fix the header and multiple columns
-                    </td>
-                </tr>
-                <tr>
-                    <td qc-field="id" qc-value="11" qc-fixed="">11</td>
-                    <td qc-field="name" qc-value="Name 11" qc-fixed="">Name 11</td>
-                    <td qc-field="age" qc-value="26">26</td>
-                    <td qc-field="gender" qc-value="female">female</td>
-                    <td qc-field="summary"
-                        qc-value="This is a sheet example, you can fix the header and multiple columns">This is a sheet
-                        example, you can fix the header and multiple columns
-                    </td>
-                </tr>
-                <tr>
-                    <td qc-field="id" qc-value="12" qc-fixed="">12</td>
-                    <td qc-field="name" qc-value="Name 12" qc-fixed="">Name 12</td>
-                    <td qc-field="age" qc-value="27">27</td>
-                    <td qc-field="gender" qc-value="male">male</td>
-                    <td qc-field="summary"
-                        qc-value="This is a sheet example, you can fix the header and multiple columns">This is a sheet
-                        example, you can fix the header and multiple columns
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        -->
 
         <script>
             var datas = [
@@ -375,8 +258,147 @@
                 var d = {rows: data.length, data: data, pages: pages, count: datas.length};
                 callee(d, re);
             }
+
+            function post(re, callee) {
+                alert("selected: " + re.args.selected);
+            }
         </script>
 
+    </div>
+
+    <p></p>
+    <h4 class="imp">Static call</h4>
+    <pre class="code">
+        <table style="width: 779px;">
+                <thead>
+                <tr>
+                    <th qc-fixed="">ID</th>
+                    <th qc-fixed>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>summary</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Name 1</td>
+                    <td>23</td>
+                    <td>male</td>
+                    <td>This is a sheet example, you can fix the header and multiple columns</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Name 2</td>
+                    <td>24</td>
+                    <td>female</td>
+                    <td>This is a sheet example, you can fix the header and multiple columns</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Name 3</td>
+                    <td>male</td>
+                    <td>This is a sheet example, you can fix the header and multiple columns</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Name 4</td>
+                    <td>26</td>
+                    <td>female</td>
+                    <td>This is a sheet example, you can fix the header and multiple columns</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Name 5</td>
+                    <td>27</td>
+                    <td>male</td>
+                    <td>This is a sheet example, you can fix the header and multiple columns</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Name 6</td>
+                    <td>28</td>
+                    <td>female</td>
+                    <td>This is a sheet example, you can fix the header and multiple columns</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Name 7</td>
+                    <td>28</td>
+                    <td>female</td>
+                    <td>This is a sheet example, you can fix the header and multiple columns</td>
+                </tr>
+                </tbody>
+            </table>
+    </pre>
+
+    <p></p>
+    <h4 class="imp">Result</h4>
+    <div class="result">
+        <div qc-control="sheet" class="qc-sheet"
+             qc-key="id" qc-mode="multiple" qc-post="post">
+            <table style="width: 779px;">
+                <thead>
+                <tr>
+                    <th qc-fixed="">ID</th>
+                    <th qc-fixed>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>summary</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Name 1</td>
+                    <td>23</td>
+                    <td>male</td>
+                    <td>This is a sheet example, you can fix the header and multiple columns</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Name 2</td>
+                    <td>24</td>
+                    <td>female</td>
+                    <td>This is a sheet example, you can fix the header and multiple columns</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Name 3</td>
+                    <td>male</td>
+                    <td>This is a sheet example, you can fix the header and multiple columns</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Name 4</td>
+                    <td>26</td>
+                    <td>female</td>
+                    <td>This is a sheet example, you can fix the header and multiple columns</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Name 5</td>
+                    <td>27</td>
+                    <td>male</td>
+                    <td>This is a sheet example, you can fix the header and multiple columns</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Name 6</td>
+                    <td>28</td>
+                    <td>female</td>
+                    <td>This is a sheet example, you can fix the header and multiple columns</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Name 7</td>
+                    <td>28</td>
+                    <td>female</td>
+                    <td>This is a sheet example, you can fix the header and multiple columns</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>

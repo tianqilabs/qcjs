@@ -45,13 +45,13 @@ qc.prototype.on = function (event, listener, capture) {
 };
 
 qc.prototype.off = function (event, listener) {
-    var name = listener.name || function () {
-        var reg = /^function ([^\(\s]*)\s*\(/,
+    var name = listener ? listener.name || function () {
+        var reg = /^function\s*([^(\s]*)\s*\(/,
             m = listener.toString().match(reg);
         if (m)
             return m[1];
         return "";
-    }();
+    }() : "";
 
     var events = QCSet(event.split(" "));
     this.each(function () {
@@ -71,6 +71,7 @@ qc.prototype.off = function (event, listener) {
             });
         });
     });
+    return this;
 };
 
 qc.prototype.bind = function (event, callback) {

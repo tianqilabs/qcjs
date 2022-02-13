@@ -156,7 +156,7 @@ qc._postIE = function (url, data, callback) {
                 form.append("<input type='hidden' name='" + k + "' value='" + arr + "'>");
             });
         } else if (v["type"] && v.type.toLowerCase() == "file") {
-            form.append(v.cloneNode());
+            form.append(v);
         } else {
             form.append("<input type='hidden' name='" + k + "' value='" + arr + "'>");
         }

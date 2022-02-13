@@ -52,7 +52,9 @@ qc.c.popfrm = {
             var fnc = qc.util.convert2fnc(callee);
             if (fnc)
                 fnc(popfrm);
+
             qc.popfrm.layout(popfrm);
+
         } else {
             var title = curr.attr("qc-title"),
                 btn = curr.attr("qc-buttons"),
@@ -107,7 +109,7 @@ qc.c.popfrm = {
         qc.popfrm.layout(popfrm);
     },
     createToolbar: function (title, btn, container) {
-        var toolbar  = container.find("[qc-toolbar]"), btnLen = 0;
+        var toolbar = container.find("[qc-toolbar]"), btnLen = 0;
 
         if (title || btn) {
             if (!toolbar[0]) {
@@ -211,9 +213,9 @@ qc.c.popfrm = {
             r = "5%";
             b = "15%";
         } else {
-            if (qc.util.mobile) {
+            if (qc.util.isMobile()) {
                 pos = "relative";
-                t = warp.height() / 2 - con.height() /2 + "px";
+                t = warp.height() / 2 - con.height() / 2 + "px";
             } else {
                 if (originObj[0]) {
                     t = originObj.offset().top + originObj.height() - docEl.scrollTop;
@@ -239,5 +241,14 @@ qc.c.popfrm = {
         if (ifrm[0]) {
             ifrm.css("height", "calc(100% - " + popfrm.find(".qc-toolbar").outerHeight() + "px");
         }
+
+        popfrm.attr("tabindex", 0);
+        popfrm.focus();
+        popfrm.on("keyup", function (ev) {
+            if (ev.key == "Escape") {
+                qc.popfrm.hide({"contrl": popfrm});
+                return false;
+            }
+        });
     }
 };

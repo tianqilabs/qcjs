@@ -31,22 +31,31 @@ qc.c.treeview = {
     fill: function (d, re, callee) {
         var contrl = re.contrl,
             cont = contrl.contents("[qc-content]"),
-            curr = contrl.find("[qc-key='" + contrl[0].qc_val + "']");
+            curr = contrl.find("[qc-key='" + contrl[0].qc_val + "']"),
+            levels = parseInt(contrl.attr("qc-levels"));
 
         if (!curr[0])
             curr = contrl;
 
-        var ul = curr.contents("ul").empty();
+        var ul = curr.contents("ul").empty(),
+            limit = false,
+            li;
+
         if (!ul[0]) {
             ul = qc("<ul>");
             curr.append(ul);
         }
 
-        var li;
+
+        if (!isNaN(levels) && levels > 0) {
+            limit = ul.parents("ul").length + 1 == levels;
+        }
+
         for (var i = 0; i < d.rows; i++) {
             var b = d.data[i];
 
             li = qc("<li>");
+            li[0].limit = limit;
             qc.treeview.content(cont, li, b);
 
             ul.append(li);
@@ -105,16 +114,28 @@ qc.c.treeview = {
     expand: function (re) {
         var contrl = re.contrl,
             curr = re.curr,
-            pKey = contrl[0].pKey,
             li = curr.closest("li");
+
+        if (li[0].limit)
+            return;
 
         contrl[0].qc_val = li.attr("qc-key");
         qc.treeview.get(contrl, {});
         qc.treeview.caretShow(li, "collapse");
     },
+    setPKey: function (re) {
+        var contrl = re.contrl,
+            ul = re.curr.closest("ul"),
+            li = ul.closest("li");
+
+        contrl[0].qc_val = li[0] ? li.attr("qc-key") : contrl.find("[qc-content]").attr("qc-value");
+    },
     collapse: function (re) {
         var curr = re.curr,
             li = curr.closest("li");
+
+        if (li[0].limit)
+            return;
 
         li.contents("ul").remove();
         qc.treeview.caretShow(li, "expand");

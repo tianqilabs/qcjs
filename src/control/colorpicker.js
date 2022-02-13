@@ -27,7 +27,7 @@ qc.c.colorpicker = {
         mode = mode || (qc.util.mobile ? "list" : "panel");
         if (mode == "panel") {
             qc.colorpicker.createPanel(content);
-            qc.colorpicker.init(content, color);
+            qc.colorpicker.initContent(content, color);
         }
         if (mode == "list") {
             qc.colorpicker.createList(content, color);
@@ -73,7 +73,7 @@ qc.c.colorpicker = {
             return false;
         };
     },
-    init: function (content, color) {
+    initContent: function (content, color) {
         qc.colorpicker.drawBar(content);
 
         color = !color || color == "transparent" ? "rgba(0,0,0,0)" : color;

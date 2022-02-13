@@ -74,74 +74,6 @@
             push(selector);
         }
 
-        /*
-        if (typeof selector == "string") {
-            selector = selector.trim();
-            if (/^<[\s\S]*>$/.exec(selector)) {
-                var tbEl = {
-                    "tr": [2, "<table><tbody>", "</tbody></table>"],
-                    "th": [3, "<table><tbody><tr>", "</tr></tbody></table>"],
-                    "td": [3, "<table><tbody><tr>", "</tr></tbody></table>"],
-                    "tbody": [1, "<table>", "</table>"],
-                    "thead": [1, "<table>", "</table>"],
-                    "tfoot": [1, "<table>", "</table>"],
-                    "col": [2, "<table><colgroup>", "</colgroup><tbody></tbody></table>"],
-                    "colgroup": [1, "<table>", "</table>"],
-                    "option": [1, "<select>", "</select>"],
-                    "": [0, "", ""]
-                };
-
-                var els = /^<\s*([^\s>]+)\s*[^>]*>/i.exec(selector);
-                if (els) {
-                    var el = document.createElement("DIV");
-                    var tb = tbEl[els[1]] || tbEl[""];
-                    el.innerHTML = tb[1] + selector + tb[2];
-                    var k = tb[0];
-                    if (k > 0) {
-                        while (k > 0) {
-                            el = el.firstChild;
-                            k--;
-                        }
-                    }
-                    elems = el.childNodes;
-                }
-            } else {
-                try {
-                    elems = doc.querySelectorAll(selector);
-                } catch (e) {
-                }
-            }
-        } else if (selector && (selector.nodeType || selector.document)) {
-            elems.push(selector);
-        } else if (typeof selector == "function") {
-            qc(doc).on("DOMContentLoaded", selector);
-        } else if (Object.prototype.toString.call(selector).contains("NodeList") ||
-            Array.isArray(selector)) {
-
-            for (var i = 0; i < selector.length; i++) {
-                if (selector[i].nodeType) {
-                    elems.push(selector[i]);
-
-                } else if (selector[i].qcjs || selector[i].jquery) {
-                    selector[i].each(function () {
-                        elems.push(this);
-                    });
-
-                } else {
-                    qc(selector[i]).each(function () {
-                        elems.push(this);
-                    });
-                }
-            }
-
-        } else if (selector.qcjs || selector.jquery) {
-            selector.each(function () {
-                elems.push(this);
-            });
-        }
-
-         */
-
         for (var i = 0; i < elems.length; i++) {
             this[i] = elems[i];
         }
@@ -312,7 +244,7 @@ qc._postIE = function (url, data, callback) {
                 form.append("<input type='hidden' name='" + k + "' value='" + arr + "'>");
             });
         } else if (v["type"] && v.type.toLowerCase() == "file") {
-            form.append(v.cloneNode());
+            form.append(v);
         } else {
             form.append("<input type='hidden' name='" + k + "' value='" + arr + "'>");
         }
@@ -739,6 +671,20 @@ qc.prototype.css = function (name, value) {
 };
 
 qc.prototype.val = function (str) {
+    if (str == undefined) {
+        if (this[0].value != undefined)
+            return this[0].value;
+        else
+            return null;
+    } else {
+        this.each(function () {
+            if (this.value != undefined) {
+                this.value = str;
+            }
+        });
+        return this;
+    }
+
     var el = this[0];
     if (el.value != undefined) {
         if (str == undefined) {
@@ -1005,7 +951,7 @@ qc.prototype.filter = function (selector) {
 qc.prototype.contents = function (selector) {
     var objs = this, elems = [];
     objs.each(function () {
-        var nodes =  this.childNodes;
+        var nodes = this.contentDocument ? [this.contentDocument.documentElement] : this.childNodes;
         for (var i = 0; i < nodes.length; i++) {
             var node = nodes[i];
             if (!selector || (selector && qc(node).is(selector)))
@@ -1110,13 +1056,13 @@ qc.prototype.on = function (event, listener, capture) {
 };
 
 qc.prototype.off = function (event, listener) {
-    var name = listener.name || function () {
-        var reg = /^function ([^\(\s]*)\s*\(/,
+    var name = listener ? listener.name || function () {
+        var reg = /^function\s*([^(\s]*)\s*\(/,
             m = listener.toString().match(reg);
         if (m)
             return m[1];
         return "";
-    }();
+    }() : "";
 
     var events = QCSet(event.split(" "));
     this.each(function () {
@@ -1136,6 +1082,7 @@ qc.prototype.off = function (event, listener) {
             });
         });
     });
+    return this;
 };
 
 qc.prototype.bind = function (event, callback) {

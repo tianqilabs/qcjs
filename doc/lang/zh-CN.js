@@ -53,5 +53,7 @@ qc.lang.sheet = {
     "left": "前一页",
     "right": "后一页",
     "last": "最后一页",
-    "page": "页数"
+    "page": "页数",
+    "rows": "每页:",
+    "total": "总数:"
 };

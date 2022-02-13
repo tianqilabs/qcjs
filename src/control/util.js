@@ -1,39 +1,27 @@
 qc.c = {};
 qc.icon = {};
 qc.lang = {};
+
 qc["util"] = {
-    mobile: false,
+    _mobile: false,
     _starts: [],
-    _initeds: [],
+    _inited: [],
     init: function () {
         if (arguments.length == 0) {
-            qc.util.on();
             var cs = [];
+            qc.util.on();
             for (var cn in qc.c) {
                 var c = qc.c[cn];
                 qc[cn] = c;
                 cs.push(c);
             }
 
-            qc.util.iconInit();
+            qc.util.setIconStyle();
             qc.util.starts();
-
             qc.util.langInit(function () {
-                cs.each(function (c) {
-                    if (c.create) {
-                        if (c.control) {
-                            qc("[qc-control='" + c.control + "']").each(function () {
-                                c.create(qc(this));
-                            });
-                        } else {
-                            c.create();
-                        }
-                    }
-                });
-
-                qc.util.initeds();
+                qc.util.creates(cs);
+                qc.util.initeds(cs);
             });
-
 
         } else {
             for (var i = 0; i < arguments.length; i++) {
@@ -80,31 +68,49 @@ qc["util"] = {
         return re;
     },
     on: function () {
-        qc.util.isMobile();
+        qc.util.mobile();
         var doc = qc(document);
         doc.on("click", qc.util.event);
         doc.on("change", qc.util.event);
         qc(window).on("resize", qc.util.resize);
         qc(window).on("load", qc.util.resize);
     },
-    addStart: function (fn) {
-        if (fn && typeof fn == "function") {
+    start: function (fn) {
+        if (typeof fn == "function") {
             qc.util._starts.push(fn);
         }
     },
+    creates: function (cs) {
+        cs.each(function (c) {
+            if (c.create) {
+                if (c.control) {
+                    qc("[qc-control='" + c.control + "']").each(function () {
+                        c.create(qc(this));
+                    });
+                } else {
+                    c.create();
+                }
+            }
+        });
+    },
     addInited: function (fn) {
-        if (fn && typeof fn == "function") {
-            qc.util._initeds.push(fn);
+        if (typeof fn == "function") {
+            qc.util._inited.push(fn);
         }
+    },
+    initeds: function (cs) {
+        cs.push.apply(cs, qc.util._inited);
+        cs.each(function (c) {
+            if (c.init) {
+                c.init();
+            } else if (typeof c == "function") {
+                c();
+            }
+        });
     },
     starts: function () {
         qc.util._starts.each(function (fn) {
             fn();
-        });
-    },
-    initeds: function () {
-        qc.util._initeds.each(function (arr, idx) {
-            arr();
         });
     },
     event: function (ev) {
@@ -187,9 +193,9 @@ qc["util"] = {
         }
     },
     resize: function () {
-        qc.util.isMobile();
+        qc.util.mobile();
     },
-    isMobile: function () {
+    mobile: function () {
         var mobile = false;
         if ("maxTouchPoints" in navigator) {
             mobile = navigator.maxTouchPoints > 0;
@@ -210,7 +216,10 @@ qc["util"] = {
                 );
             }
         }
-        qc.util.mobile = mobile;
+        qc.util._mobile = mobile;
+    },
+    isMobile: function () {
+        return qc.util._mobile;
     },
     getFields: function (contrl, attr, args) {
         args = args || {};
@@ -257,7 +266,7 @@ qc["util"] = {
                 obj.attr("qc-value", val);
 
             } else if (cs.contains(type)) {
-                val = obj.is(":checked") ? obj.attr("qc-value") || obj.val() : obj.attr("qc-default");
+                val = obj.is(":checked") ? obj.val() : obj.attr("qc-default");
 
             } else if (type == "file") {
                 val = obj[0];
@@ -282,11 +291,12 @@ qc["util"] = {
             if (args && field && val != undefined) {
                 var v = args[field];
                 if (v) {
-                    if (Array.isArray(v) && !v.contains(val)) {
-                        v.push(val);
-                    } else {
-                        if (val && v != val)
-                            args[field] = [v, val];
+                    if (Array.isArray(v)) {
+                        if (!v.contains(val))
+                            v.push(val);
+
+                    } else if (val && v != val) {
+                        args[field] = [v, val];
                     }
                 } else {
                     args[field] = val;
@@ -311,19 +321,17 @@ qc["util"] = {
             } else if (obj.is("[type='checkbox']") || obj.is("[type='radio']")) {
                 var def = obj.attr("qc-default");
                 if (value == def) {
-                    obj.attr("checked", "checked");
-                } else {
                     obj.removeAttr("checked");
+                } else {
+                    obj.attr("checked", "checked");
                 }
             } else {
-                var type = obj.attr("type");
-                if (type) {
-                    if (["hidden", "text", "password", "select", "textarea"].contains(type)) {
-                        obj.val(value);
-                    }
+                var type = obj.attr("type") || obj[0].tagName.toLowerCase();
+                if (["hidden", "text", "password", "select", "textarea"].contains(type)) {
+                    obj.val(value);
 
                 } else {
-                    var vs = value.split("&");
+                    var vs = (value + "").split("&");
                     vs.each(function (val) {
                         val = decodeURI(decodeURI(val));
                         if (vs.length == 1) {
@@ -462,37 +470,16 @@ qc["util"] = {
     getLangName: function () {
         return qc.util._langName;
     },
-    langGlobal: function (callee) {
-        if (!qc.util._langGlobal) {
-            qc.util._langGlobal = qc("html").attr("qc-lang-global");
-        }
-        if (qc.util._langGlobal) {
-            var global = qc.util._langGlobal;
-            if (!global.match(/.*\.js$/)) {
-                global += ".js";
-            }
-            var url = qc.util._langDir + "/" + global;
-            qc.getScript(url, callee);
-        } else {
-            callee();
-        }
-    },
     langInit: function (name, callee) {
         if (typeof name == "function") {
             callee = name;
             name = undefined;
         }
         if (!qc.util._langDir) {
-            qc.util._langDir = qc("html").attr("qc-lang-dir") ? qc("html").attr("qc-lang-dir") : "lang";
+            qc.util._langDir = qc("html").attr("qc-lang-dir") || "lang";
         }
 
-        if (name) {
-            qc.util._langName = name;
-        }
-
-        if (!qc.util._langName) {
-            qc.util._langName = qc("html").attr("lang");
-        }
+        qc.util._langName = name || qc("html").attr("lang");
 
         qc.util.langGlobal(function () {
             if (qc.util._langName) {
@@ -510,6 +497,21 @@ qc["util"] = {
                 callee();
             }
         });
+    },
+    langGlobal: function (callee) {
+        if (!qc.util._langGlobal) {
+            qc.util._langGlobal = qc("html").attr("qc-lang-global");
+        }
+        if (qc.util._langGlobal) {
+            var global = qc.util._langGlobal;
+            if (!global.match(/.*\.js$/)) {
+                global += ".js";
+            }
+            var url = qc.util._langDir + "/" + global;
+            qc.getScript(url, callee);
+        } else {
+            callee();
+        }
     },
     lang: function (obj, name, attr, controlName) {
         if (!attr) {
@@ -563,11 +565,10 @@ qc["util"] = {
         }
     },
     setIconStyle: function (cont) {
-        qc.iconStyle = cont;
-    },
-    iconInit: function () {
-        if (qc["iconStyle"] == undefined) {
-            qc["iconStyle"] = "<i class='fa'>";
+        if (cont) {
+            qc.iconStyle = cont;
+        } else {
+            qc.iconStyle = "<i class='fa'>";
         }
     }
 };

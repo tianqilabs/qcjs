@@ -313,11 +313,24 @@ html, body {
     padding: 8px 14px;
     font-size: 14px;
     border-bottom: 1px solid #ddd;
-    cursor: default;
     margin: initial;
     text-indent: initial;
     min-height: 32px;
     position: relative;
+    outline: none;
+    cursor: default;
+}
+
+/*.qc-selector ul li input[type='text'] {*/
+/*    padding: 8px 14px;*/
+/*    width: 100%;*/
+/*    border: 0;*/
+/*    border-radius: 0;*/
+/*    cursor: default;*/
+/*}*/
+
+.qc-selector ul li:focus {
+    background: #eee;
 }
 
 .qc-selector ul li:nth-last-child(1) {
@@ -528,16 +541,19 @@ html, body {
     padding: 10px 0;
     cursor: default;
     position: relative;
+    text-align: left;
     /*margin: 8px 0 8px 8px;*/
 }
 
 .qc-treeview li ul {
     padding-left: 24px;
+    margin: 4px 0;
 }
 
 .qc-treeview .qc-toolbar {
     position: absolute;
-    right: 12px;top: 5px;
+    right: 12px;
+    top: 5px;
     background: none;
     border: 0;
 }
@@ -548,7 +564,7 @@ html, body {
     padding: 2px 6px;
     font-size: 1rem;
     cursor: pointer;
-    margin: 0 6px 0 0;
+    margin: 0;
     border: 0;
     background: none;
 }
@@ -567,11 +583,21 @@ html, body {
     position: relative;
 }
 
-.qc-sheet [qc-warp] {
-    position: relative;
-    overflow: auto;
-    width: 100%;
-    height: 100%;
+.qc-sheet-scroll {
+    /*position: relative;*/
+    /*overflow: auto;*/
+    /*width: 100%;*/
+    /*height: 100%;*/
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: scroll;
+}
+
+.qc-sheet-scroll {
+    overflow: scroll;
 }
 
 .qc-sheet table {
@@ -580,6 +606,7 @@ html, body {
     width: max-content;
 }
 
+.qc-sheet [qc-warp],
 .qc-sheet-head-x,
 .qc-sheet-data-x,
 .qc-sheet-head-y {
@@ -597,6 +624,7 @@ html, body {
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     background: #fff;
+    cursor: default;
 }
 
 .qc-sheet table td.fixed,
@@ -608,7 +636,9 @@ html, body {
 .qc-sheet-head-x td,
 .qc-sheet-data-x th,
 .qc-sheet-data-x td,
-.qc-sheet-head-y td {
+.qc-sheet-head-y td,
+.qc-sheet-scroll th,
+.qc-sheet-scroll td {
     visibility: hidden;
 }
 
@@ -619,9 +649,16 @@ html, body {
     visibility: visible;
 }
 
+.qc-sheet tr.selected td {
+    background: #eee;
+}
+
 .qc-sheet [qc-foot] {
     padding: 6px 16px;
     font-size: 0.9rem;
+    text-align: left;
+    border-top: 1px solid #eee;
+    background: #f7f7f7;
 }
 
 .qc-sheet [qc-foot] input[type='text'] {
@@ -630,13 +667,19 @@ html, body {
     outline: none;
     text-align: center;
     padding: 4px;
+    display: inline-block;
+    margin: 0 4px;
 }
 
 .qc-sheet [qc-foot] span {
-    padding: 4px 8px;
+    padding: 4px;
     display: inline-block;
     cursor: default;
     margin: 0 2px;
+}
+
+.qc-sheet [qc-foot] span.total {
+    padding: 4px 0;
 }
 
 .qc-sheet [qc-foot] .qc-sheet-page {

@@ -1,7 +1,7 @@
 qc.util.setLangDir("../lang");
 qc.util.setLangGlobal("global.js");
 
-qc.util.addStart(menuInit);
+qc.util.start(menuInit);
 
 function menuInit() {
     var menu = qc(".menu").append("" +
