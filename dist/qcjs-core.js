@@ -602,11 +602,13 @@ qc.prototype.removeAttr = function (name) {
 
 qc.prototype.html = function (str) {
     var el = this[0];
-    if (str != undefined) {
-        el.innerHTML == undefined ? el.textContent = str : el.innerHTML = str;
-        return this;
-    } else {
+    if (str == undefined) {
         return el.innerHTML == undefined ? el.textContent : el.innerHTML;
+    } else {
+        this.each(function () {
+            this.innerHTML == undefined ? this.textContent = str : this.innerHTML = str;
+        });
+        return this;
     }
 };
 
