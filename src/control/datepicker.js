@@ -2,13 +2,33 @@ qc.c.datepicker = {
     control: "datepicker",
     show: function (obj) {
         var curr = obj.curr,
-            mode = curr.attr("qc-mode") || "date",
-            target = curr.attr("qc-target") ? qc(curr.attr("qc-target")) : curr;
+            mode = curr.attr("qc-mode"),
+            target = curr.attr("qc-target") ? qc(curr.attr("qc-target")) : curr,
+            bar = [
+                {"name": "ok", "fn": "qc.datepicker.confirm"},
+                {"name": "cancel", "fn": "qc.datepicker.hide"}
+            ],
+            noCancel = "",
+            timer = "";
 
-        qc.popfrm.dyShow(qc.lang.datepicker["title"], [
-            {"name": "ok", "fn": "qc.datepicker.confirm"},
-            {"name": "cancel", "fn": "qc.datepicker.hide"}
-        ], "", curr, function (popfrm) {
+        if (mode.contains("nobar")) {
+            mode = mode.replace("nobar", "");
+            bar = "";
+        }
+
+        if (mode.contains("nocancel")) {
+            mode = mode.replace("nocancel", "");
+            noCancel = 1;
+        }
+
+        if (mode.contains("timer")) {
+            mode = mode.replace("timer", "");
+            timer = 1;
+        }
+
+        mode = mode.replace(/\s+/g, "") || "date";
+
+        qc.popfrm.dyShow(qc.lang.datepicker["title"], bar, "", curr, function (popfrm) {
             var today = new Date(),
                 content = popfrm.find("[qc-content]");
 
@@ -28,13 +48,19 @@ qc.c.datepicker = {
             content[0].date = date;
             content[0].mode = mode;
             content[0].target = target;
+            content[0].bar = bar ? 1 : "";
+            content[0].noCancel = noCancel;
 
             qc.datepicker.createContent(content);
             qc.datepicker.format(content);
 
-            content[0].refresh = qc.datepicker.refresh;
-            content[0].refresh(content);
+            if (timer) {
+                content[0].refresh = qc.datepicker.refresh;
+                content[0].refresh(content);
+            }
 
+            if (!bar)
+                popfrm.find("[qc-warp]").attr("qc-fn", "qc.datepicker.confirm").removeAttr("qc-type");
         });
     },
     createContent: function (content) {
@@ -91,8 +117,9 @@ qc.c.datepicker = {
         if (["datetime", "date", "time"].contains(mode)) {
             var today = qc("" +
                 (mode != "time" ?
-                "   <span class='qc-datepicker-today' qc-fn='qc.datepicker.today'>" + qc.lang.datepicker["today"] + "</span>" : "") +
-                "   <span class='qc-datepicker-cancel' qc-fn='qc.datepicker.cancel'>" + qc.lang.datepicker["cancel"] + "</span>" +
+                    "   <span class='qc-datepicker-today' qc-fn='qc.datepicker.today'>" + qc.lang.datepicker["today"] + "</span>" : "") +
+                (!content[0].noCancel ?
+                    "   <span class='qc-datepicker-cancel' qc-fn='qc.datepicker.cancel'>" + qc.lang.datepicker["cancel"] + "</span>" : "") +
                 "");
             timebar.append(today);
         }
@@ -429,6 +456,9 @@ qc.c.datepicker = {
         dt.setDate(date);
         content[0].date = dt;
         qc.datepicker.date(content);
+        // if (!content[0].bar) {
+        //     qc.datepicker.confirm({"contrl": content.closest("[qc-control]")});
+        // }
     },
     udpick: function (obj) {
         var curr = obj.curr,
@@ -481,7 +511,10 @@ qc.c.datepicker = {
 
         content[0].date = new Date();
         qc.datepicker.format(content);
-        if (!content[0].refresh) {
+
+        if (!content[0].bar) {
+            qc.datepicker.confirm({"contrl": content.closest("[qc-control]")});
+        } else if (!content[0].refresh) {
             content[0].refresh = qc.datepicker.refresh;
             content[0].refresh(content);
         }

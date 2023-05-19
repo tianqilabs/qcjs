@@ -1,15 +1,18 @@
 qc.c.sheet = {
     control: "sheet",
     create: function (obj) {
-        var mode = obj.attr("qc-mode"),
+        var mode = obj.attr("qc-mode") || "auto",
             getUrl = obj.attr("qc-get"),
-            table = obj.contents("table");
+            table = obj.contents("table"),
+            qcKey = obj.attr("qc-key");
 
         if (mode) {
             obj[0].multi = mode.contains("multiple");
             mode = mode.contains("manual") ? "" : "auto";
         }
 
+        obj[0].qcKey = qcKey;
+        obj.removeAttr("qc-key");
         var fn = obj.attr("qc-fn");
         if (fn) {
             obj[0].callback = qc.util.convert2fnc(fn);
@@ -29,10 +32,8 @@ qc.c.sheet = {
 
         var cont = qc("<div qc-content>");
         obj.append(cont);
-        cont.css("height", obj.height() + "px");
-        obj.css("height", "auto");
-
         qc.sheet.foot(obj);
+        qc.sheet.reLayout(obj);
 
         var warp = qc("<div qc-warp>");
         warp.append(table);
@@ -71,8 +72,6 @@ qc.c.sheet = {
         var inpt = qc("<input type='text' class='' v='page' qc-type='change' qc-fn='qc.sheet.page'>");
         qc.util.lang(inpt, "page", "title", "sheet");
         foot.append(inpt);
-        // inpt[0].contrl = contrl;
-        // inpt.keyup(qc.sheet.keyup);
 
         foot.append("<span>/</span><span v='pages'></span>");
 
@@ -94,7 +93,14 @@ qc.c.sheet = {
         qc.util.lang(rowsp, "rows", "html", "sheet");
         qc.util.lang(totalp, "total", "html", "sheet");
         foot.append(rowsp).append(rows).append(totalp).append(total);
+    },
+    reLayout: function (contrl) {
+        var foot = contrl.find("[qc-foot]"),
+            cont = contrl.find("[qc-content]"),
+            ch = contrl.height(),
+            fh = foot.outerHeight();
 
+        cont.css("height", (ch - fh) + "px");
     },
     fromat: function (table, data) {
         var ths = [];
@@ -149,9 +155,10 @@ qc.c.sheet = {
     },
     fill: function (d, re, callee) {
         var contrl = re.contrl;
+        contrl[0].data = d;
         contrl.find(".qc-sheet-head-y, .qc-sheet-data-x, .qc-sheet-head-x, .qc-sheet-scroll").remove();
 
-        var key = contrl.attr("qc-key"),
+        var key = contrl[0].qcKey,
             tb = contrl.find("[qc-content] table"),
             hideField = contrl[0].hideField,
             ths = tb.find("thead th").show();
@@ -175,6 +182,7 @@ qc.c.sheet = {
             var b = d.data[i],
                 tr = qc("<tr>");
 
+            tr[0].b = b;
             if (key) {
                 tr.attr("qc-field", key);
                 tr.attr("qc-value", b[key]);
@@ -201,6 +209,7 @@ qc.c.sheet = {
                 field = th.attr("qc-field"),
                 fixed = th.attr("qc-fixed") == undefined ? "" : "qc-fixed",
                 text = th.attr("qc-text"),
+                cls = th.attr("class") || "",
                 val = b[field];
 
             if (text) {
@@ -208,7 +217,7 @@ qc.c.sheet = {
                 val = ts[val];
             }
 
-            tr.append("<td qc-field='" + field + "' qc-value='" + b[field] + "' " + fixed + ">" + val + "</td>");
+            tr.append("<td qc-field='" + field + "' qc-value='" + b[field] + "' " + fixed + " class='" + cls + "'>" + val + "</td>");
         }
     },
     layout: function (contrl) {
@@ -307,11 +316,6 @@ qc.c.sheet = {
         }
         qc.sheet.get(contrl, {}, contrl[0].callee);
     },
-    // keyup: function (ev) {
-    //     if (["Enter", "NumpadEnter"].contains(ev.code)) {
-    //         qc.sheet.page({"contrl": this.contrl, "curr": qc(this), "ev": ev});
-    //     }
-    // },
     selected: function (ev) {
         var x = ev.pageX,
             y = ev.pageY,
@@ -320,27 +324,33 @@ qc.c.sheet = {
 
         if (contrl[0]) {
             var warp = contrl.find("[qc-warp]"),
+                thead_t = contrl[0].thead_x.offset().top,
+                thead_h = contrl[0].thead_x.find("thead").height(),
                 data_x = contrl[0].data_x,
-                tds = contrl.find("td"),
+                trs = warp.find("tr"),
                 multi = contrl[0].multi,
+                has = false,
                 tr;
 
-            tds.each(function () {
-                var td = qc(this),
-                    l = td.offset().left,
-                    r = l + td.width(),
-                    t = td.offset().top,
-                    b = t + td.height();
+            if (y >= thead_h + thead_t) {
+                trs.each(function () {
+                    var _tr = qc(this),
+                        l = _tr.offset().left,
+                        r = l + _tr.width(),
+                        t = _tr.offset().top,
+                        b = t + _tr.height();
 
-                if (x >= l && x <= r && y >= t && y <= b) {
-                    tr = td.closest("tr");
-                    return false;
-                }
-            });
+                    if (x >= l && x <= r && y >= t && y <= b) {
+                        tr = _tr;
+                        return false;
+                    }
+                });
+            }
+
             if (tr) {
+                has = tr.hasClass("selected");
                 var idx = tr.index() + 1,
-                    trf = data_x.find("tr").eq(idx),
-                    has = tr.hasClass("selected");
+                    trf = data_x.find("tr").eq(idx);
 
                 if (multi) {
                     if (has) {
@@ -358,19 +368,27 @@ qc.c.sheet = {
                         trf.addClass("selected");
                     }
                 }
+                has = !has;
 
-                if (contrl.attr("qc-post")) {
-                    var seleds = [];
-                    warp.find("tr.selected").each(function () {
-                        seleds.push(qc(this).attr("qc-value"));
-                    });
+            } else {
+                contrl.find("tr.selected").removeClass("selected");
+            }
 
-                    var args = {};
-                    qc.util.getFields(tr, "", args);
-                    args.key = contrl.attr("qc-key") || "";
-                    args.selected = seleds.join(",");
-                    qc.util.post(tr, args);
-                }
+            if (contrl.attr("qc-post")) {
+                var seleds = [], data = [];
+                warp.find("tr.selected").each(function () {
+                    var _tr = qc(this),
+                        v = _tr.attr("qc-value");
+                    seleds.push(v);
+                    data.push(_tr[0].b);
+                });
+
+                var args = tr && tr[0].b ? tr[0].b : {};
+                args.key = contrl.attr("qc-key") || "";
+                args._data = data;
+                args._has = has;
+                args.selected = seleds.join(",");
+                qc.util.post(contrl, args);
             }
         }
     },

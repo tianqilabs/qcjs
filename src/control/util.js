@@ -306,15 +306,24 @@ qc["util"] = {
         return val;
     },
     setDatas: function (contrl, b) {
-        for (var k in b) {
-            qc.util.setData(contrl, k, b[k]);
-        }
+        var fields = contrl.find("[qc-field]");
+        if (!fields[0])
+            fields = contrl;
+        fields.each(function () {
+            var obj = qc(this),
+                field = obj.attr("qc-field"),
+                value = b[field] || obj.attr("qc-default") || "";
+            qc.util.setData(obj, value);
+        });
     },
     setData: function (contrl, name, value) {
-        var obj = contrl.find("[qc-field='" + name + "']");
+        if (value == undefined) {
+            value = name;
+            name = undefined;
+        }
+        var obj = name ? contrl.find("[qc-field='" + name + "']") : contrl;
         if (obj[0]) {
             obj.attr("qc-value", value);
-
             if (obj.is("[qc-control='selector']")) {
                 qc.selector.val(obj, value);
 
@@ -322,14 +331,15 @@ qc["util"] = {
                 var def = obj.attr("qc-default");
                 if (value == def) {
                     obj.removeAttr("checked");
+                    obj[0].checked = false;
                 } else {
                     obj.attr("checked", "checked");
+                    obj[0].checked = true;
                 }
             } else {
                 var type = obj.attr("type") || obj[0].tagName.toLowerCase();
                 if (["hidden", "text", "password", "select", "textarea"].contains(type)) {
                     obj.val(value);
-
                 } else {
                     var vs = (value + "").split("&");
                     vs.each(function (val) {
@@ -358,6 +368,8 @@ qc["util"] = {
                 obj.removeAttr("qc-value");
                 if (obj[0].value) {
                     obj.val("");
+                } else if (obj.is("[qc-control='selector']")) {
+                   qc.selector.val(obj, "");
                 } else {
                     obj.html("");
                 }
@@ -526,14 +538,19 @@ qc["util"] = {
         if (contrl) {
             var lang = contrl[name] || name;
             if (lang) {
-                attr.split(",").each(function (arr) {
-                    arr = arr.trim();
-                    if (arr == "html") {
-                        obj.html(lang);
-                    } else {
-                        obj.attr(arr, lang);
-                    }
-                });
+                if (!attr && obj.val) {
+                    obj.val(lang);
+
+                } else {
+                    attr.split(",").each(function (arr) {
+                        arr = arr.trim();
+                        if (arr == "html") {
+                            obj.html(lang);
+                        } else {
+                            obj.attr(arr, lang);
+                        }
+                    });
+                }
             }
         }
     },

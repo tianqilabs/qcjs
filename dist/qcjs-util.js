@@ -308,15 +308,24 @@ qc["util"] = {
         return val;
     },
     setDatas: function (contrl, b) {
-        for (var k in b) {
-            qc.util.setData(contrl, k, b[k]);
-        }
+        var fields = contrl.find("[qc-field]");
+        if (!fields[0])
+            fields = contrl;
+        fields.each(function () {
+            var obj = qc(this),
+                field = obj.attr("qc-field"),
+                value = b[field] || obj.attr("qc-default") || "";
+            qc.util.setData(obj, value);
+        });
     },
     setData: function (contrl, name, value) {
-        var obj = contrl.find("[qc-field='" + name + "']");
+        if (value == undefined) {
+            value = name;
+            name = undefined;
+        }
+        var obj = name ? contrl.find("[qc-field='" + name + "']") : contrl;
         if (obj[0]) {
             obj.attr("qc-value", value);
-
             if (obj.is("[qc-control='selector']")) {
                 qc.selector.val(obj, value);
 
@@ -324,14 +333,15 @@ qc["util"] = {
                 var def = obj.attr("qc-default");
                 if (value == def) {
                     obj.removeAttr("checked");
+                    obj[0].checked = false;
                 } else {
                     obj.attr("checked", "checked");
+                    obj[0].checked = true;
                 }
             } else {
                 var type = obj.attr("type") || obj[0].tagName.toLowerCase();
                 if (["hidden", "text", "password", "select", "textarea"].contains(type)) {
                     obj.val(value);
-
                 } else {
                     var vs = (value + "").split("&");
                     vs.each(function (val) {
@@ -360,6 +370,8 @@ qc["util"] = {
                 obj.removeAttr("qc-value");
                 if (obj[0].value) {
                     obj.val("");
+                } else if (obj.is("[qc-control='selector']")) {
+                   qc.selector.val(obj, "");
                 } else {
                     obj.html("");
                 }
@@ -528,14 +540,19 @@ qc["util"] = {
         if (contrl) {
             var lang = contrl[name] || name;
             if (lang) {
-                attr.split(",").each(function (arr) {
-                    arr = arr.trim();
-                    if (arr == "html") {
-                        obj.html(lang);
-                    } else {
-                        obj.attr(arr, lang);
-                    }
-                });
+                if (!attr && obj.val) {
+                    obj.val(lang);
+
+                } else {
+                    attr.split(",").each(function (arr) {
+                        arr = arr.trim();
+                        if (arr == "html") {
+                            obj.html(lang);
+                        } else {
+                            obj.attr(arr, lang);
+                        }
+                    });
+                }
             }
         }
     },
@@ -768,7 +785,7 @@ qc.c.popfrm = {
     },
     hide: function (obj) {
         if (obj.contrl[0].hideCallee) {
-            obj.contrl[0].hideCallee();
+            obj.contrl[0].hideCallee(obj.contrl);
         }
         qc.popfrm.hidden(obj.contrl);
     },
@@ -923,30 +940,34 @@ qc.c.selector = {
             field = contrl.attr("qc-field") || "v",
             text = contrl.attr("qc-text") || field;
 
-        obj.find("option").each(function () {
-            var opt = qc(this),
-                texts = opt.text(),
-                pass = true,
-                b = {};
+        if (obj && obj[0]) {
+            obj.find("option").each(function () {
+                var opt = qc(this),
+                    texts = opt.text(),
+                    pass = true,
+                    b = {};
 
-            b[field] = opt.attr("value");
-            texts.split(",").each(function (t) {
-                t = t.trim();
-                var m = /^([^=]+)=(.+)$/.exec(t);
-                if (m) {
-                    b[m[1]] = m[2];
-                    pass = false;
-                }
+                b[field] = opt.attr("value");
+                texts.split(",").each(function (t) {
+                    t = t.trim();
+                    var m = /^([^=]+)=(.+)$/.exec(t);
+                    if (m) {
+                        b[m[1]] = m[2];
+                        pass = false;
+                    }
+                });
+
+                if (pass)
+                    b[text] = texts;
+
+                data.push(b);
             });
-
-            if (pass)
-                b[text] = texts;
-
-            data.push(b);
-        });
+        }
 
         contrl[0].data = {"rows": data.length, "data": data};
-        obj.remove();
+
+        if (obj && obj[0])
+            obj.remove();
     },
     init: function () {
         qc.selector.getDatas();
@@ -1176,12 +1197,12 @@ qc.c.selector = {
             qc.selector.getData(frObj);
         }
     },
-    search: function (obj) {
+    search: function (obj, callee) {
         var contrl = obj.contrl || obj,
             curr = obj.curr || obj.find("[qc-content]");
 
         contrl[0].search = curr.val();
-        qc.selector.getData(contrl, qc.selector.shown);
+        qc.selector.getData(contrl, callee);
     },
     val: function (contrl, value) {
         if (value == undefined) {
@@ -1759,13 +1780,33 @@ qc.c.datepicker = {
     control: "datepicker",
     show: function (obj) {
         var curr = obj.curr,
-            mode = curr.attr("qc-mode") || "date",
-            target = curr.attr("qc-target") ? qc(curr.attr("qc-target")) : curr;
+            mode = curr.attr("qc-mode"),
+            target = curr.attr("qc-target") ? qc(curr.attr("qc-target")) : curr,
+            bar = [
+                {"name": "ok", "fn": "qc.datepicker.confirm"},
+                {"name": "cancel", "fn": "qc.datepicker.hide"}
+            ],
+            noCancel = "",
+            timer = "";
 
-        qc.popfrm.dyShow(qc.lang.datepicker["title"], [
-            {"name": "ok", "fn": "qc.datepicker.confirm"},
-            {"name": "cancel", "fn": "qc.datepicker.hide"}
-        ], "", curr, function (popfrm) {
+        if (mode.contains("nobar")) {
+            mode = mode.replace("nobar", "");
+            bar = "";
+        }
+
+        if (mode.contains("nocancel")) {
+            mode = mode.replace("nocancel", "");
+            noCancel = 1;
+        }
+
+        if (mode.contains("timer")) {
+            mode = mode.replace("timer", "");
+            timer = 1;
+        }
+
+        mode = mode.replace(/\s+/g, "") || "date";
+
+        qc.popfrm.dyShow(qc.lang.datepicker["title"], bar, "", curr, function (popfrm) {
             var today = new Date(),
                 content = popfrm.find("[qc-content]");
 
@@ -1785,13 +1826,19 @@ qc.c.datepicker = {
             content[0].date = date;
             content[0].mode = mode;
             content[0].target = target;
+            content[0].bar = bar ? 1 : "";
+            content[0].noCancel = noCancel;
 
             qc.datepicker.createContent(content);
             qc.datepicker.format(content);
 
-            content[0].refresh = qc.datepicker.refresh;
-            content[0].refresh(content);
+            if (timer) {
+                content[0].refresh = qc.datepicker.refresh;
+                content[0].refresh(content);
+            }
 
+            if (!bar)
+                popfrm.find("[qc-warp]").attr("qc-fn", "qc.datepicker.confirm").removeAttr("qc-type");
         });
     },
     createContent: function (content) {
@@ -1848,8 +1895,9 @@ qc.c.datepicker = {
         if (["datetime", "date", "time"].contains(mode)) {
             var today = qc("" +
                 (mode != "time" ?
-                "   <span class='qc-datepicker-today' qc-fn='qc.datepicker.today'>" + qc.lang.datepicker["today"] + "</span>" : "") +
-                "   <span class='qc-datepicker-cancel' qc-fn='qc.datepicker.cancel'>" + qc.lang.datepicker["cancel"] + "</span>" +
+                    "   <span class='qc-datepicker-today' qc-fn='qc.datepicker.today'>" + qc.lang.datepicker["today"] + "</span>" : "") +
+                (!content[0].noCancel ?
+                    "   <span class='qc-datepicker-cancel' qc-fn='qc.datepicker.cancel'>" + qc.lang.datepicker["cancel"] + "</span>" : "") +
                 "");
             timebar.append(today);
         }
@@ -2186,6 +2234,9 @@ qc.c.datepicker = {
         dt.setDate(date);
         content[0].date = dt;
         qc.datepicker.date(content);
+        // if (!content[0].bar) {
+        //     qc.datepicker.confirm({"contrl": content.closest("[qc-control]")});
+        // }
     },
     udpick: function (obj) {
         var curr = obj.curr,
@@ -2238,7 +2289,10 @@ qc.c.datepicker = {
 
         content[0].date = new Date();
         qc.datepicker.format(content);
-        if (!content[0].refresh) {
+
+        if (!content[0].bar) {
+            qc.datepicker.confirm({"contrl": content.closest("[qc-control]")});
+        } else if (!content[0].refresh) {
             content[0].refresh = qc.datepicker.refresh;
             content[0].refresh(content);
         }
@@ -2612,7 +2666,7 @@ qc.c.pagepicker = {
         }
         contrl.append(li);
     },
-    page: function ( obj) {
+    page: function (obj) {
         var tar = qc(obj.contrl[0].origin),
             contrln = tar.attr("qc-control"),
             _obj = qc[contrln];
@@ -2852,7 +2906,6 @@ qc.c.treeview = {
             curr.append(ul);
         }
 
-
         if (!isNaN(levels) && levels > 0) {
             limit = ul.parents("ul").length + 1 == levels;
         }
@@ -2970,15 +3023,18 @@ qc.c.treeview = {
 qc.c.sheet = {
     control: "sheet",
     create: function (obj) {
-        var mode = obj.attr("qc-mode"),
+        var mode = obj.attr("qc-mode") || "auto",
             getUrl = obj.attr("qc-get"),
-            table = obj.contents("table");
+            table = obj.contents("table"),
+            qcKey = obj.attr("qc-key");
 
         if (mode) {
             obj[0].multi = mode.contains("multiple");
             mode = mode.contains("manual") ? "" : "auto";
         }
 
+        obj[0].qcKey = qcKey;
+        obj.removeAttr("qc-key");
         var fn = obj.attr("qc-fn");
         if (fn) {
             obj[0].callback = qc.util.convert2fnc(fn);
@@ -2998,10 +3054,8 @@ qc.c.sheet = {
 
         var cont = qc("<div qc-content>");
         obj.append(cont);
-        cont.css("height", obj.height() + "px");
-        obj.css("height", "auto");
-
         qc.sheet.foot(obj);
+        qc.sheet.reLayout(obj);
 
         var warp = qc("<div qc-warp>");
         warp.append(table);
@@ -3040,8 +3094,6 @@ qc.c.sheet = {
         var inpt = qc("<input type='text' class='' v='page' qc-type='change' qc-fn='qc.sheet.page'>");
         qc.util.lang(inpt, "page", "title", "sheet");
         foot.append(inpt);
-        // inpt[0].contrl = contrl;
-        // inpt.keyup(qc.sheet.keyup);
 
         foot.append("<span>/</span><span v='pages'></span>");
 
@@ -3063,7 +3115,14 @@ qc.c.sheet = {
         qc.util.lang(rowsp, "rows", "html", "sheet");
         qc.util.lang(totalp, "total", "html", "sheet");
         foot.append(rowsp).append(rows).append(totalp).append(total);
+    },
+    reLayout: function (contrl) {
+        var foot = contrl.find("[qc-foot]"),
+            cont = contrl.find("[qc-content]"),
+            ch = contrl.height(),
+            fh = foot.outerHeight();
 
+        cont.css("height", (ch - fh) + "px");
     },
     fromat: function (table, data) {
         var ths = [];
@@ -3118,9 +3177,10 @@ qc.c.sheet = {
     },
     fill: function (d, re, callee) {
         var contrl = re.contrl;
+        contrl[0].data = d;
         contrl.find(".qc-sheet-head-y, .qc-sheet-data-x, .qc-sheet-head-x, .qc-sheet-scroll").remove();
 
-        var key = contrl.attr("qc-key"),
+        var key = contrl[0].qcKey,
             tb = contrl.find("[qc-content] table"),
             hideField = contrl[0].hideField,
             ths = tb.find("thead th").show();
@@ -3144,6 +3204,7 @@ qc.c.sheet = {
             var b = d.data[i],
                 tr = qc("<tr>");
 
+            tr[0].b = b;
             if (key) {
                 tr.attr("qc-field", key);
                 tr.attr("qc-value", b[key]);
@@ -3170,6 +3231,7 @@ qc.c.sheet = {
                 field = th.attr("qc-field"),
                 fixed = th.attr("qc-fixed") == undefined ? "" : "qc-fixed",
                 text = th.attr("qc-text"),
+                cls = th.attr("class") || "",
                 val = b[field];
 
             if (text) {
@@ -3177,7 +3239,7 @@ qc.c.sheet = {
                 val = ts[val];
             }
 
-            tr.append("<td qc-field='" + field + "' qc-value='" + b[field] + "' " + fixed + ">" + val + "</td>");
+            tr.append("<td qc-field='" + field + "' qc-value='" + b[field] + "' " + fixed + " class='" + cls + "'>" + val + "</td>");
         }
     },
     layout: function (contrl) {
@@ -3276,11 +3338,6 @@ qc.c.sheet = {
         }
         qc.sheet.get(contrl, {}, contrl[0].callee);
     },
-    // keyup: function (ev) {
-    //     if (["Enter", "NumpadEnter"].contains(ev.code)) {
-    //         qc.sheet.page({"contrl": this.contrl, "curr": qc(this), "ev": ev});
-    //     }
-    // },
     selected: function (ev) {
         var x = ev.pageX,
             y = ev.pageY,
@@ -3289,27 +3346,33 @@ qc.c.sheet = {
 
         if (contrl[0]) {
             var warp = contrl.find("[qc-warp]"),
+                thead_t = contrl[0].thead_x.offset().top,
+                thead_h = contrl[0].thead_x.find("thead").height(),
                 data_x = contrl[0].data_x,
-                tds = contrl.find("td"),
+                trs = warp.find("tr"),
                 multi = contrl[0].multi,
+                has = false,
                 tr;
 
-            tds.each(function () {
-                var td = qc(this),
-                    l = td.offset().left,
-                    r = l + td.width(),
-                    t = td.offset().top,
-                    b = t + td.height();
+            if (y >= thead_h + thead_t) {
+                trs.each(function () {
+                    var _tr = qc(this),
+                        l = _tr.offset().left,
+                        r = l + _tr.width(),
+                        t = _tr.offset().top,
+                        b = t + _tr.height();
 
-                if (x >= l && x <= r && y >= t && y <= b) {
-                    tr = td.closest("tr");
-                    return false;
-                }
-            });
+                    if (x >= l && x <= r && y >= t && y <= b) {
+                        tr = _tr;
+                        return false;
+                    }
+                });
+            }
+
             if (tr) {
+                has = tr.hasClass("selected");
                 var idx = tr.index() + 1,
-                    trf = data_x.find("tr").eq(idx),
-                    has = tr.hasClass("selected");
+                    trf = data_x.find("tr").eq(idx);
 
                 if (multi) {
                     if (has) {
@@ -3327,19 +3390,27 @@ qc.c.sheet = {
                         trf.addClass("selected");
                     }
                 }
+                has = !has;
 
-                if (contrl.attr("qc-post")) {
-                    var seleds = [];
-                    warp.find("tr.selected").each(function () {
-                        seleds.push(qc(this).attr("qc-value"));
-                    });
+            } else {
+                contrl.find("tr.selected").removeClass("selected");
+            }
 
-                    var args = {};
-                    qc.util.getFields(tr, "", args);
-                    args.key = contrl.attr("qc-key") || "";
-                    args.selected = seleds.join(",");
-                    qc.util.post(tr, args);
-                }
+            if (contrl.attr("qc-post")) {
+                var seleds = [], data = [];
+                warp.find("tr.selected").each(function () {
+                    var _tr = qc(this),
+                        v = _tr.attr("qc-value");
+                    seleds.push(v);
+                    data.push(_tr[0].b);
+                });
+
+                var args = tr && tr[0].b ? tr[0].b : {};
+                args.key = contrl.attr("qc-key") || "";
+                args._data = data;
+                args._has = has;
+                args.selected = seleds.join(",");
+                qc.util.post(contrl, args);
             }
         }
     },

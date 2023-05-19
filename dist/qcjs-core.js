@@ -91,7 +91,7 @@ qc._indexOf = function (obj, search, index) {
     if (index)
         idx = index < 0 ? obj.length + index : index;
 
-    for (;idx < obj.length; idx++) {
+    for (; idx < obj.length; idx++) {
         var _obj = obj[idx];
         if (qc._equals(_obj, search)) {
             return idx;
@@ -252,6 +252,20 @@ qc._postIE = function (url, data, callback) {
     form.submit();
 };
 
+qc._setHead = function (xhr) {
+    if (!qc._ajax_header)
+        return;
+
+    for (var n in qc._ajax_header) {
+        xhr.setRequestHeader(n, qc._ajax_header[n]);
+    }
+};
+
+qc._ajax_addHeader = function (name, value) {
+    qc._ajax_header = qc._ajax_header || {};
+    qc._ajax_header[name] = value;
+};
+
 qc._postUpload = function (url, data, success, progress, error) {
     var xhr = new XMLHttpRequest();
     url += (url.match(/\?/) == null ? "?" : "&") + (new Date()).getTime();
@@ -284,6 +298,7 @@ qc._postUpload = function (url, data, success, progress, error) {
     }
 
     xhr.open("post", url);
+    qc._setHead(xhr);
     xhr.send(formData);
 };
 
@@ -301,10 +316,10 @@ qc._postData = function (type, url, data, callback) {
         if (v == undefined) continue;
         if (Array.isArray(v)) {
             v.each(function (arr) {
-                parms.push(k + "=" + (type == "get" ? encodeURI(encodeURI(arr)) : arr));
+                parms.push(k + "=" + (type == "get" ? encodeURI(encodeURI(arr)) : encodeURIComponent(arr)));
             });
         } else {
-            parms.push(k + "=" + (type == "get" ? encodeURI(encodeURI(v)) : v));
+            parms.push(k + "=" + (type == "get" ? encodeURI(encodeURI(v)) : encodeURIComponent(v)));
         }
     }
 
@@ -319,8 +334,10 @@ qc._postData = function (type, url, data, callback) {
     }
 
     xhr.open(type, url);
-    if (type == "post")
+    qc._setHead(xhr);
+    if (type == "post") {
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    }
     xhr.send(sendData);
 };
 
@@ -562,7 +579,11 @@ qc.prototype.remove = function () {
 };
 
 qc.prototype.clone = function () {
-    return qc(this[0].cloneNode(true));
+    var objs = [];
+    this.each(function () {
+        objs.push(this.cloneNode(true));
+    });
+    return qc(objs);
 };
 
 qc.prototype.empty = function () {
@@ -584,19 +605,21 @@ qc.prototype.attr = function (name, value) {
 };
 
 qc.prototype.removeAttr = function (name) {
-    if (this.length > 0) {
-        var el = this[0], atts = [];
+    var atts = [];
+    if (name) {
+        name.split(" ").each(function (n) {
+            atts.push(n);
+        });
+    }
+    this.each(function () {
+        var el = this;
         if (name == undefined) {
             atts = el.getAttributeNames();
-        } else {
-            name.split(" ").each(function (n) {
-                atts.push(n);
-            });
         }
         atts.each(function (n) {
             el.removeAttribute(n);
         });
-    }
+    });
     return this;
 };
 
@@ -1015,14 +1038,14 @@ qc.prototype.indexAll = function (isEl) {
 qc._ons = function (el, type, name, fn) {
     var _on = el["qcon"] ? el["qcon"] : el["qcon"] = {};
     var _ev = _on[type] ? _on[type] : _on[type] = {};
-    if (name) {
+    if (name == undefined) {
+        return _ev;
+    } else {
         if (fn) {
             _ev[name] = fn;
         } else {
             return _ev[name];
         }
-    } else {
-        return _ev;
     }
 };
 
@@ -1064,7 +1087,7 @@ qc.prototype.off = function (event, listener) {
         if (m)
             return m[1];
         return "";
-    }() : "";
+    }() : undefined;
 
     var events = QCSet(event.split(" "));
     this.each(function () {

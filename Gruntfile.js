@@ -62,31 +62,60 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         src: ['dist/**'],
-                        dest: 'E:/mydisk/deveplor/com.tianqilabs/zhangui/project/zg-cash2/web/qcjs/',
+                        dest: 'H:/mydisk/deveplor/na/code/platform/qcjs/',
                         flatten: true,
                         filter: 'isFile'
                     },
                     {
                         expand: true,
-                        src: ['dist/**', 'src/control/**'],
-                        dest: 'E:/mydisk/deveplor/com.tianqilabs/zhangui/project/out/artifacts/zgcash2_war_exploded/qcjs/',
+                        src: ['dist/**'],
+                        dest: 'H:/mydisk/deveplor/na/code/platform/util/',
                         flatten: true,
                         filter: 'isFile'
-                    }
+                    },
+                    // {
+                    //     expand: true,
+                    //     src: ['dist/**'],
+                    //     dest: 'E:/mydisk/deveplor/com.tianqilabs/zhangui/project/zg-cash2/web/qcjs/',
+                    //     flatten: true,
+                    //     filter: 'isFile'
+                    // },
+                    // {
+                    //     expand: true,
+                    //     // src: ['dist/**', 'src/control/**'],
+                    //     src: ['dist/<%= pkg.name %>-core.min.js', 'dist/<%= pkg.name %>-util.min.js'],
+                    //     dest: 'H:/mydisk/deveplor/com.tianqilabs/deoloy/zgapp/zgcash2_war_exploded/qcjs/',
+                    //     flatten: true,
+                    //     filter: 'isFile'
+                    // },
+                    // {
+                    //     expand: true,
+                    //     src: ['dist/<%= pkg.name %>-core.min.js', 'dist/<%= pkg.name %>-util.min.js'],
+                    //     dest: 'H:/mydisk/deveplor/com.tianqilabs/chqxj_dev/webApp/web/qcjs/',
+                    //     flatten: true,
+                    //     filter: 'isFile'
+                    // },
+                    // {
+                    //     expand: true,
+                    //     src: ['dist/<%= pkg.name %>-core.min.js', 'dist/<%= pkg.name %>-util.min.js'],
+                    //     dest: 'H:/mydisk/deveplor/com.tianqilabs/deoloy/chqxj_dev/webApp/qcjs/',
+                    //     flatten: true,
+                    //     filter: 'isFile'
+                    // }
                 ]
             },
-            zg_css: {
-                files: [
-                    {
-                        src: ['doc/css/qcjs.css'],
-                        dest: 'E:/mydisk/deveplor/com.tianqilabs/zhangui/project/zg-cash2/web/css/def/qcjs.css'
-                    },
-                    {
-                        src: ['doc/css/qcjs.css'],
-                        dest: 'E:/mydisk/deveplor/com.tianqilabs/zhangui/project/out/artifacts/zgcash2_war_exploded/css/def/qcjs.css'
-                    }
-                ]
-            }
+            // zg_css: {
+            //     files: [
+            //         {
+            //             src: ['doc/css/qcjs.css'],
+            //             dest: 'E:/mydisk/deveplor/com.tianqilabs/zhangui/project/zg-cash2/web/css/def/qcjs.css'
+            //         },
+            //         {
+            //             src: ['doc/css/qcjs.css'],
+            //             dest: 'E:/mydisk/deveplor/com.tianqilabs/zhangui/project/out/artifacts/zgcash2_war_exploded/css/def/qcjs.css'
+            //         }
+            //     ]
+            // }
         }
     });
 
